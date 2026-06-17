@@ -1,0 +1,3252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SOLO</title>
+<style>
+  :root {
+    /* Light theme */
+    --bg: #fafbfc;
+    --rail-bg: #f3f4f7;
+    --surface: #ffffff;
+    --surface-2: #f6f7fa;
+    --border: #e3e6ed;
+    --border-strong: #d1d6e0;
+    --text: #14171f;
+    --text-dim: #62697a;
+    --text-mute: #8b93a4;
+    --accent: #5b5bd6;
+    --accent-hover: #4848c0;
+    --accent-soft: #eef0fd;
+    --accent-ring: rgba(91, 91, 214, .22);
+    --danger: #d53f3f;
+    --danger-soft: #fde9e8;
+    --success: #1e9460;
+    --warning: #c87a1a;
+
+    --radius: 12px;
+    --radius-sm: 8px;
+    --radius-xs: 6px;
+    --shadow-sm: 0 1px 2px rgba(20, 24, 40, .05);
+    --shadow-md: 0 2px 8px rgba(20, 24, 40, .07), 0 1px 2px rgba(20, 24, 40, .04);
+    --shadow-lg: 0 8px 32px rgba(20, 24, 40, .12), 0 2px 8px rgba(20, 24, 40, .06);
+
+    --sans: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+    --rail-w: 280px;
+    --topbar-h: 56px;
+  }
+  [data-theme="dark"] {
+    --bg: #0c0e13;
+    --rail-bg: #14171d;
+    --surface: #181b22;
+    --surface-2: #1f232b;
+    --border: #292e38;
+    --border-strong: #3a4150;
+    --text: #ecedf2;
+    --text-dim: #9ba3b3;
+    --text-mute: #6b7282;
+    --accent: #818cf8;
+    --accent-hover: #a5b4fc;
+    --accent-soft: #1d2138;
+    --accent-ring: rgba(129, 140, 248, .28);
+    --danger: #ff7a6b;
+    --danger-soft: #381f1c;
+    --success: #62dba0;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.4);
+    --shadow-md: 0 2px 8px rgba(0,0,0,.5);
+    --shadow-lg: 0 12px 36px rgba(0,0,0,.6);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+  body {
+    font-family: var(--sans);
+    color: var(--text);
+    background: var(--bg);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  button { font-family: inherit; }
+
+  /* ---------- App shell ---------- */
+  .app-shell {
+    display: grid;
+    grid-template-columns: var(--rail-w) 1fr;
+    grid-template-rows: var(--topbar-h) 1fr;
+    grid-template-areas: "topbar topbar" "rail workspace";
+    height: 100vh;
+  }
+
+  /* ---------- Top bar ---------- */
+  .top-bar {
+    grid-area: topbar;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    z-index: 5;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 700; font-size: 16px; letter-spacing: -0.01em;
+    cursor: pointer;
+    user-select: none;
+    padding: 4px 8px; margin: -4px -8px;
+    border-radius: var(--radius-sm);
+    transition: background .12s, opacity .12s;
+  }
+  .brand:hover { background: var(--surface-2); }
+  .brand:active { opacity: .8; }
+
+  /* ---------- NTT DATA logo (cobranding) ---------- */
+  .ntt-mark {
+    display: inline-flex; align-items: center;
+    line-height: 1;
+    user-select: none;
+  }
+  .ntt-logo-img {
+    display: block; width: auto;
+    height: 20px;
+  }
+  .ntt-mark.sm .ntt-logo-img { height: 14px; }
+  .ntt-mark.md .ntt-logo-img { height: 22px; }
+  .ntt-mark.lg .ntt-logo-img { height: 30px; }
+  /* Slight brightness lift in dark mode so the blue stays vivid against the dark background */
+  [data-theme="dark"] .ntt-logo-img { filter: brightness(1.15); }
+  .brand-divider {
+    color: var(--text-mute);
+    font-size: 12px; font-weight: 400;
+    padding: 0 4px;
+    user-select: none;
+  }
+  @media (max-width: 600px) {
+    .brand-divider, .top-bar .ntt-mark { display: none; }
+  }
+
+  .rail-footer {
+    margin-top: 8px;
+    padding: 10px 12px 4px;
+    border-top: 1px solid var(--border);
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .rail-footer-text {
+    font-size: 10px; color: var(--text-mute);
+    letter-spacing: .03em;
+  }
+
+  .login-by-line {
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--text-mute);
+    display: inline-flex; align-items: baseline; gap: 6px;
+  }
+
+  .dashboard-by-line {
+    margin-top: 4px;
+    font-size: 11.5px;
+    color: var(--text-mute);
+    display: inline-flex; align-items: baseline; gap: 5px;
+  }
+  .brand-mark {
+    width: 26px; height: 26px;
+    border-radius: 7px;
+    background: linear-gradient(135deg, var(--accent), #7d75ee);
+    color: white;
+    display: grid; place-items: center;
+    font-weight: 800; font-size: 13px;
+    box-shadow: 0 2px 6px var(--accent-ring);
+  }
+  .top-actions { display: flex; gap: 4px; }
+
+  /* ---------- Rail ---------- */
+  .rail {
+    grid-area: rail;
+    background: var(--rail-bg);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 18px 14px;
+    display: flex; flex-direction: column;
+    gap: 22px;
+  }
+  .rail-section { display: flex; flex-direction: column; gap: 4px; }
+  .rail-section-title {
+    font-size: 11px; font-weight: 600;
+    color: var(--text-mute);
+    text-transform: uppercase; letter-spacing: .06em;
+    padding: 0 10px 6px;
+  }
+
+  /* Vertical stages */
+  .stages { position: relative; padding: 4px 0; }
+  /* Segment container — sits behind the stage-steps; segments are drawn ONLY in the gaps between markers */
+  .stages-track {
+    position: absolute; inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .stages-segment {
+    position: absolute;
+    left: 23px;
+    width: 2px;
+    background: var(--border-strong);
+    border-radius: 1px;
+    overflow: hidden;
+  }
+  .stages-segment > span {
+    display: block;
+    width: 100%;
+    height: 0;
+    background: linear-gradient(180deg, var(--accent), #7d75ee);
+    transition: height .55s cubic-bezier(.4, 0, .2, 1);
+  }
+  .stages-segment.filled > span { height: 100%; }
+  .stage-step {
+    display: flex; gap: 12px;
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+    transition: background .12s;
+    align-items: flex-start;
+  }
+  .stage-step:hover { background: var(--surface); }
+  .stage-step.active { background: var(--surface); box-shadow: var(--shadow-sm); }
+  .stage-step.locked { opacity: .5; cursor: not-allowed; }
+  .stage-step.locked:hover { background: transparent; }
+
+  .step-marker {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--rail-bg);
+    border: 2px solid var(--border-strong);
+    color: var(--text-mute);
+    display: grid; place-items: center;
+    font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+    z-index: 1;
+    transition: all .15s;
+  }
+  .stage-step.active .step-marker {
+    border-color: var(--accent);
+    background: var(--surface);
+    color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-ring);
+  }
+  .stage-step.done .step-marker {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+  .stage-step.done .step-marker::after {
+    content: '✓'; font-size: 14px;
+  }
+  .stage-step.done .step-marker .step-num { display: none; }
+
+  .step-text { min-width: 0; flex: 1; padding-top: 3px; }
+  .step-name {
+    font-size: 13px; font-weight: 600; color: var(--text);
+    line-height: 1.3;
+  }
+  .stage-step.locked .step-name { color: var(--text-mute); }
+  .step-sub {
+    font-size: 11px; color: var(--text-mute);
+    line-height: 1.3; margin-top: 2px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  /* History list in rail */
+  .history-list { display: flex; flex-direction: column; gap: 2px; padding: 0 4px; }
+  .history-row {
+    background: transparent;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    padding: 8px 10px;
+    border-radius: var(--radius-xs);
+    transition: background .12s;
+    width: 100%;
+    color: inherit;
+  }
+  .history-row:hover { background: var(--surface); }
+  .history-row .h-title {
+    font-size: 12px; color: var(--text);
+    line-height: 1.4;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .history-row .h-meta {
+    font-size: 10px; color: var(--text-mute);
+    margin-top: 3px;
+  }
+  .history-empty { padding: 12px 14px; font-size: 12px; color: var(--text-mute); }
+  .new-prompt-btn {
+    margin: 4px 4px 0;
+    padding: 8px 12px;
+    border-radius: var(--radius-xs);
+    background: var(--surface);
+    border: 1px dashed var(--border-strong);
+    color: var(--text-dim);
+    font-size: 12px; font-weight: 500;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 6px;
+    justify-content: center;
+  }
+  .new-prompt-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ---------- Workspace ---------- */
+  .workspace {
+    grid-area: workspace;
+    overflow-y: auto;
+    padding: 32px 40px 60px;
+  }
+  .workspace-inner { max-width: 720px; margin: 0 auto; transition: max-width .2s ease; }
+  /* When Stage 3 is active, give the workspace room for the right column */
+  .workspace-inner:has(.stage-pane[data-stage="3"].active) { max-width: 1140px; }
+
+  /* Stage 3 two-column layout (main + sticky savings sidebar) */
+  .stage-pane[data-stage="3"].active {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 28px;
+    align-items: start;
+  }
+  .stage-main { min-width: 0; }
+  .stage-side {
+    position: sticky;
+    top: 24px;
+    max-height: calc(100vh - 110px);
+    overflow-y: auto;
+  }
+  .stage-pane[data-stage="3"] .stage-side .savings-card { margin-top: 0; }
+
+  @media (max-width: 1100px) {
+    .workspace-inner:has(.stage-pane[data-stage="3"].active) { max-width: 720px; }
+    .stage-pane[data-stage="3"].active { display: block; }
+    .stage-side { position: static; max-height: none; margin-top: 24px; }
+    .stage-pane[data-stage="3"] .stage-side .savings-card { margin-top: 0; }
+  }
+  .workspace-header { margin-bottom: 24px; }
+  .workspace-eyebrow {
+    font-size: 11px; font-weight: 600; color: var(--accent);
+    text-transform: uppercase; letter-spacing: .08em;
+    margin-bottom: 6px;
+  }
+  .workspace-title {
+    font-size: 24px; font-weight: 700; letter-spacing: -0.015em;
+    margin: 0 0 6px;
+  }
+  .workspace-subtitle {
+    color: var(--text-dim); font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* ---------- Buttons (unified) ---------- */
+  .btn {
+    --btn-bg: var(--accent);
+    --btn-fg: #fff;
+    --btn-border: var(--accent);
+    background: var(--btn-bg);
+    color: var(--btn-fg);
+    border: 1px solid var(--btn-border);
+    height: 36px;
+    padding: 0 16px;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 13.5px;
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: filter .12s, box-shadow .12s, transform .05s, background .12s;
+    white-space: nowrap;
+  }
+  .btn:hover { filter: brightness(1.06); box-shadow: 0 2px 8px var(--accent-ring); }
+  .btn:active { transform: translateY(1px); filter: brightness(.98); }
+  .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .btn:disabled { opacity: .5; cursor: not-allowed; filter: none; box-shadow: none; }
+
+  .btn.secondary {
+    --btn-bg: var(--surface);
+    --btn-fg: var(--text);
+    --btn-border: var(--border-strong);
+  }
+  .btn.secondary:hover { background: var(--surface-2); box-shadow: var(--shadow-sm); filter: none; }
+
+  .btn.ghost {
+    --btn-bg: transparent;
+    --btn-fg: var(--text-dim);
+    --btn-border: transparent;
+  }
+  .btn.ghost:hover { background: var(--surface-2); color: var(--text); box-shadow: none; filter: none; }
+
+  .btn.danger {
+    --btn-bg: var(--danger);
+    --btn-fg: #fff;
+    --btn-border: var(--danger);
+  }
+
+  .btn.sm { height: 30px; padding: 0 12px; font-size: 12.5px; border-radius: var(--radius-xs); }
+
+  .icon-btn {
+    width: 36px; height: 36px;
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-dim);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: grid; place-items: center;
+    font-size: 16px;
+    transition: background .12s, color .12s, border-color .12s;
+  }
+  .icon-btn:hover { background: var(--surface-2); color: var(--text); }
+  .icon-btn.active { color: var(--accent); }
+
+  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; align-items: center; }
+
+  kbd {
+    background: rgba(255,255,255,.18);
+    border: 1px solid transparent;
+    border-radius: 4px;
+    padding: 1px 5px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: inherit;
+  }
+  .btn.secondary kbd, .btn.ghost kbd {
+    background: var(--surface-2);
+    border-color: var(--border);
+    color: var(--text-mute);
+  }
+
+  /* ---------- Form controls ---------- */
+  .field-label {
+    display: block;
+    font-size: 11px; font-weight: 600;
+    color: var(--text-mute);
+    text-transform: uppercase; letter-spacing: .06em;
+    margin-bottom: 8px;
+  }
+  textarea, input[type="text"], input[type="password"] {
+    width: 100%;
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.55;
+    transition: border-color .12s, box-shadow .12s;
+  }
+  textarea {
+    resize: vertical;
+    min-height: 180px;
+    font-family: inherit;
+  }
+  textarea.optimized {
+    background: var(--surface-2);
+    font-size: 14.5px;
+    min-height: 220px;
+  }
+  textarea:focus, input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-ring);
+  }
+
+  /* ---------- Custom dropdown (pf-select) ---------- */
+  .pf-select { position: relative; display: inline-block; min-width: 180px; }
+  .pf-select.full { display: block; min-width: 0; }
+  .pf-select-trigger {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    padding: 8px 36px 8px 12px;
+    font-size: 13.5px;
+    color: var(--text);
+    text-align: left;
+    cursor: pointer;
+    font-weight: 500;
+    display: flex; align-items: center;
+    position: relative;
+    transition: border-color .12s, box-shadow .12s;
+    min-height: 36px;
+    line-height: 1.4;
+  }
+  .pf-select-trigger:hover { border-color: var(--accent); }
+  .pf-select.open .pf-select-trigger {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-ring);
+  }
+  .pf-select-trigger .pf-select-value {
+    flex: 1;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .pf-select-trigger::after {
+    content: '';
+    position: absolute;
+    right: 14px; top: 50%;
+    width: 8px; height: 8px;
+    border-right: 2px solid var(--text-mute);
+    border-bottom: 2px solid var(--text-mute);
+    transform: translateY(-70%) rotate(45deg);
+    transition: transform .15s;
+  }
+  .pf-select.open .pf-select-trigger::after {
+    transform: translateY(-30%) rotate(-135deg);
+  }
+  .pf-select-panel {
+    position: absolute;
+    top: calc(100% + 4px); left: 0; right: 0;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-lg);
+    z-index: 50;
+    padding: 4px;
+    max-height: 280px;
+    overflow-y: auto;
+    display: none;
+    min-width: 100%;
+  }
+  .pf-select.open .pf-select-panel { display: block; }
+  .pf-select-option {
+    display: flex; align-items: center; gap: 8px;
+    width: 100%;
+    background: transparent;
+    border: none;
+    text-align: left;
+    padding: 8px 12px;
+    border-radius: var(--radius-xs);
+    cursor: pointer;
+    font-size: 13.5px;
+    color: var(--text);
+    font-family: inherit;
+    line-height: 1.4;
+  }
+  .pf-select-option:hover, .pf-select-option.focused { background: var(--surface-2); }
+  .pf-select-option.selected { color: var(--accent); font-weight: 600; }
+  .pf-select-option.selected::before {
+    content: '✓'; color: var(--accent); width: 12px; display: inline-block;
+  }
+  .pf-select-option:not(.selected)::before {
+    content: ''; width: 12px; display: inline-block;
+  }
+  .pf-select-divider {
+    height: 1px; background: var(--border); margin: 4px 0;
+  }
+  .pf-select-option.other {
+    color: var(--text-dim); font-style: italic;
+  }
+  .pf-select-option.other::before { content: '+'; color: var(--text-mute); }
+
+  /* ---------- Stage content ---------- */
+  .stage-pane { display: none; }
+  .stage-pane.active { display: block; }
+
+  .hint {
+    background: var(--accent-soft);
+    border: 1px solid var(--accent-ring);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    font-size: 13px;
+    line-height: 1.55;
+    margin-bottom: 20px;
+    color: var(--text);
+  }
+  .hint b { color: var(--accent); }
+  .hint a { color: var(--accent); cursor: pointer; text-decoration: underline; }
+
+  .domain-row {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 16px;
+    padding: 10px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+  }
+  .domain-row-label {
+    font-size: 12px; color: var(--text-dim); font-weight: 500;
+  }
+
+  /* Question cards */
+  .question {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 16px 18px;
+    margin-bottom: 12px;
+    transition: border-color .12s;
+  }
+  .question:hover { border-color: var(--border-strong); }
+  .question .q-num {
+    display: inline-block;
+    background: var(--surface-2);
+    color: var(--text-mute);
+    font-size: 11px; font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+  }
+  .question .q-label {
+    font-weight: 600;
+    font-size: 14.5px;
+    color: var(--text);
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+  .question .q-why {
+    font-size: 12.5px;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+  .question .q-control {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .q-custom-wrap {
+    display: none;
+    flex: 1;
+    align-items: center;
+    gap: 6px;
+  }
+  .question.is-custom .pf-select { display: none; }
+  .question.is-custom .q-custom-wrap { display: flex; }
+  .q-custom-wrap input { flex: 1; height: 36px; }
+  .q-revert {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 14px;
+    width: 36px; height: 36px;
+    border-radius: var(--radius-sm);
+    display: grid; place-items: center;
+    flex-shrink: 0;
+  }
+  .q-revert:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* Status / spinner / error / usage */
+  .status {
+    display: flex; align-items: center; gap: 10px;
+    color: var(--text-dim); font-size: 13px;
+    margin-top: 12px;
+  }
+  .spinner {
+    width: 14px; height: 14px;
+    border: 2px solid var(--border-strong);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+    display: inline-block;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .error {
+    background: var(--danger-soft);
+    border: 1px solid var(--danger);
+    color: var(--danger);
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    margin-top: 14px;
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  }
+  .error .btn {
+    background: var(--danger); border-color: var(--danger);
+    height: 30px; padding: 0 12px; font-size: 12.5px;
+  }
+  .usage {
+    margin-top: 10px;
+    font-size: 11.5px;
+    color: var(--text-mute);
+    font-family: var(--mono);
+  }
+
+  /* Run output */
+  .run-divider {
+    display: flex; align-items: center; gap: 12px;
+    margin: 24px 0 12px;
+    color: var(--text-mute); font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .08em;
+  }
+  .run-divider::before, .run-divider::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+  .run-output {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 16px 18px;
+    white-space: pre-wrap;
+    font-size: 14px;
+    line-height: 1.65;
+    max-height: 480px;
+    overflow-y: auto;
+  }
+
+  /* ---------- Dashboard ---------- */
+  :root {
+    --c-analyze: #5b9cf7;
+    --c-compose: #8b73f0;
+    --c-run: #34c682;
+    --c-naive-1: #f6a967;
+    --c-naive-2: #e88455;
+    --c-naive-3: #d96a55;
+    --c-naive-4: #c25a55;
+    --c-naive-5: #a44853;
+  }
+  [data-theme="dark"] {
+    --c-analyze: #74aef9;
+    --c-compose: #a48cf5;
+    --c-run: #56d99c;
+    --c-naive-1: #f6b682;
+    --c-naive-2: #ee9572;
+    --c-naive-3: #e07a68;
+    --c-naive-4: #c96566;
+    --c-naive-5: #ad5760;
+  }
+
+  .dashboard-pane { display: none; }
+  .dashboard-pane.active { display: block; }
+
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  @media (max-width: 720px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+  .kpi-tile {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    transition: border-color .12s, transform .12s;
+  }
+  .kpi-tile:hover { border-color: var(--border-strong); }
+  .kpi-tile.accent {
+    background: linear-gradient(135deg, var(--accent-soft), var(--surface));
+    border-color: var(--accent-ring);
+  }
+  .kpi-label {
+    font-size: 10.5px; font-weight: 600; color: var(--text-mute);
+    text-transform: uppercase; letter-spacing: .07em;
+    margin-bottom: 8px;
+  }
+  .kpi-value {
+    font-size: 24px; font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .kpi-tile.accent .kpi-value { color: var(--accent); }
+  .kpi-sub {
+    font-size: 11.5px; color: var(--text-mute);
+    margin-top: 4px;
+  }
+
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 18px;
+    overflow: hidden;
+  }
+  .chart-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .chart-title { font-weight: 600; font-size: 14px; }
+  .chart-sub { font-size: 12px; color: var(--text-dim); margin-top: 3px; }
+  .chart-body { padding: 18px 20px; }
+  .chart-empty {
+    text-align: center;
+    padding: 30px 20px;
+    color: var(--text-mute);
+    font-size: 13px;
+  }
+  .chart-svg {
+    width: 100%; height: auto; display: block;
+    font-family: var(--sans);
+  }
+  .chart-row-label {
+    fill: var(--text); font-size: 12px; font-weight: 600;
+  }
+  .chart-seg-label {
+    fill: white; font-size: 10.5px; font-weight: 600;
+    pointer-events: none;
+  }
+  .chart-total {
+    fill: var(--text); font-size: 12px; font-weight: 700;
+  }
+  .chart-grid {
+    stroke: var(--border); stroke-width: 1; stroke-dasharray: 2 3;
+  }
+  .chart-axis {
+    stroke: var(--border-strong); stroke-width: 1;
+  }
+  .chart-axis-label {
+    fill: var(--text-mute); font-size: 10.5px; font-family: var(--mono);
+  }
+  .chart-line {
+    fill: none; stroke: var(--accent); stroke-width: 2.5;
+    stroke-linejoin: round; stroke-linecap: round;
+  }
+  .chart-area {
+    fill: var(--accent); opacity: .08;
+  }
+  .chart-dot {
+    fill: var(--surface); stroke: var(--accent); stroke-width: 2;
+    cursor: pointer;
+    transition: r .12s;
+  }
+  .chart-dot:hover { r: 6; }
+  .chart-legend {
+    display: flex; gap: 16px; flex-wrap: wrap;
+    padding: 0 20px 14px;
+    font-size: 12px; color: var(--text-dim);
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-dot {
+    display: inline-block; width: 10px; height: 10px;
+    border-radius: 2px;
+  }
+
+  .alloc-bar {
+    display: flex; width: 100%; height: 24px;
+    border-radius: var(--radius-xs); overflow: hidden;
+    background: var(--surface-2);
+    margin-bottom: 14px;
+  }
+  .alloc-seg { height: 100%; transition: filter .12s; }
+  .alloc-seg:hover { filter: brightness(1.1); }
+  .alloc-legend { display: flex; flex-direction: column; gap: 6px; }
+  .alloc-row {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px;
+  }
+  .alloc-name { flex: 1; color: var(--text); }
+  .alloc-val { font-family: var(--mono); color: var(--text); font-weight: 500; }
+  .alloc-pct { color: var(--text-mute); font-weight: 400; }
+
+  /* ---------- Token savings ---------- */
+  .savings-pill {
+    margin-top: 8px;
+    background: linear-gradient(135deg, var(--accent-soft), var(--surface));
+    border: 1px solid var(--accent-ring);
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    text-align: center;
+    display: none;
+    cursor: pointer;
+    transition: transform .12s, box-shadow .12s;
+  }
+  .savings-pill:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .savings-pill.show { display: block; }
+  .savings-pill .num {
+    font-size: 18px; font-weight: 700; color: var(--accent);
+    display: block; line-height: 1.1; letter-spacing: -0.01em;
+  }
+  .savings-pill .sub {
+    font-size: 11px; color: var(--text-dim); display: block; margin-top: 2px;
+  }
+
+  .savings-card {
+    margin-top: 28px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    overflow: hidden;
+  }
+  .savings-card[hidden] { display: none; }
+  .savings-card-header {
+    padding: 12px 18px;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .savings-card-title {
+    font-weight: 600; font-size: 13px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .savings-card-toggle {
+    background: transparent; border: none;
+    color: var(--text-mute); cursor: pointer; font-size: 12px;
+    padding: 4px 8px;
+  }
+  .savings-card-toggle:hover { color: var(--accent); }
+  .savings-card-body { padding: 18px 20px; }
+  .savings-card.collapsed .savings-card-body { display: none; }
+
+  .savings-headline {
+    display: flex; align-items: baseline; gap: 10px;
+    margin-bottom: 18px; flex-wrap: wrap;
+  }
+  .savings-headline .num {
+    font-size: 30px; font-weight: 700; color: var(--success);
+    letter-spacing: -0.025em; line-height: 1;
+  }
+  .savings-headline .label { font-size: 13px; color: var(--text-dim); }
+
+  .savings-compare {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    margin-bottom: 16px;
+  }
+  /* When the savings card lives in the narrow right sidebar, stack the comparison */
+  .stage-side .savings-compare { grid-template-columns: 1fr; }
+  .stage-side .savings-card-body { padding: 16px; }
+  .stage-side .savings-headline .num { font-size: 26px; }
+  .savings-col {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    background: var(--surface);
+  }
+  .savings-col.naive { background: var(--surface-2); border-style: dashed; }
+  .savings-col-label {
+    font-size: 10.5px; font-weight: 600; color: var(--text-mute);
+    text-transform: uppercase; letter-spacing: .07em;
+    margin-bottom: 6px;
+  }
+  .savings-col-value { font-size: 20px; font-weight: 700; letter-spacing: -0.015em; }
+  .savings-col-sub {
+    font-size: 11px; color: var(--text-mute);
+    font-family: var(--mono); margin-top: 4px;
+  }
+
+  .savings-breakdown {
+    display: flex; flex-direction: column; gap: 5px;
+    padding: 12px 14px;
+    background: var(--surface-2);
+    border-radius: var(--radius-sm);
+    margin-bottom: 12px;
+  }
+  .savings-row {
+    display: flex; justify-content: space-between;
+    font-size: 12.5px;
+  }
+  .savings-row .k { color: var(--text-dim); }
+  .savings-row .v { font-family: var(--mono); color: var(--text); font-weight: 500; }
+
+  .savings-disclaimer {
+    font-size: 11.5px; color: var(--text-mute);
+    line-height: 1.55;
+    padding-top: 12px;
+    border-top: 1px dashed var(--border);
+  }
+  .savings-control {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; color: var(--text-dim);
+    margin-bottom: 14px;
+  }
+  .savings-control .pf-select { min-width: 80px; }
+  .savings-control .pf-select-trigger { height: 30px; min-height: 30px; padding: 4px 28px 4px 10px; font-size: 12.5px; }
+
+  /* ---------- Modal ---------- */
+  .modal-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(10, 12, 18, .55);
+    display: none;
+    align-items: center; justify-content: center;
+    z-index: 200;
+    padding: 20px;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    width: 100%; max-width: 480px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+  }
+  .modal-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    font-weight: 600;
+    font-size: 14.5px;
+  }
+  .modal-body { padding: 20px; }
+  .modal-body .field { margin-bottom: 16px; }
+  .modal-body .field:last-child { margin-bottom: 0; }
+  .modal-body .hint-text {
+    font-size: 11.5px; color: var(--text-mute); margin-top: 6px;
+  }
+  .modal-footer {
+    padding: 14px 20px;
+    border-top: 1px solid var(--border);
+    background: var(--surface-2);
+    display: flex; justify-content: space-between; gap: 10px;
+  }
+
+  /* ---------- Login / auth UI ---------- */
+  .login-overlay {
+    position: fixed; inset: 0;
+    z-index: 500;
+    display: none;
+    overflow-y: auto;
+  }
+  .login-overlay.show { display: block; }
+  .login-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(at 20% 20%, var(--accent-soft) 0%, transparent 45%),
+      radial-gradient(at 80% 80%, rgba(91,91,214,.08) 0%, transparent 45%),
+      var(--bg);
+    z-index: 0;
+  }
+  [data-theme="dark"] .login-bg {
+    background:
+      radial-gradient(at 20% 20%, rgba(129,140,248,.15) 0%, transparent 45%),
+      radial-gradient(at 80% 80%, rgba(91,91,214,.12) 0%, transparent 45%),
+      var(--bg);
+  }
+  .login-shell {
+    position: relative; z-index: 1;
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 40px 20px;
+  }
+  .login-stack {
+    width: 100%; max-width: 420px;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .login-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px 32px;
+    box-shadow: var(--shadow-lg);
+  }
+  .login-brand {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  .login-brand .brand-mark {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    font-size: 22px;
+    margin: 0 auto 14px;
+  }
+  .login-brand h1 {
+    font-size: 22px; font-weight: 700;
+    margin: 0 0 4px;
+    letter-spacing: -0.015em;
+  }
+  .login-brand .tagline {
+    font-size: 13.5px; color: var(--text-dim);
+  }
+
+  .login-options { display: flex; flex-direction: column; gap: 10px; }
+  .sso-btn {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+    padding: 0 16px;
+    height: 44px;
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    transition: background .12s, border-color .12s, box-shadow .12s;
+    font-family: inherit;
+  }
+  .sso-btn:hover {
+    background: var(--surface-2);
+    border-color: var(--accent);
+    box-shadow: 0 2px 8px rgba(0,0,0,.04);
+  }
+  .sso-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+  .sso-btn .sso-icon-box {
+    width: 18px; height: 18px;
+    display: grid; place-items: center;
+  }
+
+  .login-divider {
+    display: flex; align-items: center; gap: 12px;
+    margin: 22px 0 18px;
+    color: var(--text-mute); font-size: 11.5px;
+    text-transform: uppercase; letter-spacing: .08em; font-weight: 600;
+  }
+  .login-divider::before, .login-divider::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+
+  .login-form { display: flex; flex-direction: column; gap: 10px; }
+  .login-form input { height: 44px; border-radius: 10px; }
+  .login-form .btn { height: 44px; border-radius: 10px; justify-content: center; font-size: 14px; }
+
+  .login-footer {
+    margin-top: 22px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  .login-footer a {
+    color: var(--accent);
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  .login-footer a:hover { text-decoration: underline; }
+
+  .login-note {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 11.5px;
+    color: var(--text-mute);
+    line-height: 1.55;
+    text-align: center;
+  }
+  .login-note b { color: var(--warning); }
+
+  .login-error {
+    background: var(--danger-soft);
+    border: 1px solid var(--danger);
+    color: var(--danger);
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-size: 12.5px;
+    margin-top: 10px;
+    display: none;
+  }
+  .login-error.show { display: block; }
+
+  /* ---------- User menu in top bar ---------- */
+  .user-menu { position: relative; }
+  .user-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), #7d75ee);
+    color: white;
+    border: 2px solid transparent;
+    cursor: pointer;
+    font-size: 13px; font-weight: 700;
+    display: grid; place-items: center;
+    transition: border-color .12s, box-shadow .12s;
+    font-family: inherit;
+  }
+  .user-avatar:hover { border-color: var(--accent-ring); box-shadow: 0 0 0 3px var(--accent-ring); }
+  .user-popover {
+    position: absolute;
+    top: calc(100% + 8px); right: 0;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 12px;
+    width: 240px;
+    box-shadow: var(--shadow-lg);
+    padding: 4px;
+    display: none;
+    z-index: 100;
+  }
+  .user-popover.open { display: block; }
+  .user-info {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 4px;
+  }
+  .user-info .user-name {
+    font-weight: 600; font-size: 13.5px; color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .user-info .user-email {
+    font-size: 12px; color: var(--text-dim); margin-top: 2px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .user-info .user-provider {
+    font-size: 11px; color: var(--text-mute); margin-top: 6px;
+    display: inline-block;
+    background: var(--accent-soft); color: var(--accent);
+    padding: 2px 7px; border-radius: 10px;
+    font-weight: 500;
+  }
+  .user-action {
+    width: 100%;
+    background: transparent;
+    border: none;
+    text-align: left;
+    padding: 9px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text);
+    font-family: inherit;
+  }
+  .user-action:hover { background: var(--surface-2); }
+  .user-action.danger { color: var(--danger); }
+  .user-action.danger:hover { background: var(--danger-soft); }
+  .user-action .icon { margin-right: 8px; color: var(--text-mute); }
+
+  /* ---------- Toast ---------- */
+  .toast {
+    position: fixed;
+    bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--text);
+    color: var(--bg);
+    padding: 10px 18px;
+    border-radius: 20px;
+    font-size: 13px; font-weight: 500;
+    opacity: 0; pointer-events: none;
+    transition: opacity .2s, transform .2s;
+    z-index: 300;
+    box-shadow: var(--shadow-lg);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ---------- Reference context (lightweight RAG) ---------- */
+  .ctx-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .ctx-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .ctx-header:hover { background: var(--surface-2); }
+  .ctx-title {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; font-weight: 600;
+  }
+  .ctx-badge {
+    background: var(--accent-soft); color: var(--accent);
+    font-size: 11px; font-weight: 600;
+    padding: 1px 7px; border-radius: 10px;
+  }
+  .ctx-body { padding: 12px 14px 14px; border-top: 1px solid var(--border); }
+  .ctx-card.collapsed .ctx-body { display: none; }
+  .ctx-toggle::after {
+    content: '▾';
+    color: var(--text-mute);
+    font-size: 12px;
+    transition: transform .15s;
+    display: inline-block;
+  }
+  .ctx-card.collapsed .ctx-toggle::after { transform: rotate(-90deg); }
+
+  .ctx-drop {
+    border: 2px dashed var(--border-strong);
+    border-radius: var(--radius-sm);
+    padding: 16px 14px;
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 13px;
+    cursor: pointer;
+    transition: border-color .12s, background .12s;
+  }
+  .ctx-drop:hover, .ctx-drop.drag {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+  .ctx-drop b { color: var(--accent); }
+  .ctx-drop .ctx-formats {
+    display: block; margin-top: 4px;
+    font-size: 11px; color: var(--text-mute);
+  }
+
+  .ctx-files { margin-top: 10px; display: flex; flex-direction: column; gap: 4px; }
+  .ctx-file {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px;
+    background: var(--surface-2);
+    border-radius: var(--radius-xs);
+    font-size: 13px;
+  }
+  .ctx-file-icon {
+    width: 28px; height: 28px;
+    display: grid; place-items: center;
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-radius: var(--radius-xs);
+    font-size: 11px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .ctx-file-meta { flex: 1; min-width: 0; }
+  .ctx-file-name {
+    font-weight: 500; color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .ctx-file-size { font-size: 11px; color: var(--text-mute); font-family: var(--mono); }
+  .ctx-file-remove {
+    background: transparent; border: none;
+    color: var(--text-mute);
+    cursor: pointer; padding: 4px 8px;
+    border-radius: var(--radius-xs);
+    font-size: 14px;
+  }
+  .ctx-file-remove:hover { color: var(--danger); background: var(--danger-soft); }
+
+  .ctx-controls {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 12px; padding-top: 10px;
+    border-top: 1px dashed var(--border);
+    font-size: 12px; color: var(--text-dim);
+  }
+  .ctx-switch { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+  .ctx-switch input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .ctx-switch-track {
+    width: 30px; height: 18px;
+    background: var(--border-strong);
+    border-radius: 10px;
+    position: relative;
+    transition: background .15s;
+  }
+  .ctx-switch-track::after {
+    content: '';
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 14px; height: 14px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform .15s;
+    box-shadow: 0 1px 3px rgba(0,0,0,.2);
+  }
+  .ctx-switch input:checked + .ctx-switch-track { background: var(--accent); }
+  .ctx-switch input:checked + .ctx-switch-track::after { transform: translateX(12px); }
+  .ctx-total {
+    font-family: var(--mono); color: var(--text-mute);
+  }
+  .ctx-total.warn { color: var(--warning); }
+  .ctx-note {
+    margin-top: 10px;
+    font-size: 11px; color: var(--text-mute);
+    line-height: 1.5;
+  }
+
+  /* ---------- NTT DATA branded rail (overrides) ---------- */
+  .rail {
+    background: #6485c1;
+    color: #fff;
+    border-right-color: rgba(255,255,255,.18);
+  }
+  .rail .rail-section-title { color: rgba(255,255,255,.7); }
+
+  /* Stages in branded rail */
+  .rail .stage-step:hover { background: rgba(255,255,255,.12); }
+  .rail .stage-step.active {
+    background: #fff;
+    box-shadow: 0 4px 16px rgba(0,0,0,.12);
+  }
+  .rail .step-name { color: #fff; }
+  .rail .step-sub { color: rgba(255,255,255,.75); }
+  .rail .stage-step.active .step-name { color: var(--text); }
+  .rail .stage-step.active .step-sub { color: var(--text-dim); }
+  .rail .stage-step.locked .step-name { color: rgba(255,255,255,.45); }
+  .rail .stage-step.locked .step-sub { color: rgba(255,255,255,.35); }
+
+  .rail .step-marker {
+    background: transparent;
+    border-color: rgba(255,255,255,.45);
+    color: rgba(255,255,255,.85);
+  }
+  .rail .stage-step.active .step-marker {
+    background: #fff;
+    border-color: #fff;
+    color: #4d6fb0;
+    box-shadow: 0 0 0 3px rgba(255,255,255,.25);
+  }
+  .rail .stage-step.done .step-marker {
+    background: #fff;
+    border-color: #fff;
+    color: #4d6fb0;
+  }
+  .rail .stage-step.locked .step-marker {
+    background: rgba(255,255,255,.08);
+    border-color: rgba(255,255,255,.25);
+    color: rgba(255,255,255,.45);
+  }
+
+  /* Progress segments adapt to branded rail */
+  .rail .stages-segment { background: rgba(255,255,255,.25); }
+  .rail .stages-segment > span {
+    background: linear-gradient(180deg, #fff, rgba(255,255,255,.85));
+  }
+
+  /* History list */
+  .rail .history-row { color: #fff; }
+  .rail .history-row:hover { background: rgba(255,255,255,.12); }
+  .rail .history-row .h-title { color: #fff; }
+  .rail .history-row .h-meta { color: rgba(255,255,255,.65); }
+  .rail .history-empty { color: rgba(255,255,255,.6); }
+  .rail .new-prompt-btn {
+    background: rgba(255,255,255,.08);
+    border-color: rgba(255,255,255,.35);
+    color: rgba(255,255,255,.9);
+  }
+  .rail .new-prompt-btn:hover {
+    border-color: #fff;
+    background: rgba(255,255,255,.18);
+    color: #fff;
+  }
+
+  /* Savings pill stays as a contrast surface so it pops on the blue */
+  .rail .savings-pill {
+    background: #fff;
+    border-color: rgba(255,255,255,.6);
+  }
+
+  /* Footer in branded rail */
+  .rail .rail-footer { border-top-color: rgba(255,255,255,.2); }
+  .rail .rail-footer-text { color: rgba(255,255,255,.55); }
+  /* Invert the NTT DATA logo so it reads as white on the blue rail */
+  .rail .rail-footer .ntt-logo-img { filter: brightness(0) invert(1); opacity: .85; }
+  [data-theme="dark"] .rail .rail-footer .ntt-logo-img { filter: brightness(0) invert(1); }
+
+  /* Optional dark-mode tint: deepen the rail so it doesn't feel washed-out */
+  [data-theme="dark"] .rail { background: #4d6fb0; }
+
+  /* Bump rail text sizes by 2px for better legibility on the branded blue */
+  .rail .rail-section-title { font-size: 13px; }
+  .rail .step-name { font-size: 15px; }
+  .rail .step-sub { font-size: 13px; }
+  .rail .history-row .h-title { font-size: 14px; }
+  .rail .history-row .h-meta { font-size: 12px; }
+  .rail .history-empty { font-size: 14px; }
+  .rail .new-prompt-btn { font-size: 14px; }
+  .rail .savings-pill .num { font-size: 20px; }
+  .rail .savings-pill .sub { font-size: 13px; }
+  .rail .rail-footer-text { font-size: 12px; }
+
+  /* ---------- Mobile / narrow screens ---------- */
+  .rail-toggle { display: none; }
+  @media (max-width: 820px) {
+    :root { --rail-w: 0px; }
+    .app-shell { grid-template-columns: 1fr; grid-template-areas: "topbar" "workspace"; }
+    .rail {
+      position: fixed; top: var(--topbar-h); left: 0; bottom: 0;
+      width: 280px; max-width: 85%;
+      transform: translateX(-100%);
+      transition: transform .25s ease;
+      z-index: 90;
+    }
+    .rail.open { transform: translateX(0); box-shadow: var(--shadow-lg); }
+    .rail-toggle { display: grid; }
+    .workspace { padding: 24px 20px 60px; }
+    .workspace-title { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Login overlay (cosmetic only) -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-bg"></div>
+  <div class="login-shell">
+    <div class="login-stack">
+      <div class="login-card">
+        <div class="login-brand">
+          <div class="brand-mark">S</div>
+          <h1>Sign in to SOLO</h1>
+          <div class="tagline">AI prompt optimization, built for teams</div>
+          <div class="login-by-line">
+            by <span class="ntt-mark md"><img class="ntt-logo-img" src="ntt-data-logo.png" alt="NTT DATA" /></span>
+          </div>
+        </div>
+
+        <form class="login-form" id="loginEmailForm" autocomplete="off">
+          <input type="email" id="loginEmail" placeholder="you@company.com" required />
+          <input type="password" id="loginPassword" placeholder="Password" required />
+          <button type="submit" class="btn">Sign in</button>
+          <div class="login-error" id="loginError"></div>
+        </form>
+      </div>
+
+      <div class="login-note">
+        <b>Note:</b> Demo gate only. No real authentication happens — anything you type is accepted and stored locally in this browser.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="app-shell">
+
+  <!-- Top bar -->
+  <header class="top-bar">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <button class="icon-btn rail-toggle" id="railToggle" title="Menu">☰</button>
+      <div class="brand" id="brandHome" role="button" tabindex="0" title="Start a new prompt">
+        <div class="brand-mark">S</div>
+        SOLO
+      </div>
+      <span class="brand-divider">by</span>
+      <span class="ntt-mark md"><img class="ntt-logo-img" src="ntt-data-logo.png" alt="NTT DATA" /></span>
+    </div>
+    <div class="top-actions">
+      <button class="icon-btn" id="dashboardBtn" title="Dashboard">📊</button>
+      <button class="icon-btn" id="themeBtn" title="Toggle theme">◐</button>
+      <button class="icon-btn" id="settingsBtn" title="Settings">⚙</button>
+      <div class="user-menu">
+        <button class="user-avatar" id="userBtn" title="Account"><span id="userInitials">?</span></button>
+        <div class="user-popover" id="userPopover">
+          <div class="user-info">
+            <div class="user-name" id="userName">—</div>
+            <div class="user-email" id="userEmail">—</div>
+            <div class="user-provider" id="userProvider">Signed in</div>
+          </div>
+          <button class="user-action danger" id="signOutBtn"><span class="icon">⎋</span>Sign out</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Rail -->
+  <aside class="rail" id="rail">
+    <div class="rail-section">
+      <div class="rail-section-title">Workflow</div>
+      <nav class="stages" id="stagesNav">
+        <div class="stage-step active" data-step="1">
+          <div class="step-marker"><span class="step-num">1</span></div>
+          <div class="step-text">
+            <div class="step-name">Raw prompt</div>
+            <div class="step-sub" id="stage1Sub">Write your idea</div>
+          </div>
+        </div>
+        <div class="stage-step locked" data-step="2">
+          <div class="step-marker"><span class="step-num">2</span></div>
+          <div class="step-text">
+            <div class="step-name">Clarify</div>
+            <div class="step-sub" id="stage2Sub">Pick from dropdowns</div>
+          </div>
+        </div>
+        <div class="stage-step locked" data-step="3">
+          <div class="step-marker"><span class="step-num">3</span></div>
+          <div class="step-text">
+            <div class="step-name">Optimized</div>
+            <div class="step-sub" id="stage3Sub">Edit, copy, run</div>
+          </div>
+        </div>
+      </nav>
+    </div>
+
+    <div class="rail-section" style="flex: 1; min-height: 0; display: flex; flex-direction: column;">
+      <div class="rail-section-title">History</div>
+      <button class="new-prompt-btn" id="newPromptBtn">+ New prompt</button>
+      <div class="history-list" id="historyList" style="flex: 1; overflow-y: auto; margin-top: 4px;"></div>
+    </div>
+
+    <div class="savings-pill" id="savingsPill" title="Open Stage 3 to see the full breakdown">
+      <span class="num" id="savingsPillNum">↓ 0</span>
+      <span class="sub" id="savingsPillSub">tokens saved vs naive</span>
+    </div>
+
+    <div class="rail-footer">
+      <span class="ntt-mark sm"><img class="ntt-logo-img" src="ntt-data-logo.png" alt="NTT DATA" /></span>
+      <span class="rail-footer-text">© NTT DATA · SOLO</span>
+    </div>
+  </aside>
+
+  <!-- Workspace -->
+  <main class="workspace">
+    <div class="workspace-inner">
+
+      <!-- Stage 1 -->
+      <section class="stage-pane active" data-stage="1">
+        <div class="workspace-header">
+          <div class="workspace-eyebrow">Stage 1 of 3</div>
+          <h1 class="workspace-title">Raw prompt</h1>
+          <div class="workspace-subtitle">Write or paste your prompt. SOLO will spot what's ambiguous and offer focused dropdowns to sharpen it.</div>
+        </div>
+
+        <div id="keyHint" class="hint" hidden>
+          <b>First time?</b> Add your API key in <a id="openSettingsLink">Settings ⚙</a>.<br/>
+          Your key lives only in this browser's localStorage and goes straight to the provider. Pick Anthropic or OpenAI, paste a key, and you're set.
+        </div>
+
+        <div class="ctx-card collapsed" id="ctxCard">
+          <div class="ctx-header" id="ctxHeader">
+            <div class="ctx-title">
+              📎 Reference context
+              <span class="ctx-badge" id="ctxBadge" hidden>0 files</span>
+            </div>
+            <span class="ctx-toggle"></span>
+          </div>
+          <div class="ctx-body">
+            <input type="file" id="ctxFileInput" hidden multiple
+                   accept=".txt,.md,.markdown,.json,.csv,.tsv,.yaml,.yml,.log,.xml,.html,.js,.ts,.py,.sql,.sh,text/*" />
+            <div class="ctx-drop" id="ctxDrop">
+              <b>Click to upload</b> or drop files here<br/>
+              <span class="ctx-formats">.txt, .md, .json, .csv, .yaml, code (text-based files only)</span>
+            </div>
+            <div class="ctx-files" id="ctxFiles"></div>
+            <div class="ctx-controls">
+              <label class="ctx-switch">
+                <input type="checkbox" id="ctxEnable" checked />
+                <span class="ctx-switch-track"></span>
+                <span>Use context for clarifications</span>
+              </label>
+              <span class="ctx-total" id="ctxTotal">0 KB · 0 tokens</span>
+            </div>
+            <div class="ctx-note">
+              Files are sent in full as additional context to the analyze step (not embeddings-based retrieval). Keep total size small to avoid runaway token costs.
+            </div>
+          </div>
+        </div>
+
+        <div class="domain-row">
+          <span class="domain-row-label">Domain</span>
+          <div id="domainSelectMount" style="flex: 1; max-width: 240px;"></div>
+        </div>
+
+        <textarea id="rawPrompt" placeholder="e.g. Write a launch announcement for our new feature. Make it sound exciting but credible."></textarea>
+
+        <div class="btn-row">
+          <button class="btn" id="analyzeBtn">
+            Analyze <kbd>⌘↵</kbd>
+          </button>
+        </div>
+        <div id="stage1Status"></div>
+      </section>
+
+      <!-- Stage 2 -->
+      <section class="stage-pane" data-stage="2">
+        <div class="workspace-header">
+          <div class="workspace-eyebrow">Stage 2 of 3</div>
+          <h1 class="workspace-title">Clarify</h1>
+          <div class="workspace-subtitle">Pick the answer that fits each question, or choose <b>Other…</b> to type your own. Defaults are pre-selected — hit Build right away if they look right.</div>
+        </div>
+
+        <div id="questionsContainer"></div>
+
+        <div class="btn-row">
+          <button class="btn" id="buildBtn">Build optimized prompt</button>
+          <button class="btn ghost" id="backToRawBtn">← Back</button>
+        </div>
+        <div id="stage2Status"></div>
+        <div class="usage" id="stage2Usage"></div>
+      </section>
+
+      <!-- Stage 3 -->
+      <section class="stage-pane" data-stage="3">
+        <div class="stage-main">
+          <div class="workspace-header">
+            <div class="workspace-eyebrow">Stage 3 of 3</div>
+            <h1 class="workspace-title">Optimized prompt</h1>
+            <div class="workspace-subtitle">Your sharpened prompt, ready to use. Edit freely, copy to clipboard, or run it through the LLM right here.</div>
+          </div>
+
+          <label class="field-label" for="optimizedPrompt">Final prompt (editable)</label>
+          <textarea id="optimizedPrompt" class="optimized"></textarea>
+
+          <div class="btn-row">
+            <button class="btn" id="runBtn">Run prompt</button>
+            <button class="btn secondary" id="copyBtn">Copy</button>
+            <button class="btn ghost" id="startOverBtn">Start over</button>
+          </div>
+          <div id="stage3Status"></div>
+          <div class="usage" id="stage3Usage"></div>
+
+          <div id="runWrap" hidden>
+            <div class="run-divider">Result</div>
+            <div id="runOutput" class="run-output"></div>
+            <div class="usage" id="runUsage"></div>
+          </div>
+        </div>
+
+        <aside class="stage-side">
+        <div class="savings-card" id="savingsCard" hidden>
+          <div class="savings-card-header">
+            <div class="savings-card-title">⚡ Token efficiency vs naive iteration</div>
+            <div style="display: flex; gap: 4px;">
+              <button class="savings-card-toggle" id="openDashboardFromCard" title="Open dashboard">📊</button>
+              <button class="savings-card-toggle" id="savingsToggle" title="Collapse">▾</button>
+            </div>
+          </div>
+          <div class="savings-card-body">
+            <div class="savings-control">
+              Compare against
+              <div id="savingsTurnsMount"></div>
+              naive chat turns to reach a similar answer.
+            </div>
+
+            <div class="savings-headline">
+              <span class="num" id="savingsHeadlineNum">—</span>
+              <span class="label" id="savingsHeadlineLabel"></span>
+            </div>
+
+            <div class="savings-compare">
+              <div class="savings-col">
+                <div class="savings-col-label">SOLO (actual)</div>
+                <div class="savings-col-value" id="savingsPF">—</div>
+                <div class="savings-col-sub" id="savingsPFSub"></div>
+              </div>
+              <div class="savings-col naive">
+                <div class="savings-col-label">Naive (estimated)</div>
+                <div class="savings-col-value" id="savingsNaive">—</div>
+                <div class="savings-col-sub" id="savingsNaiveSub"></div>
+              </div>
+            </div>
+
+            <div class="savings-breakdown" id="savingsBreakdown"></div>
+            <div class="savings-disclaimer" id="savingsDisclaimer"></div>
+          </div>
+        </div>
+        </aside>
+      </section>
+
+      <!-- Dashboard pane -->
+      <section class="dashboard-pane" data-view="dashboard">
+        <div class="workspace-header">
+          <div class="workspace-eyebrow">Insights</div>
+          <h1 class="workspace-title">Dashboard</h1>
+          <div class="workspace-subtitle">Token efficiency for the current prompt and your saved history.</div>
+          <div class="dashboard-by-line">
+            an <span class="ntt-mark sm"><img class="ntt-logo-img" src="ntt-data-logo.png" alt="NTT DATA" /></span> product
+          </div>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi-tile accent">
+            <div class="kpi-label">Tokens saved · history</div>
+            <div class="kpi-value" id="kpiTotalSaved">0</div>
+            <div class="kpi-sub" id="kpiTotalSavedSub">no prompts yet</div>
+          </div>
+          <div class="kpi-tile">
+            <div class="kpi-label">Avg savings</div>
+            <div class="kpi-value" id="kpiAvgPct">—</div>
+            <div class="kpi-sub">per prompt vs naive</div>
+          </div>
+          <div class="kpi-tile">
+            <div class="kpi-label">Prompts forged</div>
+            <div class="kpi-value" id="kpiPrompts">0</div>
+            <div class="kpi-sub">in history</div>
+          </div>
+          <div class="kpi-tile">
+            <div class="kpi-label">Current prompt</div>
+            <div class="kpi-value" id="kpiCurrent">—</div>
+            <div class="kpi-sub" id="kpiCurrentSub">no active prompt</div>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title">Current prompt — SOLO vs Naive</div>
+            <div class="chart-sub">Stacked totals show where tokens go in each approach.</div>
+          </div>
+          <div class="chart-body" id="chartCompareMount"></div>
+          <div class="chart-legend" id="chartCompareLegend"></div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title">Savings across history</div>
+            <div class="chart-sub">Tokens saved vs naive baseline, per prompt (oldest → newest).</div>
+          </div>
+          <div class="chart-body" id="chartHistoryMount"></div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title">Where SOLO spends tokens</div>
+            <div class="chart-sub">Distribution across the three pipeline stages for the current prompt.</div>
+          </div>
+          <div class="chart-body" id="chartAllocationMount"></div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- Settings modal -->
+<div class="modal-backdrop" id="settingsModal">
+  <div class="modal">
+    <div class="modal-header">
+      Settings
+      <button class="icon-btn" id="closeSettings" title="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label class="field-label">Provider</label>
+        <div id="providerSelectMount"></div>
+      </div>
+      <div class="field">
+        <label class="field-label" for="model">Model</label>
+        <input type="text" id="model" list="modelList" placeholder="e.g. claude-opus-4-7" />
+        <datalist id="modelList"></datalist>
+        <div class="hint-text">Editable — type any model ID your provider supports.</div>
+      </div>
+      <div class="field">
+        <label class="field-label" for="apiKey">API key</label>
+        <input type="password" id="apiKey" placeholder="sk-... or sk-ant-..." />
+        <div class="hint-text">Stored in localStorage only. Sent directly to your provider; never elsewhere.</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn danger" id="clearDataBtn">Clear all data</button>
+      <button class="btn" id="saveSettings">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+  'use strict';
+
+  // ============ Storage ============
+  const NS = 'promptforge:';
+  const lsGet = (k, d = null) => {
+    try { const v = localStorage.getItem(NS + k); return v == null ? d : JSON.parse(v); }
+    catch { return d; }
+  };
+  const lsSet = (k, v) => { try { localStorage.setItem(NS + k, JSON.stringify(v)); } catch {} };
+
+  const MODEL_SUGGESTIONS = {
+    anthropic: ['claude-opus-4-7', 'claude-sonnet-4-6', 'claude-haiku-4-5-20251001', 'claude-opus-4-6'],
+    openai: ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'o1', 'o1-mini']
+  };
+  const DOMAINS = ['General', 'Code', 'Legal', 'Research', 'Marketing', 'Data analysis'];
+
+  // ============ State ============
+  const state = {
+    stage: 1,
+    maxStage: 1,
+    raw: '',
+    domain: 'General',
+    questions: [],
+    answers: {},
+    optimized: '',
+    runOutput: '',
+    usage: { stage2: null, stage3: null, run: null },
+    naiveTurns: 3
+  };
+
+  // ============ DOM ============
+  const $ = (id) => document.getElementById(id);
+  const els = {
+    rail: $('rail'), railToggle: $('railToggle'),
+    themeBtn: $('themeBtn'), settingsBtn: $('settingsBtn'), dashboardBtn: $('dashboardBtn'),
+    openDashboardFromCard: $('openDashboardFromCard'),
+    kpiTotalSaved: $('kpiTotalSaved'), kpiTotalSavedSub: $('kpiTotalSavedSub'),
+    kpiAvgPct: $('kpiAvgPct'), kpiPrompts: $('kpiPrompts'),
+    kpiCurrent: $('kpiCurrent'), kpiCurrentSub: $('kpiCurrentSub'),
+    chartCompareMount: $('chartCompareMount'), chartCompareLegend: $('chartCompareLegend'),
+    chartHistoryMount: $('chartHistoryMount'),
+    chartAllocationMount: $('chartAllocationMount'),
+    stagesNav: $('stagesNav'),
+    stage1Sub: $('stage1Sub'), stage2Sub: $('stage2Sub'), stage3Sub: $('stage3Sub'),
+    historyList: $('historyList'), newPromptBtn: $('newPromptBtn'),
+    keyHint: $('keyHint'), openSettingsLink: $('openSettingsLink'),
+    domainMount: $('domainSelectMount'),
+    ctxCard: $('ctxCard'), ctxHeader: $('ctxHeader'), ctxBadge: $('ctxBadge'),
+    ctxFileInput: $('ctxFileInput'), ctxDrop: $('ctxDrop'),
+    ctxFiles: $('ctxFiles'), ctxEnable: $('ctxEnable'), ctxTotal: $('ctxTotal'),
+    rawPrompt: $('rawPrompt'),
+    analyzeBtn: $('analyzeBtn'),
+    stage1Status: $('stage1Status'),
+    questionsContainer: $('questionsContainer'),
+    buildBtn: $('buildBtn'), backToRawBtn: $('backToRawBtn'),
+    stage2Status: $('stage2Status'), stage2Usage: $('stage2Usage'),
+    optimizedPrompt: $('optimizedPrompt'),
+    runBtn: $('runBtn'), copyBtn: $('copyBtn'), startOverBtn: $('startOverBtn'),
+    stage3Status: $('stage3Status'), stage3Usage: $('stage3Usage'),
+    runWrap: $('runWrap'), runOutput: $('runOutput'), runUsage: $('runUsage'),
+    savingsPill: $('savingsPill'), savingsPillNum: $('savingsPillNum'), savingsPillSub: $('savingsPillSub'),
+    savingsCard: $('savingsCard'), savingsToggle: $('savingsToggle'),
+    savingsTurnsMount: $('savingsTurnsMount'),
+    savingsHeadlineNum: $('savingsHeadlineNum'), savingsHeadlineLabel: $('savingsHeadlineLabel'),
+    savingsPF: $('savingsPF'), savingsPFSub: $('savingsPFSub'),
+    savingsNaive: $('savingsNaive'), savingsNaiveSub: $('savingsNaiveSub'),
+    savingsBreakdown: $('savingsBreakdown'), savingsDisclaimer: $('savingsDisclaimer'),
+    loginOverlay: $('loginOverlay'),
+    loginEmailForm: $('loginEmailForm'),
+    loginEmail: $('loginEmail'), loginPassword: $('loginPassword'),
+    loginError: $('loginError'),
+    userBtn: $('userBtn'), userPopover: $('userPopover'),
+    userInitials: $('userInitials'), userName: $('userName'),
+    userEmail: $('userEmail'), userProvider: $('userProvider'),
+    signOutBtn: $('signOutBtn'),
+    settingsModal: $('settingsModal'), closeSettings: $('closeSettings'),
+    providerMount: $('providerSelectMount'),
+    model: $('model'), modelList: $('modelList'),
+    apiKey: $('apiKey'), saveSettings: $('saveSettings'), clearDataBtn: $('clearDataBtn'),
+    toast: $('toast')
+  };
+
+  // ============ Helpers ============
+  const escapeHtml = (s) => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  function parseJsonLoose(text) {
+    let s = String(text || '').trim();
+    const fence = s.match(/```(?:json)?\s*\n?([\s\S]*?)\n?```/i);
+    if (fence) s = fence[1].trim();
+    const objStart = s.indexOf('{');
+    const arrStart = s.indexOf('[');
+    let open, close;
+    if (objStart !== -1 && (arrStart === -1 || objStart < arrStart)) { open = '{'; close = '}'; }
+    else if (arrStart !== -1) { open = '['; close = ']'; }
+    if (open) {
+      const st = s.indexOf(open);
+      const en = s.lastIndexOf(close);
+      if (st !== -1 && en > st) s = s.slice(st, en + 1);
+    }
+    return JSON.parse(s);
+  }
+
+  let toastTimer;
+  function toast(msg) {
+    els.toast.textContent = msg;
+    els.toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => els.toast.classList.remove('show'), 1800);
+  }
+
+  // ============ Theme ============
+  function applyTheme(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    lsSet('theme', t);
+  }
+  applyTheme(lsGet('theme', 'light'));
+  els.themeBtn.addEventListener('click', () => {
+    const cur = document.documentElement.getAttribute('data-theme');
+    applyTheme(cur === 'dark' ? 'light' : 'dark');
+  });
+
+  // ============ Custom dropdown component (PFSelect) ============
+  /**
+   * Create a custom select widget.
+   * @param {{options: string[], value?: string, onChange: (v:string)=>void,
+   *          full?: boolean, allowOther?: boolean, otherLabel?: string,
+   *          placeholder?: string}} cfg
+   * @returns {{root: HTMLElement, setValue:(v:string)=>void, getValue:()=>string}}
+   */
+  function PFSelect(cfg) {
+    const root = document.createElement('div');
+    root.className = 'pf-select' + (cfg.full ? ' full' : '');
+
+    const trigger = document.createElement('button');
+    trigger.type = 'button';
+    trigger.className = 'pf-select-trigger';
+    const valueEl = document.createElement('span');
+    valueEl.className = 'pf-select-value';
+    trigger.appendChild(valueEl);
+    root.appendChild(trigger);
+
+    const panel = document.createElement('div');
+    panel.className = 'pf-select-panel';
+    panel.setAttribute('role', 'listbox');
+    root.appendChild(panel);
+
+    let value = cfg.value != null ? cfg.value : (cfg.options[0] || '');
+    let focusedIndex = -1;
+    let optionEls = [];
+
+    function rebuildPanel() {
+      panel.innerHTML = '';
+      optionEls = [];
+      cfg.options.forEach((opt, i) => {
+        const o = document.createElement('button');
+        o.type = 'button';
+        o.className = 'pf-select-option';
+        o.setAttribute('role', 'option');
+        o.textContent = opt;
+        if (opt === value) o.classList.add('selected');
+        o.addEventListener('click', () => selectValue(opt));
+        o.addEventListener('mouseenter', () => setFocused(i));
+        panel.appendChild(o);
+        optionEls.push(o);
+      });
+      if (cfg.allowOther) {
+        const div = document.createElement('div'); div.className = 'pf-select-divider'; panel.appendChild(div);
+        const o = document.createElement('button');
+        o.type = 'button';
+        o.className = 'pf-select-option other';
+        o.setAttribute('role', 'option');
+        o.textContent = cfg.otherLabel || 'Other…';
+        o.addEventListener('click', () => selectOther());
+        o.addEventListener('mouseenter', () => setFocused(cfg.options.length));
+        panel.appendChild(o);
+        optionEls.push(o);
+      }
+    }
+
+    function setFocused(idx) {
+      optionEls.forEach((el, i) => el.classList.toggle('focused', i === idx));
+      focusedIndex = idx;
+    }
+
+    function open() {
+      // close other open selects
+      document.querySelectorAll('.pf-select.open').forEach(el => { if (el !== root) el.classList.remove('open'); });
+      root.classList.add('open');
+      const selIdx = cfg.options.indexOf(value);
+      setFocused(selIdx >= 0 ? selIdx : 0);
+      const focused = optionEls[focusedIndex];
+      if (focused) focused.scrollIntoView({ block: 'nearest' });
+    }
+    function close() { root.classList.remove('open'); setFocused(-1); }
+    function isOpen() { return root.classList.contains('open'); }
+
+    function setValue(v, opts = {}) {
+      value = v;
+      valueEl.textContent = v || (cfg.placeholder || 'Choose…');
+      valueEl.style.color = v ? '' : 'var(--text-mute)';
+      // update selected highlight
+      optionEls.forEach(el => el.classList.remove('selected'));
+      const idx = cfg.options.indexOf(v);
+      if (idx >= 0 && optionEls[idx]) optionEls[idx].classList.add('selected');
+      if (!opts.silent && cfg.onChange) cfg.onChange(v);
+    }
+    function selectValue(v) {
+      setValue(v);
+      close();
+      trigger.focus();
+    }
+    function selectOther() {
+      close();
+      if (cfg.onOther) cfg.onOther();
+    }
+
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      isOpen() ? close() : open();
+    });
+    trigger.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        if (!isOpen()) open();
+      }
+    });
+    panel.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { close(); trigger.focus(); }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (!isOpen()) return;
+      if (e.key === 'Escape') { e.preventDefault(); close(); trigger.focus(); }
+      else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        setFocused((focusedIndex + 1) % optionEls.length);
+        optionEls[focusedIndex].scrollIntoView({ block: 'nearest' });
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        setFocused((focusedIndex - 1 + optionEls.length) % optionEls.length);
+        optionEls[focusedIndex].scrollIntoView({ block: 'nearest' });
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        optionEls[focusedIndex]?.click();
+      }
+    });
+    document.addEventListener('click', (e) => {
+      if (!root.contains(e.target)) close();
+    });
+
+    rebuildPanel();
+    setValue(value, { silent: true });
+
+    return {
+      root,
+      setValue: (v) => setValue(v, { silent: true }),
+      getValue: () => value,
+      rebuild: (opts) => {
+        if (opts.options) cfg.options = opts.options;
+        if (opts.value != null) value = opts.value;
+        rebuildPanel();
+        setValue(value, { silent: true });
+      }
+    };
+  }
+
+  // ============ Settings ============
+  let providerSelect = null;
+  function loadSettings() {
+    const s = lsGet('settings', { provider: 'anthropic', model: 'claude-opus-4-7', apiKey: '' });
+    if (providerSelect) providerSelect.setValue(s.provider === 'openai' ? 'OpenAI' : 'Anthropic');
+    els.model.value = s.model || '';
+    els.apiKey.value = s.apiKey || '';
+    refreshModelSuggestions(s.provider);
+    refreshKeyHint();
+    return s;
+  }
+  function saveSettings() {
+    const provLabel = providerSelect.getValue();
+    const provider = provLabel.toLowerCase() === 'openai' ? 'openai' : 'anthropic';
+    const s = {
+      provider,
+      model: els.model.value.trim(),
+      apiKey: els.apiKey.value.trim()
+    };
+    lsSet('settings', s);
+    refreshKeyHint();
+    return s;
+  }
+  function refreshModelSuggestions(provider) {
+    els.modelList.innerHTML = (MODEL_SUGGESTIONS[provider] || [])
+      .map(m => `<option value="${m}">`).join('');
+  }
+  function refreshKeyHint() {
+    const s = lsGet('settings', { apiKey: '' });
+    els.keyHint.hidden = !!(s.apiKey && s.apiKey.length > 0);
+  }
+
+  // Mount provider select in modal
+  providerSelect = PFSelect({
+    options: ['Anthropic', 'OpenAI'],
+    full: true,
+    onChange: (v) => {
+      const p = v.toLowerCase();
+      refreshModelSuggestions(p);
+      const current = els.model.value.trim();
+      const inNewList = MODEL_SUGGESTIONS[p].includes(current);
+      const inOtherList = Object.entries(MODEL_SUGGESTIONS)
+        .some(([k, list]) => k !== p && list.includes(current));
+      if (!current || (inOtherList && !inNewList)) {
+        els.model.value = MODEL_SUGGESTIONS[p][0];
+      }
+    }
+  });
+  els.providerMount.appendChild(providerSelect.root);
+
+  els.settingsBtn.addEventListener('click', () => els.settingsModal.classList.add('open'));
+  els.openSettingsLink.addEventListener('click', () => els.settingsModal.classList.add('open'));
+  els.closeSettings.addEventListener('click', () => els.settingsModal.classList.remove('open'));
+  els.settingsModal.addEventListener('click', (e) => { if (e.target === els.settingsModal) els.settingsModal.classList.remove('open'); });
+  els.saveSettings.addEventListener('click', () => {
+    saveSettings();
+    els.settingsModal.classList.remove('open');
+    toast('Settings saved');
+  });
+  els.clearDataBtn.addEventListener('click', () => {
+    if (!confirm('Clear all SOLO data (API key, settings, history)? This cannot be undone.')) return;
+    Object.keys(localStorage).forEach(k => { if (k.startsWith(NS)) localStorage.removeItem(k); });
+    location.reload();
+  });
+
+  // ============ Domain select ============
+  const domainSelect = PFSelect({
+    options: DOMAINS,
+    full: true,
+    value: state.domain,
+    onChange: (v) => { state.domain = v; updateStage1Sub(); }
+  });
+  els.domainMount.appendChild(domainSelect.root);
+
+  // ============ History ============
+  function loadHistory() { return lsGet('history', []); }
+  function pushHistory(entry) {
+    const h = loadHistory();
+    h.unshift(entry);
+    while (h.length > 20) h.pop();
+    lsSet('history', h);
+    renderHistory();
+  }
+  function renderHistory() {
+    const h = loadHistory();
+    if (h.length === 0) {
+      els.historyList.innerHTML = '<div class="history-empty">No optimized prompts yet.</div>';
+      return;
+    }
+    els.historyList.innerHTML = h.map((e, i) => `
+      <button class="history-row" data-i="${i}">
+        <div class="h-title">${escapeHtml(e.optimized.slice(0, 120))}${e.optimized.length > 120 ? '…' : ''}</div>
+        <div class="h-meta">${escapeHtml(e.domain)} · ${new Date(e.t).toLocaleString()}</div>
+      </button>
+    `).join('');
+    els.historyList.querySelectorAll('.history-row').forEach(row => {
+      row.addEventListener('click', () => {
+        const entry = loadHistory()[+row.dataset.i];
+        if (!entry) return;
+        state.raw = entry.raw;
+        state.domain = entry.domain;
+        state.questions = entry.questions || [];
+        state.answers = entry.answers || {};
+        state.optimized = entry.optimized;
+        state.usage = {
+          stage2: entry.usage?.stage2 || null,
+          stage3: entry.usage?.stage3 || null,
+          run: null
+        };
+        els.rawPrompt.value = state.raw;
+        domainSelect.setValue(state.domain);
+        els.optimizedPrompt.value = state.optimized;
+        if (state.questions.length) renderQuestions();
+        state.maxStage = 3;
+        goToStage(3);
+        renderSavings();
+        closeRailMobile();
+      });
+    });
+  }
+
+  // ============ Stage navigation ============
+  function updateStagesNav() {
+    els.stagesNav.querySelectorAll('.stage-step').forEach(step => {
+      const n = +step.dataset.step;
+      step.classList.remove('active', 'done', 'locked');
+      if (n < state.stage) step.classList.add('done');
+      else if (n === state.stage) step.classList.add('active');
+      if (n > state.maxStage) step.classList.add('locked');
+    });
+    updateProgressLine();
+  }
+
+  function updateProgressLine() {
+    const steps = Array.from(els.stagesNav.querySelectorAll('.step-marker'));
+    if (steps.length < 2) return;
+    const navRect = els.stagesNav.getBoundingClientRect();
+
+    let track = els.stagesNav.querySelector('.stages-track');
+    if (!track) {
+      track = document.createElement('div');
+      track.className = 'stages-track';
+      els.stagesNav.insertBefore(track, els.stagesNav.firstChild);
+    }
+
+    const existing = Array.from(track.querySelectorAll('.stages-segment'));
+    const need = steps.length - 1;
+    // Trim extras
+    for (let i = need; i < existing.length; i++) existing[i].remove();
+
+    // Small visual gap between marker edge and segment so it never touches the circle
+    const inset = 3;
+
+    for (let i = 0; i < need; i++) {
+      const a = steps[i].getBoundingClientRect();
+      const b = steps[i + 1].getBoundingClientRect();
+      const segTop = a.bottom - navRect.top + inset;
+      const segH = Math.max(0, (b.top - a.bottom) - inset * 2);
+
+      let seg = existing[i];
+      if (!seg) {
+        seg = document.createElement('div');
+        seg.className = 'stages-segment';
+        seg.appendChild(document.createElement('span'));
+        track.appendChild(seg);
+      }
+      seg.style.top = segTop + 'px';
+      seg.style.height = segH + 'px';
+      seg.classList.toggle('filled', state.stage > i + 1);
+    }
+  }
+  function updateStage1Sub() {
+    const t = (els.rawPrompt.value || '').replace(/\s+/g, ' ').trim();
+    if (!t) { els.stage1Sub.textContent = 'Write your idea'; return; }
+    const words = t.split(' ').length;
+    els.stage1Sub.textContent = `${state.domain} · ${words} word${words === 1 ? '' : 's'}`;
+  }
+  function updateStage2Sub() {
+    if (!state.questions.length) { els.stage2Sub.textContent = 'Pick from dropdowns'; return; }
+    const filled = state.questions.filter(q => {
+      const v = state.answers[q.id];
+      return v != null && String(v).trim();
+    }).length;
+    els.stage2Sub.textContent = `${filled} of ${state.questions.length} chosen`;
+  }
+  function updateStage3Sub() {
+    if (!state.optimized) { els.stage3Sub.textContent = 'Edit, copy, run'; return; }
+    const words = state.optimized.split(/\s+/).filter(Boolean).length;
+    els.stage3Sub.textContent = `${words} words ready`;
+  }
+
+  function showStagePane(n) {
+    document.querySelectorAll('.stage-pane').forEach(p => {
+      p.classList.toggle('active', +p.dataset.stage === n);
+    });
+    // Stage view hides the dashboard
+    document.querySelector('.dashboard-pane').classList.remove('active');
+    els.dashboardBtn.classList.remove('active');
+  }
+  function showDashboard() {
+    document.querySelectorAll('.stage-pane').forEach(p => p.classList.remove('active'));
+    document.querySelector('.dashboard-pane').classList.add('active');
+    els.dashboardBtn.classList.add('active');
+    renderDashboard();
+    document.querySelector('.workspace').scrollTop = 0;
+  }
+
+  function goToStage(n) {
+    state.stage = n;
+    if (n > state.maxStage) state.maxStage = n;
+    showStagePane(n);
+    updateStagesNav();
+    updateStage1Sub();
+    updateStage2Sub();
+    updateStage3Sub();
+    // scroll workspace top
+    document.querySelector('.workspace').scrollTop = 0;
+  }
+
+  els.stagesNav.querySelectorAll('.stage-step').forEach(step => {
+    step.addEventListener('click', () => {
+      const n = +step.dataset.step;
+      if (n > state.maxStage) return;
+      // editing an earlier stage doesn't invalidate downstream until they Analyze/Build again
+      goToStage(n);
+      closeRailMobile();
+    });
+  });
+
+  // ============ LLM call ============
+  async function callLLM(prompt) {
+    const settings = lsGet('settings', null);
+    if (!settings || !settings.apiKey) throw new Error('No API key set. Open Settings and paste one in.');
+    if (!settings.model) throw new Error('No model set. Open Settings and pick a model.');
+    if (settings.provider === 'anthropic') {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'x-api-key': settings.apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+          model: settings.model,
+          max_tokens: 2000,
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error?.message || `HTTP ${res.status}`);
+      const text = data?.content?.[0]?.text;
+      if (text == null) throw new Error('Empty response from Anthropic');
+      return { text, usage: { input: data?.usage?.input_tokens, output: data?.usage?.output_tokens } };
+    } else {
+      const res = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'authorization': `Bearer ${settings.apiKey}`
+        },
+        body: JSON.stringify({
+          model: settings.model,
+          max_tokens: 2000,
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error?.message || `HTTP ${res.status}`);
+      const text = data?.choices?.[0]?.message?.content;
+      if (text == null) throw new Error('Empty response from OpenAI');
+      return { text, usage: { input: data?.usage?.prompt_tokens, output: data?.usage?.completion_tokens } };
+    }
+  }
+  function formatUsage(u) {
+    if (!u) return '';
+    const parts = [];
+    if (u.input != null) parts.push(`${u.input} in`);
+    if (u.output != null) parts.push(`${u.output} out`);
+    return parts.length ? `tokens: ${parts.join(' · ')}` : '';
+  }
+
+  // ============ Status rendering ============
+  function setStatus(target, kind, msg, retryFn) {
+    if (!kind) { target.innerHTML = ''; return; }
+    if (kind === 'loading') {
+      target.innerHTML = `<div class="status"><span class="spinner"></span> ${escapeHtml(msg)}</div>`;
+    } else if (kind === 'error') {
+      target.innerHTML = `<div class="error"><div>${escapeHtml(msg)}</div></div>`;
+      if (retryFn) {
+        const btn = document.createElement('button');
+        btn.className = 'btn'; btn.textContent = 'Retry';
+        btn.addEventListener('click', retryFn);
+        target.querySelector('.error').appendChild(btn);
+      }
+    }
+  }
+
+  // ============ Stage 1: analyze ============
+  async function analyze() {
+    const raw = els.rawPrompt.value.trim();
+    if (!raw) { toast('Write a prompt first'); return; }
+    state.raw = raw;
+    state.questions = [];
+    state.answers = {};
+    state.optimized = '';
+    state.maxStage = 1;
+
+    const ctxBlock = buildCtxBlock();
+    const meta = `You are a prompt-clarification assistant. The user wrote the prompt below for an LLM, in the domain of ${state.domain}. Identify up to 6 clarifications that, if answered, would let the LLM produce a strong first-shot answer with no follow-up. Skip anything already clearly specified.
+
+For each clarification, supply 3-5 distinct option choices the user can pick from. Options should be short, mutually exclusive, and cover the most useful answers a typical user in this domain might give. The user can also type a custom answer if none fit, so don't try to enumerate every possibility — give the most common, opinionated picks.${ctxBlock ? '\n\nIf the REFERENCE CONTEXT below is relevant, lean on it to ask sharper, more domain-specific clarifications. Use its vocabulary and constraints when phrasing questions and options.' : ''}
+
+Return ONLY a JSON array. Each object has:
+- \`id\`: short snake_case slug
+- \`question\`: under 15 words, plain language
+- \`options\`: array of 3-5 short distinct choices
+- \`why\`: one sentence on why this clarification meaningfully improves the answer
+
+No prose, no markdown fences, no commentary.${ctxBlock}
+
+USER PROMPT:
+"""
+${raw}
+"""`;
+
+    setStatus(els.stage1Status, 'loading', 'Analyzing your prompt…');
+    els.analyzeBtn.disabled = true;
+    try {
+      const { text, usage } = await callLLM(meta);
+      let arr;
+      try { arr = parseJsonLoose(text); }
+      catch { throw new Error('Could not parse clarifications JSON. Try Analyze again.'); }
+      if (!Array.isArray(arr)) throw new Error('Model returned malformed clarifications.');
+      const clean = arr
+        .filter(q => q && q.id && q.question && Array.isArray(q.options) && q.options.length)
+        .slice(0, 6);
+      state.questions = clean;
+      clean.forEach(q => { state.answers[q.id] = q.options[0]; });
+      state.usage.stage2 = usage;
+      els.stage2Usage.textContent = formatUsage(usage);
+      setStatus(els.stage1Status, null);
+      if (clean.length === 0) {
+        state.maxStage = 2;
+        await buildOptimized();
+        return;
+      }
+      state.maxStage = 2;
+      renderQuestions();
+      goToStage(2);
+    } catch (err) {
+      setStatus(els.stage1Status, 'error', err.message, analyze);
+    } finally {
+      els.analyzeBtn.disabled = false;
+    }
+  }
+
+  // ============ Stage 2: render questions ============
+  function renderQuestions() {
+    els.questionsContainer.innerHTML = '';
+    state.questions.forEach((q, idx) => {
+      els.questionsContainer.appendChild(buildQuestionCard(q, idx));
+    });
+  }
+  function buildQuestionCard(q, idx) {
+    const current = state.answers[q.id];
+    const isCustom = current != null && !q.options.includes(current);
+
+    const card = document.createElement('div');
+    card.className = 'question' + (isCustom ? ' is-custom' : '');
+
+    const num = document.createElement('div');
+    num.className = 'q-num';
+    num.textContent = `Question ${idx + 1}`;
+    card.appendChild(num);
+
+    const label = document.createElement('div');
+    label.className = 'q-label';
+    label.textContent = q.question;
+    card.appendChild(label);
+
+    if (q.why) {
+      const why = document.createElement('div');
+      why.className = 'q-why';
+      why.textContent = q.why;
+      card.appendChild(why);
+    }
+
+    const control = document.createElement('div');
+    control.className = 'q-control';
+
+    // Custom input mode wrapper (initially hidden)
+    const customWrap = document.createElement('div');
+    customWrap.className = 'q-custom-wrap';
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.placeholder = 'Type your own answer…';
+    if (isCustom) input.value = current;
+    const revert = document.createElement('button');
+    revert.type = 'button';
+    revert.className = 'q-revert';
+    revert.title = 'Use dropdown';
+    revert.textContent = '↺';
+    customWrap.appendChild(input);
+    customWrap.appendChild(revert);
+
+    const sel = PFSelect({
+      options: q.options,
+      value: isCustom ? q.options[0] : (current || q.options[0]),
+      full: true,
+      allowOther: true,
+      otherLabel: 'Other (type custom)…',
+      onChange: (v) => { state.answers[q.id] = v; updateStage2Sub(); },
+      onOther: () => {
+        state.answers[q.id] = '';
+        card.classList.add('is-custom');
+        input.value = '';
+        input.focus();
+        updateStage2Sub();
+      }
+    });
+
+    input.addEventListener('input', () => { state.answers[q.id] = input.value; updateStage2Sub(); });
+    revert.addEventListener('click', () => {
+      sel.setValue(q.options[0]);
+      state.answers[q.id] = q.options[0];
+      card.classList.remove('is-custom');
+      updateStage2Sub();
+    });
+
+    control.appendChild(sel.root);
+    control.appendChild(customWrap);
+    card.appendChild(control);
+    return card;
+  }
+
+  // ============ Stage 2: build optimized ============
+  async function buildOptimized() {
+    const answeredLines = state.questions
+      .map(q => {
+        const v = state.answers[q.id];
+        if (v == null || !String(v).trim()) return null;
+        return `- ${q.question}\n  → ${String(v).trim()}`;
+      })
+      .filter(Boolean);
+    const clarifSection = answeredLines.length
+      ? `\n\nCLARIFICATIONS PROVIDED:\n${answeredLines.join('\n')}`
+      : '\n\n(No additional clarifications were provided.)';
+
+    const meta = `Rewrite the user's original prompt into a single self-contained, unambiguous prompt that incorporates the clarifications. Preserve the user's voice. Do not add information the user didn't provide. Output ONLY the final prompt — no preamble, no commentary, no markdown.
+
+ORIGINAL PROMPT:
+"""
+${state.raw}
+"""${clarifSection}`;
+
+    setStatus(els.stage2Status, 'loading', 'Composing optimized prompt…');
+    els.buildBtn.disabled = true;
+    try {
+      const { text, usage } = await callLLM(meta);
+      const cleaned = text.replace(/^```[\w]*\s*/, '').replace(/\s*```\s*$/, '').trim();
+      state.optimized = cleaned;
+      state.usage.stage3 = usage;
+      els.optimizedPrompt.value = cleaned;
+      els.stage3Usage.textContent = formatUsage(usage);
+      setStatus(els.stage2Status, null);
+      pushHistory({
+        t: Date.now(),
+        domain: state.domain,
+        raw: state.raw,
+        questions: state.questions,
+        answers: { ...state.answers },
+        optimized: cleaned,
+        usage: { stage2: state.usage.stage2, stage3: state.usage.stage3 }
+      });
+      state.maxStage = 3;
+      goToStage(3);
+      renderSavings();
+    } catch (err) {
+      setStatus(els.stage2Status, 'error', err.message, buildOptimized);
+    } finally {
+      els.buildBtn.disabled = false;
+    }
+  }
+
+  // ============ Stage 3: run / copy / start over ============
+  async function runOptimized() {
+    const p = els.optimizedPrompt.value.trim();
+    if (!p) { toast('Nothing to run'); return; }
+    state.optimized = p;
+    setStatus(els.stage3Status, 'loading', 'Running prompt…');
+    els.runBtn.disabled = true;
+    els.runWrap.hidden = true;
+    try {
+      const { text, usage } = await callLLM(p);
+      state.runOutput = text;
+      state.usage.run = usage;
+      els.runOutput.textContent = text;
+      els.runUsage.textContent = formatUsage(usage);
+      els.runWrap.hidden = false;
+      setStatus(els.stage3Status, null);
+      renderSavings();
+    } catch (err) {
+      setStatus(els.stage3Status, 'error', err.message, runOptimized);
+    } finally {
+      els.runBtn.disabled = false;
+    }
+  }
+  async function copyOptimized() {
+    const text = els.optimizedPrompt.value;
+    try {
+      await navigator.clipboard.writeText(text);
+      toast('Copied to clipboard');
+    } catch {
+      els.optimizedPrompt.select();
+      document.execCommand('copy');
+      toast('Copied');
+    }
+  }
+  function startOver() {
+    state.raw = '';
+    state.questions = [];
+    state.answers = {};
+    state.optimized = '';
+    state.runOutput = '';
+    state.usage = { stage2: null, stage3: null, run: null };
+    state.maxStage = 1;
+    els.rawPrompt.value = '';
+    els.optimizedPrompt.value = '';
+    els.runWrap.hidden = true;
+    els.runOutput.textContent = '';
+    els.runUsage.textContent = '';
+    els.stage2Usage.textContent = '';
+    els.stage3Usage.textContent = '';
+    setStatus(els.stage1Status, null);
+    setStatus(els.stage2Status, null);
+    setStatus(els.stage3Status, null);
+    goToStage(1);
+    renderSavings();
+    els.rawPrompt.focus();
+  }
+
+  // ============ Token savings comparison ============
+  function estimateTokens(text) {
+    // ~4 chars/token rule of thumb for English; covers both GPT and Claude tokenizers reasonably.
+    return Math.max(0, Math.round((text || '').length / 4));
+  }
+  function formatK(n) {
+    n = Math.max(0, Math.round(n));
+    if (n < 1000) return String(n);
+    if (n < 10000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+    return Math.round(n / 1000) + 'k';
+  }
+  function naiveOutputShares(N) {
+    // What fraction of the final-quality answer each iteration produces.
+    // 1 turn: 100% (rare in practice). 3 turns: ramp to full quality.
+    if (N <= 1) return [1.0];
+    if (N === 2) return [0.75, 1.0];
+    if (N === 3) return [0.6, 0.85, 1.0];
+    if (N === 4) return [0.55, 0.75, 0.9, 1.0];
+    return Array.from({ length: N }, (_, i) => 0.5 + 0.5 * (i + 1) / N);
+  }
+  function computeSavings() {
+    const u = state.usage;
+    const pfBreakdown = {
+      analyze: { in: u.stage2?.input || 0, out: u.stage2?.output || 0 },
+      build:   { in: u.stage3?.input || 0, out: u.stage3?.output || 0 },
+      run:     { in: u.run?.input    || 0, out: u.run?.output    || 0 }
+    };
+    const pfIn = pfBreakdown.analyze.in + pfBreakdown.build.in + pfBreakdown.run.in;
+    const pfOut = pfBreakdown.analyze.out + pfBreakdown.build.out + pfBreakdown.run.out;
+    const pfTotal = pfIn + pfOut;
+
+    // Anchor target output on actual run output if we have it; else estimate
+    // (typical answer is several times longer than its prompt).
+    const rawIn = estimateTokens(state.raw);
+    const targetOut = pfBreakdown.run.out
+      || (estimateTokens(state.optimized) * 4)
+      || (rawIn * 6)
+      || 400;
+
+    const N = Math.max(1, Math.min(5, state.naiveTurns | 0));
+    const shares = naiveOutputShares(N);
+    const clarifyMsg = 30; // ~tokens for "Can you make it more X?" style follow-up
+
+    let naiveIn = 0, naiveOut = 0;
+    let convo = rawIn; // tokens already in conversation after each turn
+    for (let i = 0; i < N; i++) {
+      const turnIn = i === 0 ? rawIn : (convo + clarifyMsg);
+      naiveIn += turnIn;
+      const turnOut = Math.round(shares[i] * targetOut);
+      naiveOut += turnOut;
+      convo = i === 0 ? rawIn + turnOut : convo + clarifyMsg + turnOut;
+    }
+    const naiveTotal = naiveIn + naiveOut;
+    const saved = naiveTotal - pfTotal;
+    const pct = naiveTotal > 0 ? Math.round(100 * saved / naiveTotal) : 0;
+
+    return { pfBreakdown, pfIn, pfOut, pfTotal, naiveIn, naiveOut, naiveTotal, saved, pct, targetOut, hasRun: !!pfBreakdown.run.in, N };
+  }
+  function renderSavings() {
+    const s = computeSavings();
+    // Rail pill
+    if (s.pfTotal > 0 && s.saved > 0) {
+      els.savingsPill.classList.add('show');
+      els.savingsPillNum.textContent = `↓ ${formatK(s.saved)}`;
+      els.savingsPillSub.textContent = `tokens saved (~${s.pct}%)`;
+    } else {
+      els.savingsPill.classList.remove('show');
+    }
+    // Stage 3 card
+    if (s.pfTotal === 0) { els.savingsCard.hidden = true; return; }
+    els.savingsCard.hidden = false;
+    if (s.saved > 0) {
+      els.savingsHeadlineNum.textContent = `↓ ${formatK(s.saved)}`;
+      els.savingsHeadlineNum.style.color = '';
+      els.savingsHeadlineLabel.textContent = `tokens saved · ${s.pct}% less than a ${s.N}-turn naive loop`;
+    } else {
+      els.savingsHeadlineNum.textContent = `↑ ${formatK(Math.abs(s.saved))}`;
+      els.savingsHeadlineNum.style.color = 'var(--warning)';
+      els.savingsHeadlineLabel.textContent = `tokens over baseline (this prompt was too small to benefit)`;
+    }
+    els.savingsPF.textContent = formatK(s.pfTotal);
+    els.savingsPFSub.textContent = `${s.pfIn} in · ${s.pfOut} out`;
+    els.savingsNaive.textContent = formatK(s.naiveTotal);
+    els.savingsNaiveSub.textContent = `${s.naiveIn} in · ${s.naiveOut} out`;
+
+    const fmtRow = (label, b) => `<div class="savings-row"><span class="k">${label}</span><span class="v">${b.in || b.out ? `${b.in} + ${b.out} = ${b.in + b.out}` : '—'}</span></div>`;
+    els.savingsBreakdown.innerHTML =
+      fmtRow('Stage 1 · Analyze', s.pfBreakdown.analyze) +
+      fmtRow('Stage 2 · Compose', s.pfBreakdown.build) +
+      fmtRow('Stage 3 · Run', s.pfBreakdown.run);
+
+    els.savingsDisclaimer.textContent = s.hasRun
+      ? `Naive figures estimate a ${s.N}-turn chat where each turn re-sends the growing conversation. SOLO figures are actual tokens billed by your provider. Anchored on your real run output (${s.pfBreakdown.run.out} tokens).`
+      : `Estimate assumes a ${s.N}-turn chat reaching a comparable answer. Click Run to anchor on real output tokens.`;
+
+    // Keep dashboard in sync if it's open
+    if (document.querySelector('.dashboard-pane')?.classList.contains('active')) {
+      renderDashboard();
+    }
+  }
+
+  // Naive-turns selector inside the savings card
+  const naiveTurnsSelect = PFSelect({
+    options: ['2', '3', '4', '5'],
+    value: String(state.naiveTurns),
+    onChange: (v) => { state.naiveTurns = +v; lsSet('naiveTurns', +v); renderSavings(); }
+  });
+  els.savingsTurnsMount.appendChild(naiveTurnsSelect.root);
+  // Restore persisted choice
+  const persistedN = lsGet('naiveTurns', null);
+  if (persistedN) { state.naiveTurns = persistedN; naiveTurnsSelect.setValue(String(persistedN)); }
+
+  // Collapse toggle
+  els.savingsToggle.addEventListener('click', () => {
+    const card = els.savingsCard;
+    card.classList.toggle('collapsed');
+    els.savingsToggle.textContent = card.classList.contains('collapsed') ? '▸' : '▾';
+  });
+  // Clicking the rail pill scrolls to the card
+  els.savingsPill.addEventListener('click', () => {
+    if (state.maxStage < 3) return;
+    goToStage(3);
+    setTimeout(() => els.savingsCard.scrollIntoView({ behavior: 'smooth', block: 'center' }), 50);
+    closeRailMobile();
+  });
+
+  // ============ Dashboard rendering ============
+  function computeSavingsForEntry(entry) {
+    // Save current state, swap in entry, compute, restore.
+    const saved = { raw: state.raw, optimized: state.optimized, usage: state.usage };
+    state.raw = entry.raw || '';
+    state.optimized = entry.optimized || '';
+    state.usage = {
+      stage2: entry.usage?.stage2 || null,
+      stage3: entry.usage?.stage3 || null,
+      run: null
+    };
+    const r = computeSavings();
+    state.raw = saved.raw;
+    state.optimized = saved.optimized;
+    state.usage = saved.usage;
+    return r;
+  }
+
+  function renderKPIs() {
+    const history = loadHistory();
+    let totalSaved = 0, totalPct = 0;
+    history.forEach(entry => {
+      const s = computeSavingsForEntry(entry);
+      totalSaved += Math.max(0, s.saved);
+      totalPct += s.pct;
+    });
+    const avgPct = history.length ? Math.round(totalPct / history.length) : 0;
+    els.kpiTotalSaved.textContent = formatK(totalSaved);
+    els.kpiTotalSavedSub.textContent = history.length
+      ? `across ${history.length} prompt${history.length === 1 ? '' : 's'}`
+      : 'no prompts yet';
+    els.kpiAvgPct.textContent = history.length ? `${avgPct}%` : '—';
+    els.kpiPrompts.textContent = history.length;
+    const cur = computeSavings();
+    if (cur.pfTotal > 0) {
+      els.kpiCurrent.textContent = (cur.saved >= 0 ? '↓ ' : '↑ ') + formatK(Math.abs(cur.saved));
+      els.kpiCurrentSub.textContent = `${Math.abs(cur.pct)}% ${cur.saved >= 0 ? 'vs naive' : 'over naive'}`;
+    } else {
+      els.kpiCurrent.textContent = '—';
+      els.kpiCurrentSub.textContent = 'no active prompt';
+    }
+  }
+
+  function buildNaiveSegments() {
+    const s = computeSavings();
+    const N = s.N;
+    const shares = naiveOutputShares(N);
+    const rawIn = estimateTokens(state.raw);
+    const target = s.pfBreakdown.run.out || (estimateTokens(state.optimized) * 4) || (rawIn * 6) || 400;
+    const clarify = 30;
+    let convo = rawIn;
+    const segs = [];
+    for (let i = 0; i < N; i++) {
+      const tin = i === 0 ? rawIn : convo + clarify;
+      const tout = Math.round(shares[i] * target);
+      segs.push({ label: `Turn ${i + 1}`, value: tin + tout, color: `var(--c-naive-${Math.min(5, i + 1)})` });
+      convo = i === 0 ? rawIn + tout : convo + clarify + tout;
+    }
+    return segs;
+  }
+
+  function renderCompareChart() {
+    const s = computeSavings();
+    if (s.pfTotal === 0) {
+      els.chartCompareMount.innerHTML = '<div class="chart-empty">Build a prompt to see this comparison.</div>';
+      els.chartCompareLegend.innerHTML = '';
+      return;
+    }
+    const W = 640, rowH = 38, labelW = 96, padR = 70, padT = 10, gap = 18;
+    const H = padT + rowH * 2 + gap + 10;
+    const barX = labelW;
+    const barW = W - labelW - padR;
+    const maxTotal = Math.max(s.pfTotal, s.naiveTotal, 1);
+
+    const pfSegs = [
+      { label: 'Analyze', value: s.pfBreakdown.analyze.in + s.pfBreakdown.analyze.out, color: 'var(--c-analyze)' },
+      { label: 'Compose', value: s.pfBreakdown.build.in + s.pfBreakdown.build.out, color: 'var(--c-compose)' },
+      { label: 'Run', value: s.pfBreakdown.run.in + s.pfBreakdown.run.out, color: 'var(--c-run)' }
+    ];
+    const naiveSegs = buildNaiveSegments();
+
+    let svg = `<svg viewBox="0 0 ${W} ${H}" class="chart-svg" preserveAspectRatio="xMinYMin meet">`;
+
+    // Row 1: SOLO
+    svg += `<text x="0" y="${padT + rowH / 2 + 4}" class="chart-row-label">SOLO</text>`;
+    let x = barX;
+    const pfBarW = (s.pfTotal / maxTotal) * barW;
+    pfSegs.forEach(seg => {
+      const w = seg.value > 0 ? (seg.value / s.pfTotal) * pfBarW : 0;
+      if (w > 0) {
+        svg += `<rect x="${x.toFixed(1)}" y="${padT}" width="${w.toFixed(1)}" height="${rowH}" fill="${seg.color}" rx="4"><title>${seg.label}: ${seg.value} tokens</title></rect>`;
+        if (w > 36) {
+          svg += `<text x="${(x + w / 2).toFixed(1)}" y="${padT + rowH / 2 + 4}" class="chart-seg-label" text-anchor="middle">${seg.value}</text>`;
+        }
+      }
+      x += w;
+    });
+    svg += `<text x="${barX + pfBarW + 8}" y="${padT + rowH / 2 + 4}" class="chart-total">${formatK(s.pfTotal)}</text>`;
+
+    // Row 2: Naive
+    const y2 = padT + rowH + gap;
+    svg += `<text x="0" y="${y2 + rowH / 2 + 4}" class="chart-row-label">Naive (${s.N}-turn)</text>`;
+    x = barX;
+    const naiveBarW = (s.naiveTotal / maxTotal) * barW;
+    naiveSegs.forEach(seg => {
+      const w = seg.value > 0 ? (seg.value / s.naiveTotal) * naiveBarW : 0;
+      if (w > 0) {
+        svg += `<rect x="${x.toFixed(1)}" y="${y2}" width="${w.toFixed(1)}" height="${rowH}" fill="${seg.color}" rx="4"><title>${seg.label}: ${seg.value} tokens</title></rect>`;
+        if (w > 36) {
+          svg += `<text x="${(x + w / 2).toFixed(1)}" y="${y2 + rowH / 2 + 4}" class="chart-seg-label" text-anchor="middle">${seg.value}</text>`;
+        }
+      }
+      x += w;
+    });
+    svg += `<text x="${barX + naiveBarW + 8}" y="${y2 + rowH / 2 + 4}" class="chart-total">${formatK(s.naiveTotal)}</text>`;
+
+    svg += `</svg>`;
+    els.chartCompareMount.innerHTML = svg;
+
+    const legendItems = pfSegs.concat(naiveSegs);
+    els.chartCompareLegend.innerHTML = legendItems
+      .map(l => `<span class="legend-item"><span class="legend-dot" style="background:${l.color}"></span>${l.label}</span>`)
+      .join('');
+  }
+
+  function renderHistoryChart() {
+    const history = loadHistory();
+    if (!history.length) {
+      els.chartHistoryMount.innerHTML = '<div class="chart-empty">No history yet — build a few prompts to see your trend.</div>';
+      return;
+    }
+    // oldest -> newest
+    const points = history.slice().reverse().map((entry, i) => {
+      const sav = computeSavingsForEntry(entry);
+      return { i, t: entry.t, saved: Math.max(0, sav.saved), pct: sav.pct };
+    });
+    const W = 640, H = 220, padL = 56, padR = 20, padT = 18, padB = 32;
+    const chartW = W - padL - padR;
+    const chartH = H - padT - padB;
+    const maxY = Math.max(...points.map(p => p.saved), 100);
+    const minY = 0;
+    const rangeY = maxY - minY || 1;
+    const xAt = (i) => padL + (points.length === 1 ? chartW / 2 : (i / (points.length - 1)) * chartW);
+    const yAt = (v) => padT + chartH - ((v - minY) / rangeY) * chartH;
+
+    let grid = '';
+    for (let g = 0; g <= 4; g++) {
+      const v = minY + (rangeY * g / 4);
+      const y = yAt(v);
+      grid += `<line x1="${padL}" x2="${W - padR}" y1="${y.toFixed(1)}" y2="${y.toFixed(1)}" class="chart-grid" />`;
+      grid += `<text x="${padL - 8}" y="${(y + 3).toFixed(1)}" class="chart-axis-label" text-anchor="end">${formatK(v)}</text>`;
+    }
+
+    // area under line
+    let areaD = '';
+    if (points.length > 1) {
+      areaD = 'M ' + `${xAt(0)} ${yAt(0)}` + ' L ' + points.map(p => `${xAt(p.i).toFixed(1)} ${yAt(p.saved).toFixed(1)}`).join(' L ') + ` L ${xAt(points.length - 1)} ${yAt(0)} Z`;
+    }
+    const pathD = 'M ' + points.map(p => `${xAt(p.i).toFixed(1)} ${yAt(p.saved).toFixed(1)}`).join(' L ');
+    const dots = points.map(p => `<circle cx="${xAt(p.i).toFixed(1)}" cy="${yAt(p.saved).toFixed(1)}" r="4" class="chart-dot"><title>${formatK(p.saved)} saved (${p.pct}%) · ${new Date(p.t).toLocaleDateString()}</title></circle>`).join('');
+
+    // X axis: show first/middle/last labels
+    const xLabel = (i, label) => `<text x="${xAt(i).toFixed(1)}" y="${H - padB + 18}" class="chart-axis-label" text-anchor="middle">${label}</text>`;
+    let xlabels = '';
+    if (points.length >= 1) xlabels += xLabel(0, 'oldest');
+    if (points.length >= 3) xlabels += xLabel(Math.floor((points.length - 1) / 2), '');
+    if (points.length >= 2) xlabels += xLabel(points.length - 1, 'newest');
+
+    els.chartHistoryMount.innerHTML = `<svg viewBox="0 0 ${W} ${H}" class="chart-svg" preserveAspectRatio="xMinYMin meet">
+      ${grid}
+      ${areaD ? `<path d="${areaD}" class="chart-area" />` : ''}
+      <path d="${pathD}" class="chart-line" />
+      <line x1="${padL}" x2="${W - padR}" y1="${yAt(0).toFixed(1)}" y2="${yAt(0).toFixed(1)}" class="chart-axis" />
+      ${dots}
+      ${xlabels}
+    </svg>`;
+  }
+
+  function renderAllocation() {
+    const s = computeSavings();
+    if (s.pfTotal === 0) {
+      els.chartAllocationMount.innerHTML = '<div class="chart-empty">Build a prompt to see allocation.</div>';
+      return;
+    }
+    const segs = [
+      { label: 'Stage 1 · Analyze', value: s.pfBreakdown.analyze.in + s.pfBreakdown.analyze.out, color: 'var(--c-analyze)' },
+      { label: 'Stage 2 · Compose', value: s.pfBreakdown.build.in + s.pfBreakdown.build.out, color: 'var(--c-compose)' },
+      { label: 'Stage 3 · Run', value: s.pfBreakdown.run.in + s.pfBreakdown.run.out, color: 'var(--c-run)' }
+    ];
+    const total = segs.reduce((a, b) => a + b.value, 0) || 1;
+    let html = '<div class="alloc-bar">';
+    segs.forEach(seg => {
+      const pct = (seg.value / total) * 100;
+      if (pct > 0) html += `<div class="alloc-seg" style="width:${pct.toFixed(1)}%;background:${seg.color}" title="${seg.label}: ${seg.value} (${pct.toFixed(0)}%)"></div>`;
+    });
+    html += '</div><div class="alloc-legend">';
+    segs.forEach(seg => {
+      const pct = (seg.value / total) * 100;
+      html += `<div class="alloc-row"><span class="legend-dot" style="background:${seg.color}"></span><span class="alloc-name">${seg.label}</span><span class="alloc-val">${seg.value} <span class="alloc-pct">(${pct.toFixed(0)}%)</span></span></div>`;
+    });
+    html += '</div>';
+    els.chartAllocationMount.innerHTML = html;
+  }
+
+  function renderDashboard() {
+    renderKPIs();
+    renderCompareChart();
+    renderHistoryChart();
+    renderAllocation();
+  }
+
+  // ============ Wire-up ============
+  els.analyzeBtn.addEventListener('click', analyze);
+  els.buildBtn.addEventListener('click', buildOptimized);
+  els.backToRawBtn.addEventListener('click', () => goToStage(1));
+  els.copyBtn.addEventListener('click', copyOptimized);
+  els.runBtn.addEventListener('click', runOptimized);
+  els.startOverBtn.addEventListener('click', () => {
+    if (state.raw && !confirm('Discard current prompt and start over?')) return;
+    startOver();
+  });
+  function startNewPrompt() {
+    if (state.raw && state.stage > 1 && !confirm('Discard current work and start a new prompt?')) return;
+    startOver();
+    closeRailMobile();
+  }
+  els.newPromptBtn.addEventListener('click', startNewPrompt);
+  const brandHome = document.getElementById('brandHome');
+  brandHome.addEventListener('click', startNewPrompt);
+  brandHome.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); startNewPrompt(); }
+  });
+  els.rawPrompt.addEventListener('input', updateStage1Sub);
+  els.rawPrompt.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+      e.preventDefault();
+      analyze();
+    }
+  });
+  els.optimizedPrompt.addEventListener('input', () => {
+    state.optimized = els.optimizedPrompt.value;
+    updateStage3Sub();
+  });
+
+  // Dashboard toggle
+  els.dashboardBtn.addEventListener('click', () => {
+    const isOpen = document.querySelector('.dashboard-pane').classList.contains('active');
+    if (isOpen) goToStage(state.stage); else showDashboard();
+  });
+  els.openDashboardFromCard.addEventListener('click', showDashboard);
+
+  // Mobile rail toggle
+  els.railToggle.addEventListener('click', () => {
+    els.rail.classList.toggle('open');
+  });
+  function closeRailMobile() {
+    if (window.matchMedia('(max-width: 820px)').matches) els.rail.classList.remove('open');
+  }
+  document.addEventListener('click', (e) => {
+    if (!window.matchMedia('(max-width: 820px)').matches) return;
+    if (els.rail.contains(e.target) || els.railToggle.contains(e.target)) return;
+    els.rail.classList.remove('open');
+  });
+
+  // ============ Reference context (lightweight RAG) ============
+  // Files are kept in localStorage so they persist across reloads. Total payload
+  // is capped because localStorage has a ~5MB limit per origin.
+  const CTX_MAX_TOTAL_BYTES = 500 * 1024;   // 500 KB combined
+  const CTX_MAX_FILE_BYTES = 200 * 1024;    // 200 KB per file
+  const CTX_TOKEN_WARN = 8000;              // soft warning when injected context exceeds this
+
+  function loadCtx() { return lsGet('context', []); }
+  function saveCtx(arr) {
+    try { lsSet('context', arr); return true; }
+    catch { toast('Context too large to store'); return false; }
+  }
+  function isCtxEnabled() { return lsGet('contextEnabled', true); }
+  function setCtxEnabled(v) { lsSet('contextEnabled', !!v); }
+
+  function ctxTotalBytes(arr) {
+    return arr.reduce((a, f) => a + (f.size || (f.content || '').length), 0);
+  }
+  function ctxTotalTokens(arr) {
+    return arr.reduce((a, f) => a + estimateTokens(f.content || ''), 0);
+  }
+  function ctxFileExt(name) {
+    const m = (name || '').match(/\.([a-z0-9]+)$/i);
+    return (m ? m[1] : 'TXT').toUpperCase().slice(0, 4);
+  }
+  function formatBytes(n) {
+    if (n < 1024) return `${n} B`;
+    if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KB`;
+    return `${(n / 1024 / 1024).toFixed(1)} MB`;
+  }
+
+  function renderCtxList() {
+    const arr = loadCtx();
+    els.ctxFiles.innerHTML = '';
+    arr.forEach((f, i) => {
+      const row = document.createElement('div');
+      row.className = 'ctx-file';
+      const icon = document.createElement('div');
+      icon.className = 'ctx-file-icon';
+      icon.textContent = ctxFileExt(f.name);
+      const meta = document.createElement('div');
+      meta.className = 'ctx-file-meta';
+      const n = document.createElement('div');
+      n.className = 'ctx-file-name';
+      n.textContent = f.name;
+      const s = document.createElement('div');
+      s.className = 'ctx-file-size';
+      s.textContent = `${formatBytes(f.size)} · ~${estimateTokens(f.content)} tokens`;
+      meta.appendChild(n);
+      meta.appendChild(s);
+      const rm = document.createElement('button');
+      rm.className = 'ctx-file-remove';
+      rm.title = 'Remove file';
+      rm.textContent = '✕';
+      rm.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const next = loadCtx().filter((_, j) => j !== i);
+        saveCtx(next);
+        renderCtxList();
+      });
+      row.appendChild(icon);
+      row.appendChild(meta);
+      row.appendChild(rm);
+      els.ctxFiles.appendChild(row);
+    });
+
+    const totalBytes = ctxTotalBytes(arr);
+    const totalTokens = ctxTotalTokens(arr);
+    els.ctxTotal.textContent = `${formatBytes(totalBytes)} · ~${totalTokens} tokens`;
+    els.ctxTotal.classList.toggle('warn', totalTokens > CTX_TOKEN_WARN);
+
+    if (arr.length > 0) {
+      els.ctxBadge.hidden = false;
+      els.ctxBadge.textContent = `${arr.length} file${arr.length === 1 ? '' : 's'}`;
+      // Auto-expand when files exist
+      els.ctxCard.classList.remove('collapsed');
+    } else {
+      els.ctxBadge.hidden = true;
+    }
+  }
+
+  async function addCtxFiles(fileList) {
+    const incoming = Array.from(fileList);
+    const arr = loadCtx();
+    for (const file of incoming) {
+      if (file.size > CTX_MAX_FILE_BYTES) {
+        toast(`${file.name}: too large (max ${formatBytes(CTX_MAX_FILE_BYTES)})`);
+        continue;
+      }
+      if (ctxTotalBytes(arr) + file.size > CTX_MAX_TOTAL_BYTES) {
+        toast(`Adding ${file.name} would exceed ${formatBytes(CTX_MAX_TOTAL_BYTES)} total`);
+        break;
+      }
+      try {
+        const content = await file.text();
+        arr.push({
+          name: file.name,
+          size: file.size,
+          type: file.type || 'text/plain',
+          content,
+          addedAt: Date.now()
+        });
+      } catch (err) {
+        toast(`Could not read ${file.name}`);
+      }
+    }
+    if (saveCtx(arr)) renderCtxList();
+  }
+
+  function buildCtxBlock() {
+    if (!isCtxEnabled()) return '';
+    const arr = loadCtx();
+    if (arr.length === 0) return '';
+    const sections = arr.map(f => `=== File: ${f.name} ===\n${f.content}\n=== End: ${f.name} ===`).join('\n\n');
+    return `\n\nREFERENCE CONTEXT (provided by the user as background — use it to understand their domain, vocabulary, and constraints when shaping clarifications):\n${sections}\n`;
+  }
+
+  // Wire UI
+  els.ctxHeader.addEventListener('click', () => {
+    els.ctxCard.classList.toggle('collapsed');
+  });
+  els.ctxDrop.addEventListener('click', () => els.ctxFileInput.click());
+  els.ctxFileInput.addEventListener('change', (e) => {
+    if (e.target.files?.length) addCtxFiles(e.target.files);
+    e.target.value = '';
+  });
+  ['dragenter', 'dragover'].forEach(ev => {
+    els.ctxDrop.addEventListener(ev, (e) => {
+      e.preventDefault();
+      els.ctxDrop.classList.add('drag');
+    });
+  });
+  ['dragleave', 'drop'].forEach(ev => {
+    els.ctxDrop.addEventListener(ev, (e) => {
+      e.preventDefault();
+      els.ctxDrop.classList.remove('drag');
+    });
+  });
+  els.ctxDrop.addEventListener('drop', (e) => {
+    if (e.dataTransfer?.files?.length) addCtxFiles(e.dataTransfer.files);
+  });
+  els.ctxEnable.checked = isCtxEnabled();
+  els.ctxEnable.addEventListener('change', (e) => setCtxEnabled(e.target.checked));
+
+  // ============ Session (cosmetic) ============
+  function getSession() { return lsGet('session', null); }
+  function setSession(u) { lsSet('session', u); }
+  function clearSessionStorage() { try { localStorage.removeItem(NS + 'session'); } catch {} }
+
+  function initialsFromEmail(email) {
+    if (!email) return '?';
+    const name = email.split('@')[0];
+    const parts = name.split(/[._-]+/).filter(Boolean);
+    if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+    return (name[0] || '?').toUpperCase() + (name[1] || '').toUpperCase();
+  }
+  function prettyNameFromEmail(email) {
+    if (!email) return 'User';
+    const name = email.split('@')[0];
+    return name
+      .split(/[._-]+/)
+      .filter(Boolean)
+      .map(p => p[0].toUpperCase() + p.slice(1))
+      .join(' ');
+  }
+  function showLogin() {
+    els.loginOverlay.classList.add('show');
+    setTimeout(() => els.loginEmail?.focus(), 50);
+  }
+  function hideLogin() { els.loginOverlay.classList.remove('show'); }
+
+  function signIn(email) {
+    const user = { email, name: prettyNameFromEmail(email), signedInAt: Date.now() };
+    setSession(user);
+    renderUserMenu();
+    hideLogin();
+  }
+  function signOut() {
+    clearSessionStorage();
+    els.userPopover.classList.remove('open');
+    els.loginEmail.value = '';
+    els.loginPassword.value = '';
+    els.loginError.classList.remove('show');
+    showLogin();
+  }
+  function renderUserMenu() {
+    const u = getSession();
+    if (!u) return;
+    els.userInitials.textContent = initialsFromEmail(u.email);
+    els.userName.textContent = u.name || prettyNameFromEmail(u.email);
+    els.userEmail.textContent = u.email;
+    els.userProvider.textContent = 'Signed in';
+  }
+
+  // Wire login form
+  els.loginEmailForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = els.loginEmail.value.trim();
+    const password = els.loginPassword.value;
+    if (!email || !email.includes('@')) {
+      els.loginError.textContent = 'Enter a valid email address';
+      els.loginError.classList.add('show');
+      return;
+    }
+    if (!password || password.length < 1) {
+      els.loginError.textContent = 'Enter a password (any value accepted)';
+      els.loginError.classList.add('show');
+      return;
+    }
+    els.loginError.classList.remove('show');
+    signIn(email);
+  });
+
+  // User menu popover toggle
+  els.userBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    els.userPopover.classList.toggle('open');
+  });
+  els.signOutBtn.addEventListener('click', () => {
+    if (!confirm('Sign out of SOLO? Your saved history and settings stay on this browser.')) return;
+    signOut();
+  });
+  document.addEventListener('click', (e) => {
+    if (!els.userPopover.contains(e.target) && !els.userBtn.contains(e.target)) {
+      els.userPopover.classList.remove('open');
+    }
+  });
+
+  // Recompute the progress line on viewport changes (font load, resize, theme swap)
+  window.addEventListener('resize', updateProgressLine);
+  if (document.fonts?.ready) document.fonts.ready.then(updateProgressLine);
+
+  // ============ Init ============
+  loadSettings();
+  renderHistory();
+  renderCtxList();
+  updateStagesNav();
+  updateStage1Sub();
+  renderSavings();
+  // Defer until after layout has settled to get accurate marker positions
+  requestAnimationFrame(updateProgressLine);
+
+  // Gate the app behind the (cosmetic) login
+  if (getSession()) {
+    renderUserMenu();
+  } else {
+    showLogin();
+  }
+})();
+</script>
+</body>
+</html>
