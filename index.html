@@ -1206,6 +1206,232 @@
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+  /* ---------- Cost in dollars + budget ---------- */
+  .usd {
+    color: var(--success);
+    font-family: var(--mono);
+    font-weight: 600;
+    font-size: .92em;
+  }
+  .usd.muted { color: var(--text-mute); font-weight: 500; }
+  .usd.warn { color: var(--warning); }
+  .usd.danger { color: var(--danger); }
+
+  .budget-meter {
+    margin: 6px 4px 8px;
+    padding: 9px 12px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.18);
+    border-radius: var(--radius-sm);
+    display: none;
+  }
+  .budget-meter.show { display: block; }
+  .budget-meter .bm-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 12px; color: #fff;
+    margin-bottom: 6px;
+  }
+  .budget-meter .bm-label { font-weight: 600; opacity: .85; }
+  .budget-meter .bm-value { font-family: var(--mono); }
+  .budget-meter .bm-track {
+    height: 6px;
+    background: rgba(255,255,255,.18);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .budget-meter .bm-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #fff, rgba(255,255,255,.85));
+    width: 0%;
+    transition: width .35s ease, background .15s;
+    border-radius: 3px;
+  }
+  .budget-meter.warn .bm-fill { background: linear-gradient(90deg, #ffd479, #ffae42); }
+  .budget-meter.over .bm-fill { background: linear-gradient(90deg, #ff8a7a, #ff5b5b); }
+
+  .pricing-editor {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+  .pricing-editor-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 12px;
+    cursor: pointer;
+    font-size: 12.5px; font-weight: 600;
+    user-select: none;
+  }
+  .pricing-editor-header:hover { background: var(--surface); }
+  .pricing-editor.collapsed .pricing-editor-body { display: none; }
+  .pricing-editor-body {
+    padding: 10px 12px 12px;
+    border-top: 1px solid var(--border);
+  }
+  .pricing-provider {
+    margin-bottom: 12px;
+  }
+  .pricing-provider:last-child { margin-bottom: 0; }
+  .pricing-provider-name {
+    font-size: 11px; font-weight: 700; color: var(--text-mute);
+    text-transform: uppercase; letter-spacing: .06em;
+    margin-bottom: 6px;
+  }
+  .pricing-row {
+    display: grid;
+    grid-template-columns: 1fr 70px 70px;
+    gap: 6px; align-items: center;
+    padding: 4px 0;
+    font-size: 12.5px;
+  }
+  .pricing-row-head {
+    color: var(--text-mute);
+    font-weight: 600;
+    font-size: 10.5px; text-transform: uppercase; letter-spacing: .05em;
+    padding-bottom: 4px;
+    border-bottom: 1px dashed var(--border);
+    margin-bottom: 4px;
+  }
+  .pricing-row .price-input {
+    width: 100%;
+    height: 28px; padding: 4px 6px;
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+  .pricing-editor-footer {
+    margin-top: 10px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 11px; color: var(--text-mute);
+  }
+
+  /* ---------- Templates Library ---------- */
+  .templates-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .templates-card .ctx-header { /* reuse ctx header pattern */
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px;
+    cursor: pointer; user-select: none;
+  }
+  .templates-card .ctx-header:hover { background: var(--surface-2); }
+  .templates-card.collapsed .templates-body { display: none; }
+  .templates-card .ctx-toggle::after {
+    content: '▾';
+    color: var(--text-mute); font-size: 12px;
+    transition: transform .15s;
+    display: inline-block;
+  }
+  .templates-card.collapsed .ctx-toggle::after { transform: rotate(-90deg); }
+  .templates-body { padding: 12px 14px 14px; border-top: 1px solid var(--border); }
+
+  .template-pill-row {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin-bottom: 12px;
+  }
+  .template-pill {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    padding: 4px 10px;
+    border-radius: 14px;
+    font-size: 12px; font-weight: 500;
+    cursor: pointer;
+    transition: background .12s, color .12s, border-color .12s;
+  }
+  .template-pill:hover { color: var(--accent); border-color: var(--accent); }
+  .template-pill.active {
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .templates-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  @media (max-width: 720px) { .templates-grid { grid-template-columns: 1fr; } }
+
+  .template-tile {
+    position: relative;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xs);
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: transform .12s, border-color .12s, box-shadow .12s, background .12s;
+  }
+  .template-tile:hover {
+    transform: translateY(-1px);
+    border-color: var(--accent);
+    box-shadow: 0 4px 12px var(--accent-ring);
+    background: var(--surface);
+  }
+  .template-tile-title {
+    font-weight: 600; font-size: 13.5px; color: var(--text);
+    margin-bottom: 4px;
+    padding-right: 22px;
+  }
+  .template-tile-desc {
+    font-size: 12px; color: var(--text-dim); line-height: 1.4;
+  }
+  .template-tile-domain {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 10.5px; font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 1px 7px; border-radius: 8px;
+    letter-spacing: .03em;
+  }
+  .template-tile.user::before {
+    content: '★';
+    position: absolute; top: 8px; right: 10px;
+    color: var(--accent); font-size: 12px;
+  }
+  .template-tile-remove {
+    position: absolute; top: 6px; right: 8px;
+    background: transparent; border: none;
+    color: var(--text-mute); cursor: pointer;
+    font-size: 14px; padding: 2px 6px; border-radius: 3px;
+    display: none;
+  }
+  .template-tile.user:hover .template-tile-remove { display: inline-block; }
+  .template-tile.user:hover::before { display: none; }
+  .template-tile-remove:hover { color: var(--danger); background: var(--danger-soft); }
+
+  .templates-empty {
+    text-align: center; padding: 16px;
+    color: var(--text-mute); font-size: 12.5px;
+  }
+
+  .save-template-panel {
+    margin-top: 14px;
+    background: var(--surface);
+    border: 1px solid var(--accent-ring);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    display: none;
+  }
+  .save-template-panel.open { display: block; }
+  .save-template-panel .field-row { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+  .save-template-panel .field-row label {
+    font-size: 11px; font-weight: 600; color: var(--text-mute);
+    text-transform: uppercase; letter-spacing: .05em;
+  }
+  .save-template-panel .field-row input {
+    height: 34px; padding: 6px 10px;
+  }
+  .save-template-panel .actions {
+    display: flex; gap: 8px; justify-content: flex-end;
+  }
+
   /* ---------- Reference context (lightweight RAG) ---------- */
   .ctx-card {
     background: var(--surface);
@@ -1542,6 +1768,14 @@
       <div class="history-list" id="historyList" style="flex: 1; overflow-y: auto; margin-top: 4px;"></div>
     </div>
 
+    <div class="budget-meter" id="budgetMeter" title="Monthly spend vs budget (Settings → Monthly budget)">
+      <div class="bm-row">
+        <span class="bm-label">Budget</span>
+        <span class="bm-value" id="budgetValue">$0 / $0</span>
+      </div>
+      <div class="bm-track"><div class="bm-fill" id="budgetFill"></div></div>
+    </div>
+
     <div class="savings-pill" id="savingsPill" title="Open Stage 3 to see the full breakdown">
       <span class="num" id="savingsPillNum">↓ 0</span>
       <span class="sub" id="savingsPillSub">tokens saved vs naive</span>
@@ -1568,6 +1802,21 @@
         <div id="keyHint" class="hint" hidden>
           <b>First time?</b> Add your API key in <a id="openSettingsLink">Settings ⚙</a>.<br/>
           Your key lives only in this browser's localStorage and goes straight to the provider. Pick Anthropic or OpenAI, paste a key, and you're set.
+        </div>
+
+        <div class="templates-card collapsed" id="templatesCard">
+          <div class="ctx-header" id="templatesHeader">
+            <div class="ctx-title">
+              📚 Templates
+              <span class="ctx-badge" id="templatesBadge">0 built-in</span>
+            </div>
+            <span class="ctx-toggle"></span>
+          </div>
+          <div class="templates-body">
+            <div class="template-pill-row" id="templatePills"></div>
+            <div class="templates-grid" id="templatesGrid"></div>
+            <div class="templates-empty" id="templatesEmpty" hidden>No templates in this domain.</div>
+          </div>
         </div>
 
         <div class="ctx-card collapsed" id="ctxCard">
@@ -1648,7 +1897,23 @@
           <div class="btn-row">
             <button class="btn" id="runBtn">Run prompt</button>
             <button class="btn secondary" id="copyBtn">Copy</button>
+            <button class="btn ghost" id="saveTemplateBtn">+ Save as template</button>
             <button class="btn ghost" id="startOverBtn">Start over</button>
+          </div>
+
+          <div class="save-template-panel" id="saveTemplatePanel">
+            <div class="field-row">
+              <label for="saveTemplateName">Name</label>
+              <input type="text" id="saveTemplateName" placeholder="e.g. Weekly status update" />
+            </div>
+            <div class="field-row">
+              <label for="saveTemplateDesc">Short description</label>
+              <input type="text" id="saveTemplateDesc" placeholder="One sentence on what this template is for" />
+            </div>
+            <div class="actions">
+              <button class="btn ghost sm" id="saveTemplateCancel">Cancel</button>
+              <button class="btn sm" id="saveTemplateConfirm">Save</button>
+            </div>
           </div>
           <div id="stage3Status"></div>
           <div class="usage" id="stage3Usage"></div>
@@ -1788,6 +2053,22 @@
         <input type="password" id="apiKey" placeholder="sk-... or sk-ant-..." />
         <div class="hint-text">Stored in localStorage only. Sent directly to your provider; never elsewhere.</div>
       </div>
+
+      <div class="field">
+        <label class="field-label" for="budgetInput">Monthly budget (USD)</label>
+        <input type="number" id="budgetInput" min="0" step="0.5" placeholder="e.g. 5.00 — leave empty to disable" />
+        <div class="hint-text">When set, the left rail shows a meter and you get a confirm dialog if the next call would exceed it.</div>
+      </div>
+
+      <div class="field">
+        <div class="pricing-editor collapsed" id="pricingEditor">
+          <div class="pricing-editor-header" id="pricingEditorHeader">
+            <span>Pricing per million tokens (USD)</span>
+            <span class="ctx-toggle"></span>
+          </div>
+          <div class="pricing-editor-body" id="pricingEditorBody"></div>
+        </div>
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn danger" id="clearDataBtn">Clear all data</button>
@@ -1847,6 +2128,12 @@
     historyList: $('historyList'), newPromptBtn: $('newPromptBtn'),
     keyHint: $('keyHint'), openSettingsLink: $('openSettingsLink'),
     domainMount: $('domainSelectMount'),
+    templatesCard: $('templatesCard'), templatesHeader: $('templatesHeader'),
+    templatesBadge: $('templatesBadge'), templatePills: $('templatePills'),
+    templatesGrid: $('templatesGrid'), templatesEmpty: $('templatesEmpty'),
+    saveTemplateBtn: $('saveTemplateBtn'), saveTemplatePanel: $('saveTemplatePanel'),
+    saveTemplateName: $('saveTemplateName'), saveTemplateDesc: $('saveTemplateDesc'),
+    saveTemplateCancel: $('saveTemplateCancel'), saveTemplateConfirm: $('saveTemplateConfirm'),
     ctxCard: $('ctxCard'), ctxHeader: $('ctxHeader'), ctxBadge: $('ctxBadge'),
     ctxFileInput: $('ctxFileInput'), ctxDrop: $('ctxDrop'),
     ctxFiles: $('ctxFiles'), ctxEnable: $('ctxEnable'), ctxTotal: $('ctxTotal'),
@@ -1879,6 +2166,10 @@
     providerMount: $('providerSelectMount'),
     model: $('model'), modelList: $('modelList'),
     apiKey: $('apiKey'), saveSettings: $('saveSettings'), clearDataBtn: $('clearDataBtn'),
+    budgetInput: $('budgetInput'),
+    pricingEditor: $('pricingEditor'), pricingEditorHeader: $('pricingEditorHeader'),
+    pricingEditorBody: $('pricingEditorBody'),
+    budgetMeter: $('budgetMeter'), budgetValue: $('budgetValue'), budgetFill: $('budgetFill'),
     toast: $('toast')
   };
 
@@ -2075,6 +2366,11 @@
     els.apiKey.value = s.apiKey || '';
     refreshModelSuggestions(s.provider);
     refreshKeyHint();
+    // Budget field
+    if (els.budgetInput) {
+      const b = getBudget();
+      els.budgetInput.value = b == null ? '' : b;
+    }
     return s;
   }
   function saveSettings() {
@@ -2087,6 +2383,11 @@
     };
     lsSet('settings', s);
     refreshKeyHint();
+    // Persist budget
+    setBudget(els.budgetInput.value);
+    renderBudgetMeter();
+    // Re-render any visible $ readouts
+    renderSavings();
     return s;
   }
   function refreshModelSuggestions(provider) {
@@ -2116,8 +2417,12 @@
   });
   els.providerMount.appendChild(providerSelect.root);
 
-  els.settingsBtn.addEventListener('click', () => els.settingsModal.classList.add('open'));
-  els.openSettingsLink.addEventListener('click', () => els.settingsModal.classList.add('open'));
+  function openSettingsModal() {
+    renderPricingEditor();
+    els.settingsModal.classList.add('open');
+  }
+  els.settingsBtn.addEventListener('click', openSettingsModal);
+  els.openSettingsLink.addEventListener('click', openSettingsModal);
   els.closeSettings.addEventListener('click', () => els.settingsModal.classList.remove('open'));
   els.settingsModal.addEventListener('click', (e) => { if (e.target === els.settingsModal) els.settingsModal.classList.remove('open'); });
   els.saveSettings.addEventListener('click', () => {
@@ -2300,6 +2605,8 @@
     const settings = lsGet('settings', null);
     if (!settings || !settings.apiKey) throw new Error('No API key set. Open Settings and paste one in.');
     if (!settings.model) throw new Error('No model set. Open Settings and pick a model.');
+    // Soft budget gate — confirm if monthly budget already exceeded
+    if (!budgetGate()) throw new Error('Cancelled: monthly budget exceeded.');
     if (settings.provider === 'anthropic') {
       const res = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
@@ -2319,7 +2626,10 @@
       if (!res.ok) throw new Error(data?.error?.message || `HTTP ${res.status}`);
       const text = data?.content?.[0]?.text;
       if (text == null) throw new Error('Empty response from Anthropic');
-      return { text, usage: { input: data?.usage?.input_tokens, output: data?.usage?.output_tokens } };
+      const usage = { input: data?.usage?.input_tokens, output: data?.usage?.output_tokens };
+      recordSpend(usage, settings.provider, settings.model);
+      renderBudgetMeter();
+      return { text, usage };
     } else {
       const res = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
@@ -2337,7 +2647,10 @@
       if (!res.ok) throw new Error(data?.error?.message || `HTTP ${res.status}`);
       const text = data?.choices?.[0]?.message?.content;
       if (text == null) throw new Error('Empty response from OpenAI');
-      return { text, usage: { input: data?.usage?.prompt_tokens, output: data?.usage?.completion_tokens } };
+      const usage = { input: data?.usage?.prompt_tokens, output: data?.usage?.completion_tokens };
+      recordSpend(usage, settings.provider, settings.model);
+      renderBudgetMeter();
+      return { text, usage };
     }
   }
   function formatUsage(u) {
@@ -2345,7 +2658,14 @@
     const parts = [];
     if (u.input != null) parts.push(`${u.input} in`);
     if (u.output != null) parts.push(`${u.output} out`);
-    return parts.length ? `tokens: ${parts.join(' · ')}` : '';
+    if (!parts.length) return '';
+    const settings = lsGet('settings', null);
+    let dollarStr = '';
+    if (settings?.provider && settings?.model) {
+      const usd = tokensToDollars(u, settings.provider, settings.model);
+      if (usd > 0) dollarStr = ` · ${formatUSD(usd)}`;
+    }
+    return `tokens: ${parts.join(' · ')}${dollarStr}`;
   }
 
   // ============ Status rendering ============
@@ -2664,7 +2984,20 @@ ${state.raw}
     const saved = naiveTotal - pfTotal;
     const pct = naiveTotal > 0 ? Math.round(100 * saved / naiveTotal) : 0;
 
-    return { pfBreakdown, pfIn, pfOut, pfTotal, naiveIn, naiveOut, naiveTotal, saved, pct, targetOut, hasRun: !!pfBreakdown.run.in, N };
+    // Dollars (uses current provider/model — note: if user switches mid-flow, est. is for current model)
+    const settings = lsGet('settings', { provider: 'anthropic', model: 'claude-opus-4-7' });
+    const usd = (inT, outT) => tokensToDollars({ input: inT, output: outT }, settings.provider, settings.model);
+    const pfDollars = {
+      analyze: usd(pfBreakdown.analyze.in, pfBreakdown.analyze.out),
+      build:   usd(pfBreakdown.build.in,   pfBreakdown.build.out),
+      run:     usd(pfBreakdown.run.in,     pfBreakdown.run.out),
+      total:   usd(pfIn, pfOut)
+    };
+    const naiveDollars = usd(naiveIn, naiveOut);
+    const savedDollars = naiveDollars - pfDollars.total;
+
+    return { pfBreakdown, pfIn, pfOut, pfTotal, naiveIn, naiveOut, naiveTotal, saved, pct, targetOut, hasRun: !!pfBreakdown.run.in, N,
+             pfDollars, naiveDollars, savedDollars };
   }
   function renderSavings() {
     const s = computeSavings();
@@ -2672,7 +3005,8 @@ ${state.raw}
     if (s.pfTotal > 0 && s.saved > 0) {
       els.savingsPill.classList.add('show');
       els.savingsPillNum.textContent = `↓ ${formatK(s.saved)}`;
-      els.savingsPillSub.textContent = `tokens saved (~${s.pct}%)`;
+      const dollars = s.savedDollars > 0 ? ` · ${formatUSD(s.savedDollars)}` : '';
+      els.savingsPillSub.textContent = `tokens saved (~${s.pct}%)${dollars}`;
     } else {
       els.savingsPill.classList.remove('show');
     }
@@ -2682,26 +3016,31 @@ ${state.raw}
     if (s.saved > 0) {
       els.savingsHeadlineNum.textContent = `↓ ${formatK(s.saved)}`;
       els.savingsHeadlineNum.style.color = '';
-      els.savingsHeadlineLabel.textContent = `tokens saved · ${s.pct}% less than a ${s.N}-turn naive loop`;
+      const $part = s.savedDollars > 0 ? ` · ${formatUSD(s.savedDollars)} saved` : '';
+      els.savingsHeadlineLabel.textContent = `tokens saved · ${s.pct}% less than a ${s.N}-turn naive loop${$part}`;
     } else {
       els.savingsHeadlineNum.textContent = `↑ ${formatK(Math.abs(s.saved))}`;
       els.savingsHeadlineNum.style.color = 'var(--warning)';
       els.savingsHeadlineLabel.textContent = `tokens over baseline (this prompt was too small to benefit)`;
     }
     els.savingsPF.textContent = formatK(s.pfTotal);
-    els.savingsPFSub.textContent = `${s.pfIn} in · ${s.pfOut} out`;
+    els.savingsPFSub.innerHTML = `${s.pfIn} in · ${s.pfOut} out${s.pfDollars.total > 0 ? ` <span class="usd">${formatUSD(s.pfDollars.total)}</span>` : ''}`;
     els.savingsNaive.textContent = formatK(s.naiveTotal);
-    els.savingsNaiveSub.textContent = `${s.naiveIn} in · ${s.naiveOut} out`;
+    els.savingsNaiveSub.innerHTML = `${s.naiveIn} in · ${s.naiveOut} out${s.naiveDollars > 0 ? ` <span class="usd muted">${formatUSD(s.naiveDollars)}</span>` : ''}`;
 
-    const fmtRow = (label, b) => `<div class="savings-row"><span class="k">${label}</span><span class="v">${b.in || b.out ? `${b.in} + ${b.out} = ${b.in + b.out}` : '—'}</span></div>`;
+    const fmtRow = (label, b, d) => {
+      const tk = b.in || b.out ? `${b.in} + ${b.out} = ${b.in + b.out}` : '—';
+      const $$ = d > 0 ? ` · <span class="usd">${formatUSD(d)}</span>` : '';
+      return `<div class="savings-row"><span class="k">${label}</span><span class="v">${tk}${$$}</span></div>`;
+    };
     els.savingsBreakdown.innerHTML =
-      fmtRow('Stage 1 · Analyze', s.pfBreakdown.analyze) +
-      fmtRow('Stage 2 · Compose', s.pfBreakdown.build) +
-      fmtRow('Stage 3 · Run', s.pfBreakdown.run);
+      fmtRow('Stage 1 · Analyze', s.pfBreakdown.analyze, s.pfDollars.analyze) +
+      fmtRow('Stage 2 · Compose', s.pfBreakdown.build,   s.pfDollars.build) +
+      fmtRow('Stage 3 · Run',     s.pfBreakdown.run,     s.pfDollars.run);
 
     els.savingsDisclaimer.textContent = s.hasRun
-      ? `Naive figures estimate a ${s.N}-turn chat where each turn re-sends the growing conversation. SOLO figures are actual tokens billed by your provider. Anchored on your real run output (${s.pfBreakdown.run.out} tokens).`
-      : `Estimate assumes a ${s.N}-turn chat reaching a comparable answer. Click Run to anchor on real output tokens.`;
+      ? `Naive figures estimate a ${s.N}-turn chat where each turn re-sends the growing conversation. SOLO figures are actual tokens billed by your provider. Anchored on your real run output (${s.pfBreakdown.run.out} tokens). Dollars use the pricing set in Settings (current provider/model).`
+      : `Estimate assumes a ${s.N}-turn chat reaching a comparable answer. Click Run to anchor on real output tokens. Dollars use the pricing set in Settings (current provider/model).`;
 
     // Keep dashboard in sync if it's open
     if (document.querySelector('.dashboard-pane')?.classList.contains('active')) {
@@ -2734,6 +3073,176 @@ ${state.raw}
     closeRailMobile();
   });
 
+  // ============ Cost in dollars + monthly budget ============
+  const DEFAULT_PRICING = {
+    anthropic: {
+      'claude-opus-4-7':            { input: 15.00, output: 75.00 },
+      'claude-opus-4-6':            { input: 15.00, output: 75.00 },
+      'claude-sonnet-4-6':          { input:  3.00, output: 15.00 },
+      'claude-haiku-4-5-20251001':  { input:  0.80, output:  4.00 }
+    },
+    openai: {
+      'gpt-4o':       { input: 2.50, output: 10.00 },
+      'gpt-4o-mini':  { input: 0.15, output:  0.60 },
+      'gpt-4-turbo':  { input: 10.00, output: 30.00 },
+      'o1':           { input: 15.00, output: 60.00 },
+      'o1-mini':      { input:  3.00, output: 12.00 }
+    }
+  };
+  function loadPricing() {
+    const stored = lsGet('pricing', null);
+    // Merge stored over defaults so newly added models still appear
+    if (!stored) return JSON.parse(JSON.stringify(DEFAULT_PRICING));
+    const merged = JSON.parse(JSON.stringify(DEFAULT_PRICING));
+    Object.entries(stored).forEach(([prov, models]) => {
+      if (!merged[prov]) merged[prov] = {};
+      Object.entries(models).forEach(([m, p]) => { merged[prov][m] = p; });
+    });
+    return merged;
+  }
+  function savePricing(p) { lsSet('pricing', p); }
+  function getPricing(provider, model) {
+    const p = loadPricing();
+    return (p[provider] && p[provider][model]) || { input: 0, output: 0 };
+  }
+  function tokensToDollars(usage, provider, model) {
+    if (!usage) return 0;
+    const p = getPricing(provider, model);
+    const inT = usage.input || 0, outT = usage.output || 0;
+    return (inT * p.input + outT * p.output) / 1_000_000;
+  }
+  function formatUSD(n) {
+    if (n == null || isNaN(n)) return '$0.00';
+    if (n === 0) return '$0.00';
+    if (n < 0.01) return `$${n.toFixed(4)}`;
+    if (n < 1) return `$${n.toFixed(3)}`;
+    if (n < 100) return `$${n.toFixed(2)}`;
+    return `$${Math.round(n).toLocaleString()}`;
+  }
+  function currentMonthKey(d = new Date()) {
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+  }
+  function loadSpendHistory() { return lsGet('spendHistory', {}); }
+  function saveSpendHistory(h) { lsSet('spendHistory', h); }
+  function recordSpend(usage, provider, model) {
+    const cost = tokensToDollars(usage, provider, model);
+    if (!cost) return;
+    const h = loadSpendHistory();
+    const k = currentMonthKey();
+    h[k] = (h[k] || 0) + cost;
+    saveSpendHistory(h);
+  }
+  function getMonthSpend(d = new Date()) {
+    return loadSpendHistory()[currentMonthKey(d)] || 0;
+  }
+  function getBudget() {
+    const v = lsGet('monthlyBudget', null);
+    return (v == null || v === '' || isNaN(+v)) ? null : +v;
+  }
+  function setBudget(v) {
+    if (v == null || v === '' || isNaN(+v) || +v <= 0) lsSet('monthlyBudget', null);
+    else lsSet('monthlyBudget', +v);
+  }
+  function renderBudgetMeter() {
+    const budget = getBudget();
+    if (!budget) { els.budgetMeter.classList.remove('show'); return; }
+    const spend = getMonthSpend();
+    const pct = Math.min(100, Math.max(0, (spend / budget) * 100));
+    els.budgetValue.textContent = `${formatUSD(spend)} / ${formatUSD(budget)}`;
+    els.budgetFill.style.width = pct + '%';
+    els.budgetMeter.classList.add('show');
+    els.budgetMeter.classList.toggle('warn', pct >= 80 && pct < 100);
+    els.budgetMeter.classList.toggle('over', pct >= 100);
+  }
+
+  // Soft enforcement: confirm before next call if budget would be exceeded
+  function budgetGate() {
+    const budget = getBudget();
+    if (!budget) return true;
+    const spend = getMonthSpend();
+    if (spend < budget) return true;
+    return confirm(`Monthly budget of ${formatUSD(budget)} reached (already spent ${formatUSD(spend)}). Continue this call anyway?`);
+  }
+
+  // ---------- Pricing editor in Settings ----------
+  function renderPricingEditor() {
+    const pricing = loadPricing();
+    els.pricingEditorBody.innerHTML = '';
+    Object.entries(pricing).forEach(([provider, models]) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'pricing-provider';
+      const name = document.createElement('div');
+      name.className = 'pricing-provider-name';
+      name.textContent = provider;
+      wrap.appendChild(name);
+      const head = document.createElement('div');
+      head.className = 'pricing-row pricing-row-head';
+      head.innerHTML = '<span>Model</span><span>Input</span><span>Output</span>';
+      wrap.appendChild(head);
+      Object.entries(models).forEach(([model, p]) => {
+        const row = document.createElement('div');
+        row.className = 'pricing-row';
+        const mName = document.createElement('span');
+        mName.textContent = model;
+        mName.style.fontFamily = 'var(--mono)';
+        mName.style.fontSize = '11.5px';
+        mName.style.color = 'var(--text)';
+        mName.style.overflow = 'hidden';
+        mName.style.textOverflow = 'ellipsis';
+        mName.style.whiteSpace = 'nowrap';
+        const inputEl = document.createElement('input');
+        inputEl.type = 'number'; inputEl.min = '0'; inputEl.step = '0.01';
+        inputEl.className = 'price-input';
+        inputEl.value = p.input;
+        inputEl.addEventListener('change', () => {
+          const cur = loadPricing();
+          if (!cur[provider]) cur[provider] = {};
+          if (!cur[provider][model]) cur[provider][model] = { input: 0, output: 0 };
+          cur[provider][model].input = parseFloat(inputEl.value) || 0;
+          savePricing(cur);
+          renderSavings(); renderBudgetMeter();
+        });
+        const outputEl = document.createElement('input');
+        outputEl.type = 'number'; outputEl.min = '0'; outputEl.step = '0.01';
+        outputEl.className = 'price-input';
+        outputEl.value = p.output;
+        outputEl.addEventListener('change', () => {
+          const cur = loadPricing();
+          if (!cur[provider]) cur[provider] = {};
+          if (!cur[provider][model]) cur[provider][model] = { input: 0, output: 0 };
+          cur[provider][model].output = parseFloat(outputEl.value) || 0;
+          savePricing(cur);
+          renderSavings(); renderBudgetMeter();
+        });
+        row.appendChild(mName);
+        row.appendChild(inputEl);
+        row.appendChild(outputEl);
+        wrap.appendChild(row);
+      });
+      els.pricingEditorBody.appendChild(wrap);
+    });
+    const foot = document.createElement('div');
+    foot.className = 'pricing-editor-footer';
+    foot.innerHTML = '<span>Prices are USD per 1M tokens. Edits save instantly.</span>';
+    const reset = document.createElement('button');
+    reset.className = 'btn ghost sm';
+    reset.textContent = 'Reset to defaults';
+    reset.addEventListener('click', () => {
+      if (!confirm('Reset pricing to built-in defaults?')) return;
+      lsSet('pricing', null);
+      renderPricingEditor();
+      renderSavings(); renderBudgetMeter();
+      toast('Pricing reset');
+    });
+    foot.appendChild(reset);
+    els.pricingEditorBody.appendChild(foot);
+  }
+
+  // Wire pricing editor toggle and budget input
+  els.pricingEditorHeader.addEventListener('click', () => {
+    els.pricingEditor.classList.toggle('collapsed');
+  });
+
   // ============ Dashboard rendering ============
   function computeSavingsForEntry(entry) {
     // Save current state, swap in entry, compute, restore.
@@ -2754,27 +3263,58 @@ ${state.raw}
 
   function renderKPIs() {
     const history = loadHistory();
-    let totalSaved = 0, totalPct = 0;
+    let totalSaved = 0, totalPct = 0, totalSavedDollars = 0;
     history.forEach(entry => {
       const s = computeSavingsForEntry(entry);
       totalSaved += Math.max(0, s.saved);
+      totalSavedDollars += Math.max(0, s.savedDollars);
       totalPct += s.pct;
     });
     const avgPct = history.length ? Math.round(totalPct / history.length) : 0;
     els.kpiTotalSaved.textContent = formatK(totalSaved);
+    const $part = totalSavedDollars > 0 ? ` · ~${formatUSD(totalSavedDollars)} in savings` : '';
     els.kpiTotalSavedSub.textContent = history.length
-      ? `across ${history.length} prompt${history.length === 1 ? '' : 's'}`
+      ? `across ${history.length} prompt${history.length === 1 ? '' : 's'}${$part}`
       : 'no prompts yet';
     els.kpiAvgPct.textContent = history.length ? `${avgPct}%` : '—';
     els.kpiPrompts.textContent = history.length;
     const cur = computeSavings();
     if (cur.pfTotal > 0) {
       els.kpiCurrent.textContent = (cur.saved >= 0 ? '↓ ' : '↑ ') + formatK(Math.abs(cur.saved));
-      els.kpiCurrentSub.textContent = `${Math.abs(cur.pct)}% ${cur.saved >= 0 ? 'vs naive' : 'over naive'}`;
+      const $cur = cur.savedDollars > 0 ? ` · ${formatUSD(cur.savedDollars)}` : '';
+      els.kpiCurrentSub.textContent = `${Math.abs(cur.pct)}% ${cur.saved >= 0 ? 'vs naive' : 'over naive'}${$cur}`;
     } else {
       els.kpiCurrent.textContent = '—';
       els.kpiCurrentSub.textContent = 'no active prompt';
     }
+
+    // Spend-this-month tile is rendered separately below if budget set
+    renderSpendKPI();
+  }
+
+  function renderSpendKPI() {
+    // Inject a "Spend this month" KPI tile dynamically into the grid (only when there's data).
+    const grid = document.querySelector('.kpi-grid');
+    if (!grid) return;
+    let spendTile = document.getElementById('kpiSpendTile');
+    const spend = getMonthSpend();
+    const budget = getBudget();
+    if (spend === 0 && !budget) {
+      if (spendTile) spendTile.remove();
+      return;
+    }
+    if (!spendTile) {
+      spendTile = document.createElement('div');
+      spendTile.id = 'kpiSpendTile';
+      spendTile.className = 'kpi-tile';
+      grid.appendChild(spendTile);
+    }
+    const pct = budget ? Math.min(100, Math.round((spend / budget) * 100)) : null;
+    spendTile.innerHTML = `
+      <div class="kpi-label">Spend this month</div>
+      <div class="kpi-value">${formatUSD(spend)}</div>
+      <div class="kpi-sub">${budget ? `${pct}% of ${formatUSD(budget)} budget` : 'no budget set'}</div>
+    `;
   }
 
   function buildNaiveSegments() {
@@ -2802,7 +3342,7 @@ ${state.raw}
       els.chartCompareLegend.innerHTML = '';
       return;
     }
-    const W = 640, rowH = 38, labelW = 96, padR = 70, padT = 10, gap = 18;
+    const W = 640, rowH = 38, labelW = 96, padR = 120, padT = 10, gap = 18;
     const H = padT + rowH * 2 + gap + 10;
     const barX = labelW;
     const barW = W - labelW - padR;
@@ -2831,7 +3371,8 @@ ${state.raw}
       }
       x += w;
     });
-    svg += `<text x="${barX + pfBarW + 8}" y="${padT + rowH / 2 + 4}" class="chart-total">${formatK(s.pfTotal)}</text>`;
+    const pfDollarLabel = s.pfDollars.total > 0 ? ` · ${formatUSD(s.pfDollars.total)}` : '';
+    svg += `<text x="${barX + pfBarW + 8}" y="${padT + rowH / 2 + 4}" class="chart-total">${formatK(s.pfTotal)}${pfDollarLabel}</text>`;
 
     // Row 2: Naive
     const y2 = padT + rowH + gap;
@@ -2848,7 +3389,8 @@ ${state.raw}
       }
       x += w;
     });
-    svg += `<text x="${barX + naiveBarW + 8}" y="${y2 + rowH / 2 + 4}" class="chart-total">${formatK(s.naiveTotal)}</text>`;
+    const naiveDollarLabel = s.naiveDollars > 0 ? ` · ${formatUSD(s.naiveDollars)}` : '';
+    svg += `<text x="${barX + naiveBarW + 8}" y="${y2 + rowH / 2 + 4}" class="chart-total">${formatK(s.naiveTotal)}${naiveDollarLabel}</text>`;
 
     svg += `</svg>`;
     els.chartCompareMount.innerHTML = svg;
@@ -2997,6 +3539,196 @@ ${state.raw}
     if (els.rail.contains(e.target) || els.railToggle.contains(e.target)) return;
     els.rail.classList.remove('open');
   });
+
+  // ============ Templates Library ============
+  const TEMPLATES = [
+    // Code
+    { id: 'code_review', domain: 'Code', name: 'Code review',
+      description: 'Review code for correctness, performance, and maintainability.',
+      rawPrompt: 'Review the following code. Flag specific lines that have bugs, security issues, performance problems, or readability concerns. For each issue, explain why and suggest a concrete fix.\n\n[PASTE CODE HERE]' },
+    { id: 'bug_investigation', domain: 'Code', name: 'Bug investigation',
+      description: 'Help find the root cause of a bug from symptoms.',
+      rawPrompt: 'Help me find the root cause of this bug. Symptoms: [DESCRIBE]. Steps to reproduce: [STEPS]. Expected vs actual: [EXPECTED] / [ACTUAL]. Recent changes: [CHANGES].' },
+    { id: 'arch_review', domain: 'Code', name: 'Architecture review',
+      description: 'Critique a system design for scalability and failure modes.',
+      rawPrompt: 'Review this system design. Identify scalability bottlenecks, single points of failure, security concerns, and operational risks. Suggest improvements.\n\nDesign: [DESCRIBE]' },
+    { id: 'refactor', domain: 'Code', name: 'Refactor suggestion',
+      description: 'Propose a cleaner restructuring of working code.',
+      rawPrompt: 'Suggest a refactor for this code. Preserve behavior. Prioritize readability, testability, and removal of duplication.\n\n[PASTE CODE HERE]' },
+
+    // Data analysis
+    { id: 'sql_query', domain: 'Data analysis', name: 'SQL query draft',
+      description: 'Turn a question into a SQL query with explanation.',
+      rawPrompt: 'Write a SQL query that answers: [QUESTION]. Schema: [TABLES AND COLUMNS]. Database flavor: [POSTGRES/MYSQL/etc.]. Explain the query step by step.' },
+    { id: 'data_cleaning', domain: 'Data analysis', name: 'Data cleaning plan',
+      description: 'Plan how to clean and validate a messy dataset.',
+      rawPrompt: 'Plan a data cleaning approach for this dataset. Columns and their issues: [DESCRIBE]. Downstream use: [PURPOSE]. Output a step-by-step cleanup plan with validation checks.' },
+
+    // Legal
+    { id: 'clause_review', domain: 'Legal', name: 'Contract clause review',
+      description: 'Flag risks and red lines in a contract clause.',
+      rawPrompt: 'Review this contract clause. Flag risks for the [BUYER/SELLER/EMPLOYER] side, identify standard-vs-non-standard terms, and suggest red-line edits.\n\nClause: [PASTE TEXT]' },
+    { id: 'policy_compare', domain: 'Legal', name: 'Policy comparison',
+      description: 'Compare two policies side-by-side.',
+      rawPrompt: 'Compare these two policies. Surface where they differ on [PARTICULAR DIMENSIONS]. Format as a table with one row per dimension.\n\nPolicy A: [TEXT]\nPolicy B: [TEXT]' },
+
+    // Marketing
+    { id: 'launch_announce', domain: 'Marketing', name: 'Launch announcement',
+      description: 'Draft a launch announcement that lands as exciting but credible.',
+      rawPrompt: 'Write a launch announcement for [PRODUCT/FEATURE]. Audience: [AUDIENCE]. Key benefits: [BENEFITS]. Tone: exciting but credible — no hype words.' },
+    { id: 'cold_email', domain: 'Marketing', name: 'Cold outreach email',
+      description: 'A short cold email with a clear ask.',
+      rawPrompt: 'Draft a cold email to [PERSON / ROLE] at [COMPANY]. Goal: [GOAL]. Why I am reaching out: [REASON]. Specific ask: [ASK]. Keep under 120 words.' },
+    { id: 'tagline_brainstorm', domain: 'Marketing', name: 'Tagline brainstorm',
+      description: 'Generate 8-10 tagline options for a product.',
+      rawPrompt: 'Brainstorm 8-10 tagline options for [PRODUCT]. Audience: [AUDIENCE]. Differentiator: [DIFFERENTIATOR]. Mix punchy, declarative, and metaphorical styles.' },
+
+    // Research
+    { id: 'research_summary', domain: 'Research', name: 'Research summary',
+      description: 'Summarize a research piece into key findings and implications.',
+      rawPrompt: 'Summarize the key findings of this research. Highlight methodology, limitations, and implications for [DOMAIN/PRACTITIONER].\n\nSource: [PASTE OR DESCRIBE]' },
+    { id: 'lit_compare', domain: 'Research', name: 'Literature comparison',
+      description: 'Compare positions across multiple sources on a topic.',
+      rawPrompt: 'Compare what these sources say about [TOPIC]. For each source, summarize the position, evidence, and assumptions. End with a synthesis.\n\nSources: [LIST OR DESCRIBE]' },
+
+    // General
+    { id: 'meeting_recap', domain: 'General', name: 'Meeting recap',
+      description: 'Turn a meeting transcript into a tight recap with decisions and actions.',
+      rawPrompt: 'Summarize this meeting transcript. Format: decisions made, action items (owner + due), open questions, follow-ups for next meeting.\n\nTranscript: [PASTE]' },
+    { id: 'email_reply', domain: 'General', name: 'Email reply draft',
+      description: 'Draft a reply to a tricky email in a chosen tone.',
+      rawPrompt: 'Draft a reply to this email. My goal in replying: [GOAL]. Tone: [TONE]. Anything to avoid: [AVOID].\n\nEmail: [PASTE]' }
+  ];
+  const TEMPLATE_DOMAINS = ['All', ...DOMAINS];
+  let templateFilter = 'All';
+
+  function loadUserTemplates() { return lsGet('userTemplates', []); }
+  function saveUserTemplates(arr) { lsSet('userTemplates', arr); }
+
+  function renderTemplatePills() {
+    els.templatePills.innerHTML = '';
+    TEMPLATE_DOMAINS.forEach(dom => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'template-pill' + (dom === templateFilter ? ' active' : '');
+      b.textContent = dom;
+      b.addEventListener('click', () => {
+        templateFilter = dom;
+        renderTemplatePills();
+        renderTemplatesGrid();
+      });
+      els.templatePills.appendChild(b);
+    });
+  }
+
+  function allTemplates() {
+    const user = loadUserTemplates().map(t => ({ ...t, _user: true }));
+    return [...user, ...TEMPLATES];
+  }
+
+  function renderTemplatesGrid() {
+    const all = allTemplates();
+    const filtered = templateFilter === 'All' ? all : all.filter(t => t.domain === templateFilter);
+    els.templatesGrid.innerHTML = '';
+    els.templatesEmpty.hidden = filtered.length > 0;
+
+    filtered.forEach(t => {
+      const tile = document.createElement('div');
+      tile.className = 'template-tile' + (t._user ? ' user' : '');
+      const title = document.createElement('div');
+      title.className = 'template-tile-title';
+      title.textContent = t.name;
+      const desc = document.createElement('div');
+      desc.className = 'template-tile-desc';
+      desc.textContent = t.description || '';
+      const domBadge = document.createElement('span');
+      domBadge.className = 'template-tile-domain';
+      domBadge.textContent = t.domain;
+      tile.appendChild(title);
+      tile.appendChild(desc);
+      tile.appendChild(domBadge);
+      tile.addEventListener('click', (e) => {
+        if (e.target.classList.contains('template-tile-remove')) return;
+        applyTemplate(t);
+      });
+      if (t._user) {
+        const rm = document.createElement('button');
+        rm.className = 'template-tile-remove';
+        rm.title = 'Delete template';
+        rm.textContent = '✕';
+        rm.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (!confirm(`Delete template "${t.name}"?`)) return;
+          const next = loadUserTemplates().filter(x => x.id !== t.id);
+          saveUserTemplates(next);
+          renderTemplatesGrid();
+          updateTemplatesBadge();
+        });
+        tile.appendChild(rm);
+      }
+      els.templatesGrid.appendChild(tile);
+    });
+  }
+
+  function updateTemplatesBadge() {
+    const userCount = loadUserTemplates().length;
+    const builtIn = TEMPLATES.length;
+    els.templatesBadge.textContent = userCount
+      ? `${builtIn} built-in · ${userCount} yours`
+      : `${builtIn} built-in`;
+  }
+
+  function applyTemplate(t) {
+    state.domain = t.domain;
+    domainSelect.setValue(t.domain);
+    els.rawPrompt.value = t.rawPrompt;
+    state.raw = t.rawPrompt;
+    updateStage1Sub();
+    els.templatesCard.classList.add('collapsed');
+    els.rawPrompt.focus();
+    toast(`Loaded: ${t.name}`);
+  }
+
+  function openSaveTemplate() {
+    if (!state.raw && !els.rawPrompt.value.trim()) {
+      toast('Nothing to save as template');
+      return;
+    }
+    els.saveTemplateName.value = '';
+    els.saveTemplateDesc.value = '';
+    els.saveTemplatePanel.classList.add('open');
+    setTimeout(() => els.saveTemplateName.focus(), 50);
+  }
+  function closeSaveTemplate() {
+    els.saveTemplatePanel.classList.remove('open');
+  }
+  function confirmSaveTemplate() {
+    const name = els.saveTemplateName.value.trim();
+    const description = els.saveTemplateDesc.value.trim();
+    if (!name) { toast('Name is required'); return; }
+    const t = {
+      id: 'u_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      name,
+      description: description || '(no description)',
+      domain: state.domain || 'General',
+      rawPrompt: state.raw || els.rawPrompt.value.trim(),
+      createdAt: Date.now()
+    };
+    const next = [t, ...loadUserTemplates()].slice(0, 50);
+    saveUserTemplates(next);
+    closeSaveTemplate();
+    updateTemplatesBadge();
+    renderTemplatesGrid();
+    toast(`Saved template "${name}"`);
+  }
+
+  // Wire templates UI
+  els.templatesHeader.addEventListener('click', () => {
+    els.templatesCard.classList.toggle('collapsed');
+  });
+  els.saveTemplateBtn.addEventListener('click', openSaveTemplate);
+  els.saveTemplateCancel.addEventListener('click', closeSaveTemplate);
+  els.saveTemplateConfirm.addEventListener('click', confirmSaveTemplate);
 
   // ============ Reference context (lightweight RAG) ============
   // Files are kept in localStorage so they persist across reloads. Total payload
@@ -3234,9 +3966,13 @@ ${state.raw}
   loadSettings();
   renderHistory();
   renderCtxList();
+  renderTemplatePills();
+  renderTemplatesGrid();
+  updateTemplatesBadge();
   updateStagesNav();
   updateStage1Sub();
   renderSavings();
+  renderBudgetMeter();
   // Defer until after layout has settled to get accurate marker positions
   requestAnimationFrame(updateProgressLine);
 
