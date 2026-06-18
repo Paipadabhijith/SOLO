@@ -274,7 +274,25 @@
     transition: background .12s;
     width: 100%;
     color: inherit;
+    display: flex;
+    gap: 9px;
+    align-items: flex-start;
   }
+  /* Domain-colored status dot, inspired by the reminders pattern */
+  .history-row .h-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-top: 6px;
+    flex-shrink: 0;
+    background: var(--text-mute);
+  }
+  .history-row[data-domain="Code"] .h-dot          { background: #5b9cf7; }
+  .history-row[data-domain="Legal"] .h-dot         { background: #d4793c; }
+  .history-row[data-domain="Marketing"] .h-dot     { background: #d558a2; }
+  .history-row[data-domain="Research"] .h-dot      { background: #8b73f0; }
+  .history-row[data-domain="Data analysis"] .h-dot { background: #34c682; }
+  .history-row[data-domain="General"] .h-dot       { background: #6485c1; }
+  .history-row .h-body { flex: 1; min-width: 0; }
   .history-row:hover { background: var(--surface); }
   .history-row .h-title {
     font-size: 12px; color: var(--text);
@@ -308,9 +326,10 @@
     padding: 32px 40px 60px;
   }
   .workspace-inner { max-width: 720px; margin: 0 auto; transition: max-width .2s ease; }
-  /* Widen the workspace whenever a stage uses a right-sidebar layout */
-  .workspace-inner:has(.stage-pane[data-stage="1"].active),
-  .workspace-inner:has(.stage-pane[data-stage="3"].active) { max-width: 1180px; }
+  /* Widen the workspace when the single-screen compose layout or dashboard is showing.
+     We always widen for the compose section so the 2-col grid breathes. */
+  .workspace-inner:has(#composeSection),
+  .workspace-inner:has(.dashboard-pane.active) { max-width: 1180px; }
 
   /* Shared 2-column layout (main + sticky right sidebar) */
   .stage-pane[data-stage="1"].active,
@@ -329,7 +348,6 @@
     display: flex; flex-direction: column; gap: 12px;
   }
   .stage-pane[data-stage="3"] .stage-side .savings-card { margin-top: 0; }
-  /* Side cards in stage 1 (Templates / Reference) don't need the bottom margin */
   .stage-pane[data-stage="1"] .stage-side .templates-card,
   .stage-pane[data-stage="1"] .stage-side .ctx-card { margin-bottom: 0; }
 
@@ -343,6 +361,97 @@
     .stage-pane[data-stage="1"] .stage-side .templates-card,
     .stage-pane[data-stage="1"] .stage-side .ctx-card { margin-bottom: 12px; }
   }
+
+  /* Hide the home summary on the dashboard view (dashboard has its own KPI grid) */
+  .workspace-inner:has(.dashboard-pane.active) .home-summary { display: none; }
+
+  /* ---------- Single-screen workspace sections ---------- */
+  .ws-section { margin-bottom: 36px; }
+  .ws-section[hidden] { display: none; }
+
+  /* Templates + Reference now sit in a top row instead of the right sidebar */
+  .helper-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  @media (max-width: 720px) { .helper-row { grid-template-columns: 1fr; } }
+  .helper-row .templates-card,
+  .helper-row .ctx-card { margin-bottom: 0; }
+
+  /* Compose: Raw prompt on the left, Clarifications on the right */
+  .compose-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+  }
+  @media (max-width: 920px) {
+    .compose-grid { grid-template-columns: 1fr; }
+  }
+  .compose-raw, .compose-clarify { min-width: 0; }
+  .compose-clarify {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 18px 20px;
+    min-height: 200px;
+  }
+  .clarify-empty {
+    color: var(--text-mute);
+    text-align: center;
+    padding: 28px 16px;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  .clarify-empty .ce-icon {
+    display: block;
+    font-size: 28px;
+    margin-bottom: 10px;
+    opacity: .8;
+  }
+  .clarify-active[hidden], .clarify-empty[hidden] { display: none; }
+  .clarify-hint {
+    font-size: 13px; color: var(--text-dim);
+    margin: 6px 0 14px;
+  }
+
+  /* Left column inside compose grid swaps between raw and optimized views */
+  .left-view[hidden] { display: none; }
+  .left-view-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 8px;
+  }
+  .left-view-toggle {
+    font-size: 12.5px;
+    color: var(--text-mute);
+    cursor: pointer;
+    text-decoration: none;
+    padding: 4px 8px;
+    margin: -4px -8px;
+    border-radius: var(--radius-xs);
+    transition: background .12s, color .12s;
+  }
+  .left-view-toggle:hover {
+    color: var(--accent);
+    background: var(--accent-soft);
+  }
+
+  /* "Clarifications changed — rebuild" indicator */
+  .stale-banner {
+    display: none;
+    background: rgba(245, 166, 35, .12);
+    border: 1px solid rgba(245, 166, 35, .4);
+    color: var(--warning);
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    margin-bottom: 12px;
+  }
+  .stale-banner.show { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .stale-banner b { font-weight: 700; }
+  .stale-banner .btn { background: var(--warning); border-color: var(--warning); height: 32px; padding: 0 14px; font-size: 13px; }
   .workspace-header { margin-bottom: 24px; }
   .workspace-eyebrow {
     font-size: 12px; font-weight: 600; color: var(--accent);
@@ -667,6 +776,38 @@
     letter-spacing: .015em;
   }
 
+  /* Inline provider + model pickers next to the Analyze button */
+  .analyze-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .analyze-model-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+    flex-wrap: wrap;
+  }
+  .analyze-model-label {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--text-mute);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-right: 2px;
+  }
+  .analyze-model-group .pf-select { min-width: 130px; }
+  .analyze-model-group .pf-select-trigger {
+    min-height: 38px;
+    font-size: 13.5px;
+  }
+  @media (max-width: 720px) {
+    .analyze-model-group { margin-left: 0; width: 100%; }
+    .analyze-model-group .pf-select { flex: 1; min-width: 0; }
+  }
+
   /* Question cards */
   .question {
     background: var(--surface);
@@ -849,13 +990,44 @@
     border-radius: var(--radius);
     margin-bottom: 18px;
     overflow: hidden;
+    transition: transform .15s, box-shadow .15s, border-color .15s;
+  }
+  .chart-card:hover {
+    transform: translateY(-1px);
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-md);
   }
   .chart-header {
     padding: 14px 18px;
     border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;
   }
+  .chart-header-content { flex: 1; min-width: 0; }
   .chart-title { font-weight: 600; font-size: 15px; }
   .chart-sub { font-size: 13px; color: var(--text-dim); margin-top: 3px; }
+  .chart-see-more {
+    font-size: 12.5px; font-weight: 600;
+    color: var(--accent);
+    cursor: pointer;
+    text-decoration: none;
+    flex-shrink: 0;
+    padding: 4px 8px;
+    margin: -4px -8px;
+    border-radius: var(--radius-xs);
+    transition: background .12s;
+    white-space: nowrap;
+  }
+  .chart-see-more:hover { background: var(--accent-soft); text-decoration: none; }
+
+  /* Magazine-style 2-column grid for paired cards */
+  .dashboard-grid-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 18px;
+  }
+  @media (max-width: 920px) { .dashboard-grid-2col { grid-template-columns: 1fr; } }
+  .dashboard-grid-2col .chart-card { margin-bottom: 0; }
   .chart-body { padding: 18px 20px; }
   .chart-empty {
     text-align: center;
@@ -910,6 +1082,199 @@
     border-radius: 2px;
   }
 
+  /* ---------- Home summary banner (top of Stage 1) ---------- */
+  .home-summary {
+    background: linear-gradient(135deg, var(--accent-soft), var(--surface) 70%);
+    border: 1px solid var(--accent-ring);
+    border-radius: var(--radius);
+    padding: 16px 20px 18px;
+    margin-bottom: 22px;
+  }
+  .home-summary[hidden] { display: none; }
+  .hs-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap; gap: 8px;
+  }
+  .hs-title {
+    font-size: 12px; font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase; letter-spacing: .07em;
+  }
+  .hs-current {
+    background: var(--accent);
+    color: white;
+    padding: 3px 11px;
+    border-radius: 999px;
+    font-size: 12px; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .hs-current[hidden] { display: none; }
+
+  .hs-stats {
+    display: flex; align-items: baseline;
+    gap: 22px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .hs-stat {
+    display: flex; flex-direction: column; gap: 1px;
+  }
+  .hs-stat-num {
+    font-size: 22px; font-weight: 700; color: var(--text);
+    letter-spacing: -0.02em; line-height: 1.05;
+  }
+  .hs-stat-label {
+    font-size: 11.5px; color: var(--text-mute);
+    text-transform: uppercase; letter-spacing: .05em;
+    font-weight: 600;
+  }
+  .hs-stat-num .small {
+    font-size: 14px; font-weight: 500; color: var(--text-dim);
+    margin-left: 4px;
+  }
+
+  .hs-impact {
+    padding-top: 12px;
+    border-top: 1px dashed var(--accent-ring);
+    font-size: 13.5px; color: var(--text-dim);
+    display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+  }
+  .hs-impact-prefix {
+    color: var(--text-mute); font-weight: 500;
+  }
+  .hs-impact-item {
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .hs-impact-icon { font-size: 16px; }
+  .hs-impact-value {
+    font-weight: 700; color: var(--text);
+    font-family: var(--mono);
+  }
+
+  /* ---------- Environmental impact section ---------- */
+  .impact-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+  @media (max-width: 880px) { .impact-grid { grid-template-columns: 1fr; } }
+
+  .impact-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 22px 20px;
+    transition: transform .15s, box-shadow .15s, border-color .15s;
+    position: relative;
+    overflow: hidden;
+  }
+  .impact-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--impact-tint, transparent) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .impact-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--border-strong);
+  }
+  .impact-card.water { --impact-tint: rgba(74, 169, 224, .08); }
+  .impact-card.co2   { --impact-tint: rgba(76, 175, 80, .08); }
+  .impact-card.power { --impact-tint: rgba(245, 166, 35, .08); }
+
+  .impact-icon {
+    font-size: 38px;
+    line-height: 1;
+    margin-bottom: 12px;
+    display: inline-block;
+    filter: saturate(1.1);
+  }
+  .impact-cat {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--text-mute);
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    margin-bottom: 6px;
+  }
+  .impact-value-row {
+    display: flex; align-items: baseline; gap: 6px;
+  }
+  .impact-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+  }
+  .impact-card.water .impact-value { color: #2c8cc3; }
+  .impact-card.co2 .impact-value   { color: #2e8b41; }
+  .impact-card.power .impact-value { color: #c47e15; }
+  [data-theme="dark"] .impact-card.water .impact-value { color: #6fc1ed; }
+  [data-theme="dark"] .impact-card.co2 .impact-value   { color: #6dde87; }
+  [data-theme="dark"] .impact-card.power .impact-value { color: #f5b85a; }
+  .impact-unit {
+    font-size: 13.5px;
+    color: var(--text-mute);
+    font-weight: 500;
+  }
+
+  .impact-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 18px 0 12px;
+  }
+
+  .impact-eq-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13.5px;
+    color: var(--text-dim);
+    padding: 5px 0;
+    line-height: 1.4;
+  }
+  .impact-eq-icon {
+    font-size: 18px;
+    width: 24px;
+    flex-shrink: 0;
+    text-align: center;
+    filter: saturate(.9);
+  }
+  .impact-eq-label {
+    flex: 1;
+  }
+  .impact-eq-val {
+    font-weight: 700;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 13.5px;
+  }
+
+  .impact-disclaimer {
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--border);
+    font-size: 12px;
+    color: var(--text-mute);
+    line-height: 1.55;
+  }
+
+  /* Cumulative chart: annotation styling */
+  .chart-annotation {
+    fill: var(--accent);
+    font-weight: 700;
+    font-size: 13px;
+    font-family: var(--sans);
+  }
+  .chart-annotation-bg {
+    fill: var(--surface);
+    opacity: .85;
+  }
+
   .alloc-bar {
     display: flex; width: 100%; height: 24px;
     border-radius: var(--radius-xs); overflow: hidden;
@@ -949,96 +1314,85 @@
     font-size: 11px; color: var(--text-dim); display: block; margin-top: 2px;
   }
 
-  .savings-card {
-    margin-top: 28px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
+  /* Token efficiency ticker — single horizontal bar */
+  .savings-ticker {
+    display: flex; align-items: center; gap: 12px;
+    padding: 8px 14px;
     background: var(--surface);
-    overflow: hidden;
-  }
-  .savings-card[hidden] { display: none; }
-  .savings-card-header {
-    padding: 12px 18px;
-    background: var(--surface-2);
-    border-bottom: 1px solid var(--border);
-    display: flex; justify-content: space-between; align-items: center;
-  }
-  .savings-card-title {
-    font-weight: 600; font-size: 14px;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .savings-card-toggle {
-    background: transparent; border: none;
-    color: var(--text-mute); cursor: pointer; font-size: 12px;
-    padding: 4px 8px;
-  }
-  .savings-card-toggle:hover { color: var(--accent); }
-  .savings-card-body { padding: 18px 20px; }
-  .savings-card.collapsed .savings-card-body { display: none; }
-
-  .savings-headline {
-    display: flex; align-items: baseline; gap: 10px;
-    margin-bottom: 18px; flex-wrap: wrap;
-  }
-  .savings-headline .num {
-    font-size: 32px; font-weight: 700; color: var(--success);
-    letter-spacing: -0.025em; line-height: 1;
-  }
-  .savings-headline .label { font-size: 14px; color: var(--text-dim); }
-
-  .savings-compare {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-    margin-bottom: 16px;
-  }
-  /* When the savings card lives in the narrow right sidebar, stack the comparison */
-  .stage-side .savings-compare { grid-template-columns: 1fr; }
-  .stage-side .savings-card-body { padding: 16px; }
-  .stage-side .savings-headline .num { font-size: 26px; }
-  .savings-col {
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
-    padding: 12px 14px;
-    background: var(--surface);
+    margin: 0 0 22px;
+    font-size: 13px;
+    overflow-x: auto;
+    white-space: nowrap;
   }
-  .savings-col.naive { background: var(--surface-2); border-style: dashed; }
-  .savings-col-label {
-    font-size: 11.5px; font-weight: 600; color: var(--text-mute);
-    text-transform: uppercase; letter-spacing: .07em;
-    margin-bottom: 6px;
+  .savings-ticker[hidden] { display: none; }
+  .tk-icon { font-size: 15px; flex-shrink: 0; }
+  .tk-label-strong {
+    font-size: 10px; font-weight: 800;
+    color: var(--text-mute);
+    text-transform: uppercase; letter-spacing: .12em;
+    flex-shrink: 0;
   }
-  .savings-col-value { font-size: 22px; font-weight: 700; letter-spacing: -0.015em; }
-  .savings-col-sub {
-    font-size: 11px; color: var(--text-mute);
-    font-family: var(--mono); margin-top: 4px;
+  .tk-group { display: inline-flex; align-items: baseline; gap: 5px; flex-shrink: 0; }
+  .tk-group.main { gap: 6px; }
+  .tk-arrow {
+    color: var(--success);
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1;
   }
-
-  .savings-breakdown {
-    display: flex; flex-direction: column; gap: 5px;
-    padding: 12px 14px;
-    background: var(--surface-2);
-    border-radius: var(--radius-sm);
-    margin-bottom: 12px;
+  .tk-num {
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1;
   }
-  .savings-row {
-    display: flex; justify-content: space-between;
-    font-size: 12.5px;
+  .tk-num.savings { color: var(--success); font-size: 17px; }
+  .tk-label {
+    font-size: 10px;
+    color: var(--text-mute);
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    font-weight: 700;
   }
-  .savings-row .k { color: var(--text-dim); }
-  .savings-row .v { font-family: var(--mono); color: var(--text); font-weight: 500; }
-
-  .savings-disclaimer {
+  .tk-unit { color: var(--text-dim); font-size: 12px; }
+  .tk-pct {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-dim);
+  }
+  .tk-money {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--success);
+  }
+  .tk-money.muted { color: var(--text-mute); font-weight: 500; }
+  .tk-sep {
+    width: 1px; height: 22px;
+    background: var(--border);
+    flex-shrink: 0;
+  }
+  .tk-spacer { flex: 1; min-width: 12px; }
+  .tk-ctrl {
+    display: inline-flex; align-items: center; gap: 6px;
     font-size: 11.5px; color: var(--text-mute);
-    line-height: 1.55;
-    padding-top: 12px;
-    border-top: 1px dashed var(--border);
+    flex-shrink: 0;
   }
-  .savings-control {
-    display: flex; align-items: center; gap: 8px;
-    font-size: 12px; color: var(--text-dim);
-    margin-bottom: 14px;
+  .tk-ctrl-mount .pf-select { min-width: 56px; }
+  .tk-ctrl-mount .pf-select-trigger { height: 24px; min-height: 24px; padding: 1px 22px 1px 8px; font-size: 11.5px; }
+  .tk-btn {
+    background: transparent; border: 1px solid var(--border);
+    cursor: pointer; padding: 3px 8px;
+    border-radius: var(--radius-xs);
+    font-size: 13px;
+    color: var(--text-dim);
+    flex-shrink: 0;
   }
-  .savings-control .pf-select { min-width: 80px; }
-  .savings-control .pf-select-trigger { height: 30px; min-height: 30px; padding: 4px 28px 4px 10px; font-size: 12.5px; }
+  .tk-btn:hover { color: var(--accent); border-color: var(--accent); }
 
   /* ---------- Modal ---------- */
   .modal-backdrop {
@@ -2042,36 +2396,80 @@
   <main class="workspace">
     <div class="workspace-inner">
 
-      <!-- Stage 1 -->
-      <section class="stage-pane active" data-stage="1">
-        <div class="stage-main">
-          <div class="workspace-header">
-            <div class="workspace-eyebrow">Stage 1 of 3</div>
-            <h1 class="workspace-title">Raw prompt</h1>
-            <div class="workspace-subtitle">Write or paste your prompt. SOLO will spot what's ambiguous and offer focused dropdowns to sharpen it.</div>
+      <!-- Always-visible home summary (hidden on dashboard via CSS) -->
+      <div class="home-summary" id="homeSummary" hidden>
+        <div class="hs-header">
+          <span class="hs-title">Your savings so far</span>
+          <span class="hs-current" id="hsCurrent" hidden>Current prompt: <span id="hsCurrentVal">↓ 0</span></span>
+        </div>
+        <div class="hs-stats">
+          <div class="hs-stat">
+            <span class="hs-stat-num" id="hsTokens">0</span>
+            <span class="hs-stat-label">tokens saved</span>
           </div>
-
-          <div id="keyHint" class="hint" hidden>
-            <b>First time?</b> Add your API key in <a id="openSettingsLink">Settings ⚙</a>.<br/>
-            Your key lives only in this browser's localStorage and goes straight to the provider. Pick Anthropic or OpenAI, paste a key, and you're set.
+          <div class="hs-stat">
+            <span class="hs-stat-num" id="hsDollars">$0</span>
+            <span class="hs-stat-label">cost saved</span>
           </div>
-
-          <div class="compose-domain">
-            <span class="compose-domain-label">Domain</span>
-            <div id="domainSelectMount" style="flex: 1; max-width: 280px;"></div>
+          <div class="hs-stat">
+            <span class="hs-stat-num" id="hsPrompts">0</span>
+            <span class="hs-stat-label">prompts forged</span>
           </div>
-
-          <textarea id="rawPrompt" placeholder="e.g. Write a launch announcement for our new feature. Make it sound exciting but credible."></textarea>
-
-          <div class="btn-row">
-            <button class="btn btn-lg" id="analyzeBtn">
-              Analyze <kbd>⌘↵</kbd>
-            </button>
+          <div class="hs-stat">
+            <span class="hs-stat-num" id="hsAvgPct">0%</span>
+            <span class="hs-stat-label">less than naive</span>
           </div>
-          <div id="stage1Status"></div>
+        </div>
+        <div class="hs-impact">
+          <span class="hs-impact-prefix">≈</span>
+          <span id="hsImpactItems"></span>
+        </div>
+      </div>
+
+      <!-- Token efficiency ticker — single horizontal bar (appears after Build) -->
+      <div class="savings-ticker" id="savingsCard" hidden>
+        <span class="tk-icon">⚡</span>
+        <span class="tk-label-strong">EFFICIENCY</span>
+        <span class="tk-group main">
+          <span class="tk-arrow">↓</span>
+          <span class="tk-num savings" id="tkSaved">0</span>
+          <span class="tk-unit">saved</span>
+          <span class="tk-pct" id="tkPct">—</span>
+          <span class="tk-money" id="tkSavedUsd"></span>
+        </span>
+        <span class="tk-sep"></span>
+        <span class="tk-group">
+          <span class="tk-label">SOLO</span>
+          <span class="tk-num" id="tkSolo">0</span>
+          <span class="tk-money muted" id="tkSoloUsd"></span>
+        </span>
+        <span class="tk-sep"></span>
+        <span class="tk-group">
+          <span class="tk-label">Naive</span>
+          <span class="tk-num" id="tkNaive">0</span>
+          <span class="tk-money muted" id="tkNaiveUsd"></span>
+        </span>
+        <span class="tk-spacer"></span>
+        <span class="tk-ctrl">
+          vs <div id="savingsTurnsMount" class="tk-ctrl-mount"></div> turns
+        </span>
+        <button class="tk-btn" id="openDashboardFromCard" title="Open dashboard">📊</button>
+      </div>
+
+      <!-- Compose section: Raw prompt + Clarifications side-by-side -->
+      <section class="ws-section" id="composeSection">
+        <div class="workspace-header">
+          <div class="workspace-eyebrow">Compose</div>
+          <h1 class="workspace-title">Prompt</h1>
+          <div class="workspace-subtitle">Write your prompt and click Analyze. SOLO will offer clarifications you can tweak any time — changing them rebuilds the optimized prompt below.</div>
         </div>
 
-        <aside class="stage-side">
+        <div id="keyHint" class="hint" hidden>
+          <b>No API key for this provider yet.</b> Add it in <a id="openSettingsLink">Settings ⚙</a> — your key lives only in this browser's localStorage and goes straight to the provider. SOLO supports Claude, OpenAI, and Gemini, each with its own key.
+        </div>
+
+        <!-- Templates + Reference: top toolbar row -->
+        <div class="helper-row">
           <div class="templates-card collapsed" id="templatesCard">
             <div class="ctx-header" id="templatesHeader">
               <div class="ctx-title">
@@ -2112,114 +2510,97 @@
                 <span class="ctx-total" id="ctxTotal">0 KB · 0 tokens</span>
               </div>
               <div class="ctx-note">
-                Files are sent in full as additional context to the analyze step (not embeddings-based retrieval). Keep total size small to avoid runaway token costs.
+                Files are sent in full as additional context to the analyze step. Keep total size small to avoid runaway token costs.
               </div>
             </div>
           </div>
-        </aside>
-      </section>
-
-      <!-- Stage 2 -->
-      <section class="stage-pane" data-stage="2">
-        <div class="workspace-header">
-          <div class="workspace-eyebrow">Stage 2 of 3</div>
-          <h1 class="workspace-title">Clarify</h1>
-          <div class="workspace-subtitle">Pick the answer that fits each question, or choose <b>Other…</b> to type your own. Defaults are pre-selected — hit Build right away if they look right.</div>
         </div>
 
-        <div id="questionsContainer"></div>
-
-        <div class="btn-row">
-          <button class="btn" id="buildBtn">Build optimized prompt</button>
-          <button class="btn ghost" id="backToRawBtn">← Back</button>
-        </div>
-        <div id="stage2Status"></div>
-        <div class="usage" id="stage2Usage"></div>
-      </section>
-
-      <!-- Stage 3 -->
-      <section class="stage-pane" data-stage="3">
-        <div class="stage-main">
-          <div class="workspace-header">
-            <div class="workspace-eyebrow">Stage 3 of 3</div>
-            <h1 class="workspace-title">Optimized prompt</h1>
-            <div class="workspace-subtitle">Your sharpened prompt, ready to use. Edit freely, copy to clipboard, or run it through the LLM right here.</div>
-          </div>
-
-          <label class="field-label" for="optimizedPrompt">Final prompt (editable)</label>
-          <textarea id="optimizedPrompt" class="optimized"></textarea>
-
-          <div class="btn-row">
-            <button class="btn" id="runBtn">Run prompt</button>
-            <button class="btn secondary" id="copyBtn">Copy</button>
-            <button class="btn ghost" id="saveTemplateBtn">+ Save as template</button>
-            <button class="btn ghost" id="startOverBtn">Start over</button>
-          </div>
-
-          <div class="save-template-panel" id="saveTemplatePanel">
-            <div class="field-row">
-              <label for="saveTemplateName">Name</label>
-              <input type="text" id="saveTemplateName" placeholder="e.g. Weekly status update" />
-            </div>
-            <div class="field-row">
-              <label for="saveTemplateDesc">Short description</label>
-              <input type="text" id="saveTemplateDesc" placeholder="One sentence on what this template is for" />
-            </div>
-            <div class="actions">
-              <button class="btn ghost sm" id="saveTemplateCancel">Cancel</button>
-              <button class="btn sm" id="saveTemplateConfirm">Save</button>
-            </div>
-          </div>
-          <div id="stage3Status"></div>
-          <div class="usage" id="stage3Usage"></div>
-
-          <div id="runWrap" hidden>
-            <div class="run-divider">Result</div>
-            <div id="runOutput" class="run-output"></div>
-            <div class="usage" id="runUsage"></div>
-          </div>
+        <div class="compose-domain">
+          <span class="compose-domain-label">Domain</span>
+          <div id="domainSelectMount" style="flex: 1; max-width: 280px;"></div>
         </div>
 
-        <aside class="stage-side">
-        <div class="savings-card" id="savingsCard" hidden>
-          <div class="savings-card-header">
-            <div class="savings-card-title">⚡ Token efficiency vs naive iteration</div>
-            <div style="display: flex; gap: 4px;">
-              <button class="savings-card-toggle" id="openDashboardFromCard" title="Open dashboard">📊</button>
-              <button class="savings-card-toggle" id="savingsToggle" title="Collapse">▾</button>
-            </div>
-          </div>
-          <div class="savings-card-body">
-            <div class="savings-control">
-              Compare against
-              <div id="savingsTurnsMount"></div>
-              naive chat turns to reach a similar answer.
-            </div>
-
-            <div class="savings-headline">
-              <span class="num" id="savingsHeadlineNum">—</span>
-              <span class="label" id="savingsHeadlineLabel"></span>
-            </div>
-
-            <div class="savings-compare">
-              <div class="savings-col">
-                <div class="savings-col-label">SOLO (actual)</div>
-                <div class="savings-col-value" id="savingsPF">—</div>
-                <div class="savings-col-sub" id="savingsPFSub"></div>
+        <!-- Raw prompt + Clarifications: 2-column grid -->
+        <div class="compose-grid">
+          <div class="compose-raw">
+            <!-- Raw view: shown before build (or when user clicks "Edit raw") -->
+            <div class="left-view raw-view" id="rawView">
+              <label class="field-label" for="rawPrompt">Raw prompt</label>
+              <textarea id="rawPrompt" placeholder="e.g. Write a launch announcement for our new feature. Make it sound exciting but credible."></textarea>
+              <div class="btn-row analyze-row">
+                <button class="btn btn-lg" id="analyzeBtn">
+                  Analyze <kbd>⌘↵</kbd>
+                </button>
+                <div class="analyze-model-group">
+                  <span class="analyze-model-label">Using</span>
+                  <div id="analyzeProviderMount"></div>
+                  <div id="analyzeModelMount"></div>
+                </div>
               </div>
-              <div class="savings-col naive">
-                <div class="savings-col-label">Naive (estimated)</div>
-                <div class="savings-col-value" id="savingsNaive">—</div>
-                <div class="savings-col-sub" id="savingsNaiveSub"></div>
+              <div id="stage1Status"></div>
+            </div>
+
+            <!-- Optimized view: replaces raw view after Build -->
+            <div class="left-view optimized-view" id="optimizedView" hidden>
+              <div class="left-view-header">
+                <label class="field-label" for="optimizedPrompt">Optimized prompt (editable)</label>
+                <a class="left-view-toggle" id="editRawLink">← Edit raw prompt</a>
+              </div>
+              <div class="stale-banner" id="staleBanner">
+                <span><b>Clarifications changed.</b> Rebuild to regenerate the optimized prompt.</span>
+                <button class="btn" id="rebuildBtn">Rebuild now</button>
+              </div>
+              <textarea id="optimizedPrompt" class="optimized"></textarea>
+              <div class="btn-row">
+                <button class="btn" id="runBtn">Run prompt</button>
+                <button class="btn secondary" id="copyBtn">Copy</button>
+                <button class="btn ghost" id="saveTemplateBtn">+ Save as template</button>
+                <button class="btn ghost" id="startOverBtn">Start over</button>
+              </div>
+              <div class="save-template-panel" id="saveTemplatePanel">
+                <div class="field-row">
+                  <label for="saveTemplateName">Name</label>
+                  <input type="text" id="saveTemplateName" placeholder="e.g. Weekly status update" />
+                </div>
+                <div class="field-row">
+                  <label for="saveTemplateDesc">Short description</label>
+                  <input type="text" id="saveTemplateDesc" placeholder="One sentence on what this template is for" />
+                </div>
+                <div class="actions">
+                  <button class="btn ghost sm" id="saveTemplateCancel">Cancel</button>
+                  <button class="btn sm" id="saveTemplateConfirm">Save</button>
+                </div>
+              </div>
+              <div id="stage3Status"></div>
+              <div class="usage" id="stage3Usage"></div>
+              <div id="runWrap" hidden>
+                <div class="run-divider">Result</div>
+                <div id="runOutput" class="run-output"></div>
+                <div class="usage" id="runUsage"></div>
               </div>
             </div>
+          </div>
 
-            <div class="savings-breakdown" id="savingsBreakdown"></div>
-            <div class="savings-disclaimer" id="savingsDisclaimer"></div>
+          <div class="compose-clarify">
+            <div class="clarify-empty" id="clarifyEmpty">
+              <span class="ce-icon">←</span>
+              Click <b>Analyze</b> to generate clarification questions tailored to your prompt.
+            </div>
+            <div class="clarify-active" id="clarifyActive" hidden>
+              <label class="field-label">Clarifications</label>
+              <p class="clarify-hint">Pick the answer that fits each question. Changing any answer below makes the optimized prompt stale — hit <b>Build</b> to regenerate it.</p>
+              <div id="questionsContainer"></div>
+              <div class="btn-row">
+                <button class="btn" id="buildBtn">Build optimized prompt</button>
+              </div>
+              <div id="stage2Status"></div>
+              <div class="usage" id="stage2Usage"></div>
+            </div>
           </div>
         </div>
-        </aside>
       </section>
+
 
       <!-- Dashboard pane -->
       <section class="dashboard-pane" data-view="dashboard">
@@ -2255,29 +2636,65 @@
           </div>
         </div>
 
+        <!-- Hero: Environmental Impact (full width, 3 sub-cards inside) -->
         <div class="chart-card">
           <div class="chart-header">
-            <div class="chart-title">Current prompt — SOLO vs Naive</div>
-            <div class="chart-sub">Stacked totals show where tokens go in each approach.</div>
+            <div class="chart-header-content">
+              <div class="chart-title">🌱 Environmental impact</div>
+              <div class="chart-sub">Estimated impact of tokens saved across your history, using industry-average constants for medium-LLM inference and data-center cooling.</div>
+            </div>
+            <a class="chart-see-more" id="impactRefresh" title="Refresh analogies">↻ Refresh</a>
           </div>
-          <div class="chart-body" id="chartCompareMount"></div>
-          <div class="chart-legend" id="chartCompareLegend"></div>
+          <div class="chart-body">
+            <div class="impact-grid" id="impactGrid"></div>
+            <div class="impact-disclaimer" id="impactDisclaimer"></div>
+          </div>
         </div>
 
+        <!-- Cumulative timeline: full width since it benefits from horizontal room -->
         <div class="chart-card">
           <div class="chart-header">
-            <div class="chart-title">Savings across history</div>
-            <div class="chart-sub">Tokens saved vs naive baseline, per prompt (oldest → newest).</div>
+            <div class="chart-header-content">
+              <div class="chart-title">📈 Cumulative savings</div>
+              <div class="chart-sub">Running total of tokens saved across all prompts in history (oldest → newest).</div>
+            </div>
+          </div>
+          <div class="chart-body" id="chartCumulativeMount"></div>
+        </div>
+
+        <!-- 2-column pair: current-prompt compare + allocation -->
+        <div class="dashboard-grid-2col">
+          <div class="chart-card">
+            <div class="chart-header">
+              <div class="chart-header-content">
+                <div class="chart-title">Current prompt — SOLO vs Naive</div>
+                <div class="chart-sub">Stacked totals show where tokens go in each approach.</div>
+              </div>
+            </div>
+            <div class="chart-body" id="chartCompareMount"></div>
+            <div class="chart-legend" id="chartCompareLegend"></div>
+          </div>
+
+          <div class="chart-card">
+            <div class="chart-header">
+              <div class="chart-header-content">
+                <div class="chart-title">Where SOLO spends tokens</div>
+                <div class="chart-sub">Distribution across the three pipeline stages for the current prompt.</div>
+              </div>
+            </div>
+            <div class="chart-body" id="chartAllocationMount"></div>
+          </div>
+        </div>
+
+        <!-- Full width: per-prompt history line chart -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-header-content">
+              <div class="chart-title">Savings across history</div>
+              <div class="chart-sub">Tokens saved vs naive baseline, per prompt (oldest → newest).</div>
+            </div>
           </div>
           <div class="chart-body" id="chartHistoryMount"></div>
-        </div>
-
-        <div class="chart-card">
-          <div class="chart-header">
-            <div class="chart-title">Where SOLO spends tokens</div>
-            <div class="chart-sub">Distribution across the three pipeline stages for the current prompt.</div>
-          </div>
-          <div class="chart-body" id="chartAllocationMount"></div>
         </div>
       </section>
 
@@ -2348,8 +2765,14 @@
 
   const MODEL_SUGGESTIONS = {
     anthropic: ['claude-opus-4-7', 'claude-sonnet-4-6', 'claude-haiku-4-5-20251001', 'claude-opus-4-6'],
-    openai: ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'o1', 'o1-mini']
+    openai:    ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'o1', 'o1-mini'],
+    gemini:    ['gemini-2.0-flash', 'gemini-2.0-pro', 'gemini-1.5-pro', 'gemini-1.5-flash']
   };
+  // Brand labels used in the UI (the internal value is the provider key)
+  const PROVIDER_LABELS = { anthropic: 'Claude', openai: 'OpenAI', gemini: 'Gemini' };
+  const LABEL_TO_PROVIDER = { Claude: 'anthropic', OpenAI: 'openai', Gemini: 'gemini' };
+  const PROVIDER_OPTIONS = ['Claude', 'OpenAI', 'Gemini'];
+
   const DOMAINS = ['General', 'Code', 'Legal', 'Research', 'Marketing', 'Data analysis'];
 
   // ============ State ============
@@ -2363,7 +2786,8 @@
     optimized: '',
     runOutput: '',
     usage: { stage2: null, stage3: null, run: null },
-    naiveTurns: 3
+    naiveTurns: 3,
+    showRawView: false   // when true, force the raw view even after Build (used by "Edit raw" toggle)
   };
 
   // ============ DOM ============
@@ -2378,11 +2802,20 @@
     chartCompareMount: $('chartCompareMount'), chartCompareLegend: $('chartCompareLegend'),
     chartHistoryMount: $('chartHistoryMount'),
     chartAllocationMount: $('chartAllocationMount'),
+    impactGrid: $('impactGrid'), impactDisclaimer: $('impactDisclaimer'),
+    chartCumulativeMount: $('chartCumulativeMount'),
+    homeSummary: $('homeSummary'),
+    hsCurrent: $('hsCurrent'), hsCurrentVal: $('hsCurrentVal'),
+    hsTokens: $('hsTokens'), hsDollars: $('hsDollars'),
+    hsPrompts: $('hsPrompts'), hsAvgPct: $('hsAvgPct'),
+    hsImpactItems: $('hsImpactItems'),
     stagesNav: $('stagesNav'),
     stage1Sub: $('stage1Sub'), stage2Sub: $('stage2Sub'), stage3Sub: $('stage3Sub'),
     historyList: $('historyList'), newPromptBtn: $('newPromptBtn'),
     keyHint: $('keyHint'), openSettingsLink: $('openSettingsLink'),
     domainMount: $('domainSelectMount'),
+    analyzeProviderMount: $('analyzeProviderMount'),
+    analyzeModelMount: $('analyzeModelMount'),
     templatesCard: $('templatesCard'), templatesHeader: $('templatesHeader'),
     templatesBadge: $('templatesBadge'), templatePills: $('templatePills'),
     templatesGrid: $('templatesGrid'), templatesEmpty: $('templatesEmpty'),
@@ -2395,20 +2828,26 @@
     rawPrompt: $('rawPrompt'),
     analyzeBtn: $('analyzeBtn'),
     stage1Status: $('stage1Status'),
+    composeSection: $('composeSection'),
+    rawView: $('rawView'),
+    optimizedView: $('optimizedView'),
+    editRawLink: $('editRawLink'),
+    clarifyEmpty: $('clarifyEmpty'),
+    clarifyActive: $('clarifyActive'),
+    staleBanner: $('staleBanner'), rebuildBtn: $('rebuildBtn'),
     questionsContainer: $('questionsContainer'),
-    buildBtn: $('buildBtn'), backToRawBtn: $('backToRawBtn'),
+    buildBtn: $('buildBtn'),
     stage2Status: $('stage2Status'), stage2Usage: $('stage2Usage'),
     optimizedPrompt: $('optimizedPrompt'),
     runBtn: $('runBtn'), copyBtn: $('copyBtn'), startOverBtn: $('startOverBtn'),
     stage3Status: $('stage3Status'), stage3Usage: $('stage3Usage'),
     runWrap: $('runWrap'), runOutput: $('runOutput'), runUsage: $('runUsage'),
     savingsPill: $('savingsPill'), savingsPillNum: $('savingsPillNum'), savingsPillSub: $('savingsPillSub'),
-    savingsCard: $('savingsCard'), savingsToggle: $('savingsToggle'),
+    savingsCard: $('savingsCard'),
     savingsTurnsMount: $('savingsTurnsMount'),
-    savingsHeadlineNum: $('savingsHeadlineNum'), savingsHeadlineLabel: $('savingsHeadlineLabel'),
-    savingsPF: $('savingsPF'), savingsPFSub: $('savingsPFSub'),
-    savingsNaive: $('savingsNaive'), savingsNaiveSub: $('savingsNaiveSub'),
-    savingsBreakdown: $('savingsBreakdown'), savingsDisclaimer: $('savingsDisclaimer'),
+    tkSaved: $('tkSaved'), tkSavedUsd: $('tkSavedUsd'), tkPct: $('tkPct'),
+    tkSolo: $('tkSolo'), tkSoloUsd: $('tkSoloUsd'),
+    tkNaive: $('tkNaive'), tkNaiveUsd: $('tkNaiveUsd'),
     loginOverlay: $('loginOverlay'),
     loginEmailForm: $('loginEmailForm'),
     loginEmail: $('loginEmail'), loginPassword: $('loginPassword'),
@@ -2614,35 +3053,50 @@
 
   // ============ Settings ============
   let providerSelect = null;
+  // Read settings with backward-compat for the old `apiKey` field
+  function readSettings() {
+    const stored = lsGet('settings', null);
+    if (!stored) return { provider: 'anthropic', model: 'claude-opus-4-7', apiKeys: {} };
+    const s = { ...stored };
+    s.apiKeys = s.apiKeys || {};
+    // One-time migration: lift the legacy single apiKey into apiKeys[provider]
+    if (s.apiKey) {
+      if (!s.apiKeys[s.provider]) s.apiKeys[s.provider] = s.apiKey;
+      delete s.apiKey;
+      lsSet('settings', s);
+    }
+    return s;
+  }
+  function writeSettings(s) { lsSet('settings', s); }
+
   function loadSettings() {
-    const s = lsGet('settings', { provider: 'anthropic', model: 'claude-opus-4-7', apiKey: '' });
-    if (providerSelect) providerSelect.setValue(s.provider === 'openai' ? 'OpenAI' : 'Anthropic');
+    const s = readSettings();
+    if (providerSelect) providerSelect.setValue(PROVIDER_LABELS[s.provider] || 'Claude');
     els.model.value = s.model || '';
-    els.apiKey.value = s.apiKey || '';
+    els.apiKey.value = s.apiKeys[s.provider] || '';
     refreshModelSuggestions(s.provider);
     refreshKeyHint();
-    // Budget field
     if (els.budgetInput) {
       const b = getBudget();
       els.budgetInput.value = b == null ? '' : b;
     }
+    // Sync inline pickers (created during init, may not exist yet on first call)
+    syncInlinePickers(s);
     return s;
   }
   function saveSettings() {
     const provLabel = providerSelect.getValue();
-    const provider = provLabel.toLowerCase() === 'openai' ? 'openai' : 'anthropic';
-    const s = {
-      provider,
-      model: els.model.value.trim(),
-      apiKey: els.apiKey.value.trim()
-    };
-    lsSet('settings', s);
+    const provider = LABEL_TO_PROVIDER[provLabel] || 'anthropic';
+    const cur = readSettings();
+    const apiKeys = cur.apiKeys || {};
+    apiKeys[provider] = els.apiKey.value.trim();
+    const s = { provider, model: els.model.value.trim(), apiKeys };
+    writeSettings(s);
     refreshKeyHint();
-    // Persist budget
     setBudget(els.budgetInput.value);
     renderBudgetMeter();
-    // Re-render any visible $ readouts
     renderSavings();
+    syncInlinePickers(s);
     return s;
   }
   function refreshModelSuggestions(provider) {
@@ -2650,16 +3104,19 @@
       .map(m => `<option value="${m}">`).join('');
   }
   function refreshKeyHint() {
-    const s = lsGet('settings', { apiKey: '' });
-    els.keyHint.hidden = !!(s.apiKey && s.apiKey.length > 0);
+    const s = readSettings();
+    const hasKey = !!(s.apiKeys && s.apiKeys[s.provider] && s.apiKeys[s.provider].length);
+    els.keyHint.hidden = hasKey;
   }
+  // Forward declaration; defined after the inline pickers are mounted
+  let syncInlinePickers = () => {};
 
   // Mount provider select in modal
   providerSelect = PFSelect({
-    options: ['Anthropic', 'OpenAI'],
+    options: PROVIDER_OPTIONS,
     full: true,
     onChange: (v) => {
-      const p = v.toLowerCase();
+      const p = LABEL_TO_PROVIDER[v] || 'anthropic';
       refreshModelSuggestions(p);
       const current = els.model.value.trim();
       const inNewList = MODEL_SUGGESTIONS[p].includes(current);
@@ -2668,6 +3125,9 @@
       if (!current || (inOtherList && !inNewList)) {
         els.model.value = MODEL_SUGGESTIONS[p][0];
       }
+      // Show the API key stored for the newly-selected provider
+      const cur = readSettings();
+      els.apiKey.value = cur.apiKeys?.[p] || '';
     }
   });
   els.providerMount.appendChild(providerSelect.root);
@@ -2700,6 +3160,55 @@
   });
   els.domainMount.appendChild(domainSelect.root);
 
+  // ============ Inline provider + model pickers (next to Analyze button) ============
+  // Read initial values from settings
+  const _initSettings = readSettings();
+  const analyzeProviderSelect = PFSelect({
+    options: PROVIDER_OPTIONS,
+    value: PROVIDER_LABELS[_initSettings.provider] || 'Claude',
+    onChange: (label) => {
+      const p = LABEL_TO_PROVIDER[label] || 'anthropic';
+      const cur = readSettings();
+      const inList = MODEL_SUGGESTIONS[p].includes(cur.model);
+      const newModel = inList ? cur.model : MODEL_SUGGESTIONS[p][0];
+      const s = { ...cur, provider: p, model: newModel };
+      s.apiKeys = s.apiKeys || {};
+      writeSettings(s);
+      // Rebuild model picker for the new provider
+      analyzeModelSelect.rebuild({ options: MODEL_SUGGESTIONS[p], value: newModel });
+      // Sync settings modal too (in case it's mid-edit)
+      if (providerSelect) providerSelect.setValue(label);
+      els.model.value = newModel;
+      els.apiKey.value = s.apiKeys[p] || '';
+      refreshModelSuggestions(p);
+      refreshKeyHint();
+      renderSavings();
+      renderBudgetMeter();
+    }
+  });
+  els.analyzeProviderMount.appendChild(analyzeProviderSelect.root);
+
+  const analyzeModelSelect = PFSelect({
+    options: MODEL_SUGGESTIONS[_initSettings.provider] || MODEL_SUGGESTIONS.anthropic,
+    value: _initSettings.model || MODEL_SUGGESTIONS[_initSettings.provider][0],
+    onChange: (model) => {
+      const cur = readSettings();
+      const s = { ...cur, model };
+      writeSettings(s);
+      // Sync settings modal field
+      els.model.value = model;
+      renderSavings();
+    }
+  });
+  els.analyzeModelMount.appendChild(analyzeModelSelect.root);
+
+  // Now that the inline pickers exist, define the syncer used by load/saveSettings
+  syncInlinePickers = function (s) {
+    if (!s) s = readSettings();
+    analyzeProviderSelect.setValue(PROVIDER_LABELS[s.provider] || 'Claude');
+    analyzeModelSelect.rebuild({ options: MODEL_SUGGESTIONS[s.provider] || [], value: s.model });
+  };
+
   // ============ History ============
   function loadHistory() { return lsGet('history', []); }
   function pushHistory(entry) {
@@ -2716,9 +3225,12 @@
       return;
     }
     els.historyList.innerHTML = h.map((e, i) => `
-      <button class="history-row" data-i="${i}">
-        <div class="h-title">${escapeHtml(e.optimized.slice(0, 120))}${e.optimized.length > 120 ? '…' : ''}</div>
-        <div class="h-meta">${escapeHtml(e.domain)} · ${new Date(e.t).toLocaleString()}</div>
+      <button class="history-row" data-i="${i}" data-domain="${escapeHtml(e.domain || 'General')}">
+        <span class="h-dot"></span>
+        <span class="h-body">
+          <div class="h-title">${escapeHtml(e.optimized.slice(0, 120))}${e.optimized.length > 120 ? '…' : ''}</div>
+          <div class="h-meta">${escapeHtml(e.domain)} · ${new Date(e.t).toLocaleString()}</div>
+        </span>
       </button>
     `).join('');
     els.historyList.querySelectorAll('.history-row').forEach(row => {
@@ -2817,32 +3329,61 @@
     els.stage3Sub.textContent = `${words} words ready`;
   }
 
-  function showStagePane(n) {
-    document.querySelectorAll('.stage-pane').forEach(p => {
-      p.classList.toggle('active', +p.dataset.stage === n);
-    });
-    // Stage view hides the dashboard
+  // The workspace is now a single continuous page; "stages" are visibility states.
+  // - stage >= 1: compose section visible (always)
+  // - stage >= 2: clarifications panel active (questions shown)
+  // - stage >= 3: optimized section visible
+  function applyStageVisibility() {
+    const n = state.stage;
+    // Compose section always present
+    els.composeSection.hidden = false;
+    // Clarify column: show questions if we have any
+    if (state.questions && state.questions.length && n >= 2) {
+      els.clarifyEmpty.hidden = true;
+      els.clarifyActive.hidden = false;
+    } else {
+      els.clarifyEmpty.hidden = false;
+      els.clarifyActive.hidden = true;
+    }
+    // Left column view: swap between raw and optimized.
+    // Show optimized once we have a built prompt, unless user explicitly toggled "Edit raw".
+    const showOptimized = (n >= 3) && state.optimized && !state.showRawView;
+    els.rawView.hidden = showOptimized;
+    els.optimizedView.hidden = !showOptimized;
+    // Token efficiency card visibility is owned by renderSavings()
+    // Hide dashboard
     document.querySelector('.dashboard-pane').classList.remove('active');
     els.dashboardBtn.classList.remove('active');
   }
   function showDashboard() {
-    document.querySelectorAll('.stage-pane').forEach(p => p.classList.remove('active'));
+    els.composeSection.hidden = true;
     document.querySelector('.dashboard-pane').classList.add('active');
     els.dashboardBtn.classList.add('active');
     renderDashboard();
     document.querySelector('.workspace').scrollTop = 0;
   }
+  function exitDashboard() {
+    document.querySelector('.dashboard-pane').classList.remove('active');
+    els.dashboardBtn.classList.remove('active');
+    applyStageVisibility();
+  }
 
   function goToStage(n) {
     state.stage = n;
     if (n > state.maxStage) state.maxStage = n;
-    showStagePane(n);
+    // When we get to stage 3 via Build, exit "Edit raw" mode so the optimized prompt shows
+    if (n >= 3) state.showRawView = false;
+    applyStageVisibility();
     updateStagesNav();
     updateStage1Sub();
     updateStage2Sub();
     updateStage3Sub();
-    // scroll workspace top
-    document.querySelector('.workspace').scrollTop = 0;
+    // Smart scroll: bring the compose section into view at relevant moments
+    if (els.composeSection && !els.composeSection.hidden) {
+      requestAnimationFrame(() => {
+        els.composeSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }
   }
 
   els.stagesNav.querySelectorAll('.stage-step').forEach(step => {
@@ -2857,56 +3398,83 @@
 
   // ============ LLM call ============
   async function callLLM(prompt) {
-    const settings = lsGet('settings', null);
-    if (!settings || !settings.apiKey) throw new Error('No API key set. Open Settings and paste one in.');
-    if (!settings.model) throw new Error('No model set. Open Settings and pick a model.');
+    const settings = readSettings();
+    const provider = settings.provider;
+    const model = settings.model;
+    const apiKey = settings.apiKeys?.[provider];
+    if (!apiKey) throw new Error(`No API key for ${PROVIDER_LABELS[provider] || provider}. Open Settings and paste one in.`);
+    if (!model) throw new Error('No model set. Open Settings and pick a model.');
     // Soft budget gate — confirm if monthly budget already exceeded
     if (!budgetGate()) throw new Error('Cancelled: monthly budget exceeded.');
-    if (settings.provider === 'anthropic') {
+
+    let text, usage;
+
+    if (provider === 'anthropic') {
       const res = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: {
           'content-type': 'application/json',
-          'x-api-key': settings.apiKey,
+          'x-api-key': apiKey,
           'anthropic-version': '2023-06-01',
           'anthropic-dangerous-direct-browser-access': 'true'
         },
         body: JSON.stringify({
-          model: settings.model,
+          model,
           max_tokens: 2000,
           messages: [{ role: 'user', content: prompt }]
         })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error?.message || `HTTP ${res.status}`);
-      const text = data?.content?.[0]?.text;
-      if (text == null) throw new Error('Empty response from Anthropic');
-      const usage = { input: data?.usage?.input_tokens, output: data?.usage?.output_tokens };
-      recordSpend(usage, settings.provider, settings.model);
-      renderBudgetMeter();
-      return { text, usage };
-    } else {
+      text = data?.content?.[0]?.text;
+      if (text == null) throw new Error('Empty response from Claude');
+      usage = { input: data?.usage?.input_tokens, output: data?.usage?.output_tokens };
+
+    } else if (provider === 'openai') {
       const res = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
           'content-type': 'application/json',
-          'authorization': `Bearer ${settings.apiKey}`
+          'authorization': `Bearer ${apiKey}`
         },
         body: JSON.stringify({
-          model: settings.model,
+          model,
           max_tokens: 2000,
           messages: [{ role: 'user', content: prompt }]
         })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error?.message || `HTTP ${res.status}`);
-      const text = data?.choices?.[0]?.message?.content;
+      text = data?.choices?.[0]?.message?.content;
       if (text == null) throw new Error('Empty response from OpenAI');
-      const usage = { input: data?.usage?.prompt_tokens, output: data?.usage?.completion_tokens };
-      recordSpend(usage, settings.provider, settings.model);
-      renderBudgetMeter();
-      return { text, usage };
+      usage = { input: data?.usage?.prompt_tokens, output: data?.usage?.completion_tokens };
+
+    } else if (provider === 'gemini') {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { maxOutputTokens: 2000 }
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error?.message || `HTTP ${res.status}`);
+      text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (text == null) throw new Error('Empty response from Gemini');
+      usage = {
+        input: data?.usageMetadata?.promptTokenCount,
+        output: data?.usageMetadata?.candidatesTokenCount
+      };
+
+    } else {
+      throw new Error(`Unknown provider: ${provider}`);
     }
+
+    recordSpend(usage, provider, model);
+    renderBudgetMeter();
+    return { text, usage };
   }
   function formatUsage(u) {
     if (!u) return '';
@@ -2948,6 +3516,7 @@
     state.answers = {};
     state.optimized = '';
     state.maxStage = 1;
+    state.showRawView = false;
 
     const ctxBlock = buildCtxBlock();
     const meta = `You are a prompt-clarification assistant. The user wrote the prompt below for an LLM, in the domain of ${state.domain}. Identify up to 6 clarifications that, if answered, would let the LLM produce a strong first-shot answer with no follow-up. Skip anything already clearly specified.
@@ -3053,28 +3622,41 @@ ${raw}
       full: true,
       allowOther: true,
       otherLabel: 'Other (type custom)…',
-      onChange: (v) => { state.answers[q.id] = v; updateStage2Sub(); },
+      onChange: (v) => { state.answers[q.id] = v; updateStage2Sub(); markStale(); },
       onOther: () => {
         state.answers[q.id] = '';
         card.classList.add('is-custom');
         input.value = '';
         input.focus();
         updateStage2Sub();
+        markStale();
       }
     });
 
-    input.addEventListener('input', () => { state.answers[q.id] = input.value; updateStage2Sub(); });
+    input.addEventListener('input', () => { state.answers[q.id] = input.value; updateStage2Sub(); markStale(); });
     revert.addEventListener('click', () => {
       sel.setValue(q.options[0]);
       state.answers[q.id] = q.options[0];
       card.classList.remove('is-custom');
       updateStage2Sub();
+      markStale();
     });
 
     control.appendChild(sel.root);
     control.appendChild(customWrap);
     card.appendChild(control);
     return card;
+  }
+
+  // ---------- Stale-state indicator: clarifications changed since last build ----------
+  function markStale() {
+    // Only show the stale banner if there's an existing optimized prompt to invalidate
+    if (state.optimized) {
+      els.staleBanner.classList.add('show');
+    }
+  }
+  function clearStale() {
+    els.staleBanner.classList.remove('show');
   }
 
   // ============ Stage 2: build optimized ============
@@ -3118,6 +3700,7 @@ ${state.raw}
       });
       state.maxStage = 3;
       goToStage(3);
+      clearStale();
       renderSavings();
     } catch (err) {
       setStatus(els.stage2Status, 'error', err.message, buildOptimized);
@@ -3168,6 +3751,7 @@ ${state.raw}
     state.runOutput = '';
     state.usage = { stage2: null, stage3: null, run: null };
     state.maxStage = 1;
+    state.showRawView = false;
     els.rawPrompt.value = '';
     els.optimizedPrompt.value = '';
     els.runWrap.hidden = true;
@@ -3178,8 +3762,10 @@ ${state.raw}
     setStatus(els.stage1Status, null);
     setStatus(els.stage2Status, null);
     setStatus(els.stage3Status, null);
+    clearStale();
     goToStage(1);
     renderSavings();
+    renderHomeSummary();
     els.rawPrompt.focus();
   }
 
@@ -3265,43 +3851,30 @@ ${state.raw}
     } else {
       els.savingsPill.classList.remove('show');
     }
-    // Stage 3 card
+    // Ticker
     if (s.pfTotal === 0) { els.savingsCard.hidden = true; return; }
     els.savingsCard.hidden = false;
-    if (s.saved > 0) {
-      els.savingsHeadlineNum.textContent = `↓ ${formatK(s.saved)}`;
-      els.savingsHeadlineNum.style.color = '';
-      const $part = s.savedDollars > 0 ? ` · ${formatUSD(s.savedDollars)} saved` : '';
-      els.savingsHeadlineLabel.textContent = `tokens saved · ${s.pct}% less than a ${s.N}-turn naive loop${$part}`;
-    } else {
-      els.savingsHeadlineNum.textContent = `↑ ${formatK(Math.abs(s.saved))}`;
-      els.savingsHeadlineNum.style.color = 'var(--warning)';
-      els.savingsHeadlineLabel.textContent = `tokens over baseline (this prompt was too small to benefit)`;
-    }
-    els.savingsPF.textContent = formatK(s.pfTotal);
-    els.savingsPFSub.innerHTML = `${s.pfIn} in · ${s.pfOut} out${s.pfDollars.total > 0 ? ` <span class="usd">${formatUSD(s.pfDollars.total)}</span>` : ''}`;
-    els.savingsNaive.textContent = formatK(s.naiveTotal);
-    els.savingsNaiveSub.innerHTML = `${s.naiveIn} in · ${s.naiveOut} out${s.naiveDollars > 0 ? ` <span class="usd muted">${formatUSD(s.naiveDollars)}</span>` : ''}`;
+    els.tkSaved.textContent = formatK(Math.abs(s.saved));
+    els.tkPct.textContent = `${Math.abs(s.pct)}% ${s.saved >= 0 ? '↓' : '↑'}`;
+    els.tkSavedUsd.textContent = s.savedDollars > 0 ? formatUSD(s.savedDollars) : '';
+    els.tkSolo.textContent = formatK(s.pfTotal);
+    els.tkSoloUsd.textContent = s.pfDollars.total > 0 ? formatUSD(s.pfDollars.total) : '';
+    els.tkNaive.textContent = formatK(s.naiveTotal);
+    els.tkNaiveUsd.textContent = s.naiveDollars > 0 ? formatUSD(s.naiveDollars) : '';
 
-    const fmtRow = (label, b, d) => {
-      const tk = b.in || b.out ? `${b.in} + ${b.out} = ${b.in + b.out}` : '—';
-      const $$ = d > 0 ? ` · <span class="usd">${formatUSD(d)}</span>` : '';
-      return `<div class="savings-row"><span class="k">${label}</span><span class="v">${tk}${$$}</span></div>`;
-    };
-    els.savingsBreakdown.innerHTML =
-      fmtRow('Stage 1 · Analyze', s.pfBreakdown.analyze, s.pfDollars.analyze) +
-      fmtRow('Stage 2 · Compose', s.pfBreakdown.build,   s.pfDollars.build) +
-      fmtRow('Stage 3 · Run',     s.pfBreakdown.run,     s.pfDollars.run);
-
-    els.savingsDisclaimer.textContent = s.hasRun
-      ? `Naive figures estimate a ${s.N}-turn chat where each turn re-sends the growing conversation. SOLO figures are actual tokens billed by your provider. Anchored on your real run output (${s.pfBreakdown.run.out} tokens). Dollars use the pricing set in Settings (current provider/model).`
-      : `Estimate assumes a ${s.N}-turn chat reaching a comparable answer. Click Run to anchor on real output tokens. Dollars use the pricing set in Settings (current provider/model).`;
-
-    // Keep dashboard in sync if it's open
+    // Keep dashboard + home summary in sync
     if (document.querySelector('.dashboard-pane')?.classList.contains('active')) {
       renderDashboard();
     }
+    renderHomeSummary();
   }
+
+  // Refresh button on the Environmental Impact card: re-roll analogies and home summary
+  document.getElementById('impactRefresh')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    renderImpactSection();
+    renderHomeSummary();
+  });
 
   // Naive-turns selector inside the savings card
   const naiveTurnsSelect = PFSelect({
@@ -3314,12 +3887,6 @@ ${state.raw}
   const persistedN = lsGet('naiveTurns', null);
   if (persistedN) { state.naiveTurns = persistedN; naiveTurnsSelect.setValue(String(persistedN)); }
 
-  // Collapse toggle
-  els.savingsToggle.addEventListener('click', () => {
-    const card = els.savingsCard;
-    card.classList.toggle('collapsed');
-    els.savingsToggle.textContent = card.classList.contains('collapsed') ? '▸' : '▾';
-  });
   // Clicking the rail pill scrolls to the card
   els.savingsPill.addEventListener('click', () => {
     if (state.maxStage < 3) return;
@@ -3342,6 +3909,12 @@ ${state.raw}
       'gpt-4-turbo':  { input: 10.00, output: 30.00 },
       'o1':           { input: 15.00, output: 60.00 },
       'o1-mini':      { input:  3.00, output: 12.00 }
+    },
+    gemini: {
+      'gemini-2.0-flash':  { input: 0.075, output: 0.30 },
+      'gemini-2.0-pro':    { input: 1.25,  output: 5.00 },
+      'gemini-1.5-pro':    { input: 1.25,  output: 5.00 },
+      'gemini-1.5-flash':  { input: 0.075, output: 0.30 }
     }
   };
   function loadPricing() {
@@ -3735,18 +4308,276 @@ ${state.raw}
     els.chartAllocationMount.innerHTML = html;
   }
 
+  // ---------- Environmental impact estimates ----------
+  // Per 1,000 tokens of LLM inference + cooling. Numbers are industry averages
+  // for a medium-size LLM on US-grid-mix data centers. They're rough by design
+  // (model size, hardware, and grid mix vary by ~10×) but defensible as ballpark.
+  const IMPACT = {
+    kWhPer1k:    0.0005,   // 0.5 Wh / 1k tokens (inference)
+    waterLPer1k: 0.012,    // 12 mL / 1k tokens (data-center cooling)
+    co2KgPer1k:  0.0002    // 0.2 g  / 1k tokens (US grid mix, ~0.4 kg CO2/kWh)
+  };
+
+  // Pools of equivalencies. perUnit = base resource needed for 1 equivalent.
+  // sample() picks 3 random items per render so the analogies stay fresh.
+  const IMPACT_EQ_POOLS = {
+    water: [ // base = liters
+      { icon: '🚿',  label: 'Shower hours',          perUnit: 390 },
+      { icon: '🏊',  label: 'Olympic pools',         perUnit: 2_500_000 },
+      { icon: '🛁',  label: 'Bathtub fills',         perUnit: 150 },
+      { icon: '🥛',  label: 'Drinking glasses',      perUnit: 0.25 },
+      { icon: '☕',  label: 'Cups of coffee made',   perUnit: 140 },
+      { icon: '🍅',  label: 'Tomatoes grown',        perUnit: 50 },
+      { icon: '🧺',  label: 'Laundry loads',         perUnit: 50 },
+      { icon: '💧',  label: '500 mL bottles',        perUnit: 0.5 },
+      { icon: '🥬',  label: 'Lettuce heads',         perUnit: 130 },
+      { icon: '🚰',  label: 'Person-days basic use', perUnit: 50 }
+    ],
+    co2: [ // base = kg
+      { icon: '🌳',  label: 'Tree-years absorbed',   perUnit: 21 },
+      { icon: '🚗',  label: 'Car miles avoided',     perUnit: 0.404 },
+      { icon: '✈️',  label: 'Flight minutes',        perUnit: 90 / 60 },
+      { icon: '🌱',  label: 'Tree seedlings (1 yr)', perUnit: 0.5 },
+      { icon: '🍔',  label: 'Beef burgers',          perUnit: 3.0 },
+      { icon: '👕',  label: 'T-shirts produced',     perUnit: 5.0 },
+      { icon: '📱',  label: 'Smartphones made',      perUnit: 70 },
+      { icon: '📺',  label: 'TV-watching hours',     perUnit: 0.1 },
+      { icon: '🚊',  label: 'Train miles (Amtrak)',  perUnit: 0.18 }
+    ],
+    power: [ // base = kWh
+      { icon: '📱',  label: 'Phones charged',        perUnit: 0.012 },
+      { icon: '💡',  label: 'LED-bulb hours',        perUnit: 0.010 },
+      { icon: '🏠',  label: 'UK home-hours',         perUnit: 0.333 },
+      { icon: '🏡',  label: 'US home-hours',         perUnit: 1.25 },
+      { icon: '☕',  label: 'Kettles boiled',        perUnit: 0.1 },
+      { icon: '💻',  label: 'Laptop-hours',          perUnit: 0.05 },
+      { icon: '❄️',  label: 'Fridge-days',          perUnit: 1.0 },
+      { icon: '🧺',  label: 'Washer cycles',         perUnit: 0.5 },
+      { icon: '🍞',  label: 'Bread loaves baked',    perUnit: 0.5 },
+      { icon: '🚙',  label: 'EV miles driven',       perUnit: 0.3 }
+    ]
+  };
+
+  function sample(arr, n) {
+    const a = arr.slice();
+    const out = [];
+    while (a.length && out.length < n) {
+      out.push(a.splice(Math.floor(Math.random() * a.length), 1)[0]);
+    }
+    return out;
+  }
+
+  function computeImpact(tokensSaved) {
+    const k = Math.max(0, tokensSaved) / 1000;
+    const kWh    = k * IMPACT.kWhPer1k;
+    const waterL = k * IMPACT.waterLPer1k;
+    const co2Kg  = k * IMPACT.co2KgPer1k;
+    return { kWh, waterL, co2Kg };
+  }
+  function eqValues(impactBase, poolKey, n) {
+    const base = { water: impactBase.waterL, co2: impactBase.co2Kg, power: impactBase.kWh }[poolKey];
+    return sample(IMPACT_EQ_POOLS[poolKey], n).map(p => ({
+      ...p,
+      value: base / p.perUnit
+    }));
+  }
+
+  function formatImpact(n) {
+    if (n == null || !isFinite(n) || n === 0) return '0';
+    const abs = Math.abs(n);
+    if (abs < 0.001) return n.toExponential(1).replace('e', 'e');
+    if (abs < 0.01)  return n.toFixed(3);
+    if (abs < 1)     return n.toFixed(2);
+    if (abs < 10)    return n.toFixed(2);
+    if (abs < 100)   return n.toFixed(1);
+    if (abs < 10000) return Math.round(n).toLocaleString();
+    return (n / 1000).toFixed(1) + 'k';
+  }
+
+  function totalTokensSaved() {
+    // History + current prompt
+    let total = 0;
+    loadHistory().forEach(entry => {
+      const s = computeSavingsForEntry(entry);
+      total += Math.max(0, s.saved);
+    });
+    const cur = computeSavings();
+    if (cur.pfTotal > 0) total += Math.max(0, cur.saved);
+    return total;
+  }
+
+  function renderImpactSection() {
+    const totalSaved = totalTokensSaved();
+    if (totalSaved === 0) {
+      els.impactGrid.innerHTML = '<div class="chart-empty" style="grid-column: 1 / -1;">Build prompts to see your environmental impact.</div>';
+      els.impactDisclaimer.textContent = '';
+      return;
+    }
+    const i = computeImpact(totalSaved);
+    const card = (cls, icon, cat, value, unit, rows) => `
+      <div class="impact-card ${cls}">
+        <div class="impact-icon">${icon}</div>
+        <div class="impact-cat">${cat}</div>
+        <div class="impact-value-row">
+          <span class="impact-value">${formatImpact(value)}</span>
+          <span class="impact-unit">${unit}</span>
+        </div>
+        <div class="impact-divider"></div>
+        ${rows.map(r => `
+          <div class="impact-eq-row">
+            <span class="impact-eq-icon">${r.icon}</span>
+            <span class="impact-eq-label">${r.label}</span>
+            <span class="impact-eq-val">${formatImpact(r.value)}</span>
+          </div>
+        `).join('')}
+      </div>`;
+
+    els.impactGrid.innerHTML =
+      card('water', '💧', 'Water saved',  i.waterL, 'liters', eqValues(i, 'water', 3)) +
+      card('co2',   '🌍', 'CO₂ avoided',  i.co2Kg,  'kg',     eqValues(i, 'co2',   3)) +
+      card('power', '⚡', 'Power saved',  i.kWh,    'kWh',    eqValues(i, 'power', 3));
+
+    els.impactDisclaimer.textContent =
+      `Based on ~${IMPACT.kWhPer1k * 1000} Wh, ~${IMPACT.co2KgPer1k * 1000} g CO₂, and ~${IMPACT.waterLPer1k * 1000} mL water per 1,000 tokens. Real impact varies by model size, data-center hardware, and grid mix.`;
+  }
+
+  function renderCumulativeChart() {
+    const history = loadHistory();
+    if (!history.length) {
+      els.chartCumulativeMount.innerHTML = '<div class="chart-empty">No history yet — build prompts to see cumulative growth.</div>';
+      return;
+    }
+    // Process oldest -> newest, accumulate
+    const points = [];
+    let cumSaved = 0, cumDollars = 0;
+    history.slice().reverse().forEach((entry, idx) => {
+      const s = computeSavingsForEntry(entry);
+      cumSaved += Math.max(0, s.saved);
+      cumDollars += Math.max(0, s.savedDollars);
+      points.push({ i: idx, t: entry.t, cumSaved, cumDollars });
+    });
+
+    const W = 640, H = 220, padL = 56, padR = 90, padT = 18, padB = 32;
+    const chartW = W - padL - padR;
+    const chartH = H - padT - padB;
+    const maxY = Math.max(...points.map(p => p.cumSaved), 100);
+    const minY = 0;
+    const rangeY = maxY - minY || 1;
+    const xAt = (i) => padL + (points.length === 1 ? chartW / 2 : (i / (points.length - 1)) * chartW);
+    const yAt = (v) => padT + chartH - ((v - minY) / rangeY) * chartH;
+
+    let grid = '';
+    for (let g = 0; g <= 4; g++) {
+      const v = minY + (rangeY * g / 4);
+      const y = yAt(v);
+      grid += `<line x1="${padL}" x2="${W - padR}" y1="${y.toFixed(1)}" y2="${y.toFixed(1)}" class="chart-grid" />`;
+      grid += `<text x="${padL - 8}" y="${(y + 3).toFixed(1)}" class="chart-axis-label" text-anchor="end">${formatK(v)}</text>`;
+    }
+
+    const areaPath = points.length > 1
+      ? `M ${xAt(0)} ${yAt(0)} L ` + points.map(p => `${xAt(p.i).toFixed(1)} ${yAt(p.cumSaved).toFixed(1)}`).join(' L ') + ` L ${xAt(points.length - 1)} ${yAt(0)} Z`
+      : '';
+    const linePath = 'M ' + points.map(p => `${xAt(p.i).toFixed(1)} ${yAt(p.cumSaved).toFixed(1)}`).join(' L ');
+    const dots = points.map(p => `<circle cx="${xAt(p.i).toFixed(1)}" cy="${yAt(p.cumSaved).toFixed(1)}" r="4" class="chart-dot"><title>${formatK(p.cumSaved)} tokens cumulative · ${formatUSD(p.cumDollars)} · ${new Date(p.t).toLocaleDateString()}</title></circle>`).join('');
+
+    const xLabel = (i, label) => `<text x="${xAt(i).toFixed(1)}" y="${H - padB + 18}" class="chart-axis-label" text-anchor="middle">${label}</text>`;
+    let xlabels = xLabel(0, 'oldest');
+    if (points.length >= 2) xlabels += xLabel(points.length - 1, 'newest');
+
+    // Final value callout on the right
+    const last = points[points.length - 1];
+    const fx = xAt(last.i);
+    const fy = yAt(last.cumSaved);
+    const callout = `
+      <line x1="${fx.toFixed(1)}" y1="${fy.toFixed(1)}" x2="${(W - padR + 8).toFixed(1)}" y2="${fy.toFixed(1)}" stroke="var(--accent)" stroke-width="1" stroke-dasharray="2 2" />
+      <text x="${(W - padR + 12).toFixed(1)}" y="${(fy - 4).toFixed(1)}" class="chart-annotation">${formatK(last.cumSaved)}</text>
+      <text x="${(W - padR + 12).toFixed(1)}" y="${(fy + 12).toFixed(1)}" class="chart-axis-label">tokens</text>
+      <text x="${(W - padR + 12).toFixed(1)}" y="${(fy + 26).toFixed(1)}" class="chart-axis-label">${formatUSD(last.cumDollars)}</text>
+    `;
+
+    els.chartCumulativeMount.innerHTML = `<svg viewBox="0 0 ${W} ${H}" class="chart-svg" preserveAspectRatio="xMinYMin meet">
+      ${grid}
+      ${areaPath ? `<path d="${areaPath}" class="chart-area" />` : ''}
+      <path d="${linePath}" class="chart-line" />
+      <line x1="${padL}" x2="${W - padR}" y1="${yAt(0).toFixed(1)}" y2="${yAt(0).toFixed(1)}" class="chart-axis" />
+      ${dots}
+      ${xlabels}
+      ${callout}
+    </svg>`;
+  }
+
   function renderDashboard() {
     renderKPIs();
+    renderImpactSection();
+    renderCumulativeChart();
     renderCompareChart();
     renderHistoryChart();
     renderAllocation();
   }
 
+  // ---------- Home summary banner (top of Stage 1) ----------
+  function renderHomeSummary() {
+    if (!els.homeSummary) return;
+    const history = loadHistory();
+    let totalTokens = 0, totalDollars = 0, totalPct = 0;
+    history.forEach(entry => {
+      const s = computeSavingsForEntry(entry);
+      totalTokens += Math.max(0, s.saved);
+      totalDollars += Math.max(0, s.savedDollars);
+      totalPct += s.pct;
+    });
+
+    if (totalTokens === 0 && history.length === 0) {
+      // No history yet — hide the banner so first-time users see the clean intro
+      els.homeSummary.hidden = true;
+      return;
+    }
+    els.homeSummary.hidden = false;
+
+    const avgPct = history.length ? Math.round(totalPct / history.length) : 0;
+    els.hsTokens.textContent = formatK(totalTokens);
+    els.hsDollars.textContent = formatUSD(totalDollars);
+    els.hsPrompts.textContent = history.length;
+    els.hsAvgPct.textContent = avgPct + '%';
+
+    // Current-prompt indicator: show only when there's an in-progress prompt with measured savings
+    const cur = computeSavings();
+    if (cur.pfTotal > 0) {
+      els.hsCurrent.hidden = false;
+      const $part = cur.savedDollars > 0 ? ` · ${formatUSD(cur.savedDollars)}` : '';
+      els.hsCurrentVal.textContent = `↓ ${formatK(Math.max(0, cur.saved))} tokens${$part}`;
+    } else {
+      els.hsCurrent.hidden = true;
+    }
+
+    // Rotating environmental analogies — pick 3 fresh on each render
+    const impact = computeImpact(totalTokens);
+    const picks = [
+      ...eqValues(impact, 'co2',   1),
+      ...eqValues(impact, 'water', 1),
+      ...eqValues(impact, 'power', 1)
+    ];
+    els.hsImpactItems.innerHTML = picks.map(p => `
+      <span class="hs-impact-item">
+        <span class="hs-impact-icon">${p.icon}</span>
+        <span class="hs-impact-value">${formatImpact(p.value)}</span>
+        <span>${escapeHtml(p.label.toLowerCase())}</span>
+      </span>
+    `).join('');
+  }
+
   // ============ Wire-up ============
   els.analyzeBtn.addEventListener('click', analyze);
   els.buildBtn.addEventListener('click', buildOptimized);
-  els.backToRawBtn.addEventListener('click', () => goToStage(1));
+  els.rebuildBtn.addEventListener('click', buildOptimized);
   els.copyBtn.addEventListener('click', copyOptimized);
+  // "← Edit raw prompt" toggle: flip the left column back to the raw view without losing state
+  els.editRawLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    state.showRawView = true;
+    applyStageVisibility();
+    setTimeout(() => els.rawPrompt.focus(), 50);
+  });
   els.runBtn.addEventListener('click', runOptimized);
   els.startOverBtn.addEventListener('click', () => {
     if (state.raw && !confirm('Discard current prompt and start over?')) return;
@@ -3778,7 +4609,7 @@ ${state.raw}
   // Dashboard toggle
   els.dashboardBtn.addEventListener('click', () => {
     const isOpen = document.querySelector('.dashboard-pane').classList.contains('active');
-    if (isOpen) goToStage(state.stage); else showDashboard();
+    if (isOpen) exitDashboard(); else showDashboard();
   });
   els.openDashboardFromCard.addEventListener('click', showDashboard);
 
@@ -4233,6 +5064,7 @@ ${state.raw}
   updateStagesNav();
   updateStage1Sub();
   renderSavings();
+  renderHomeSummary();
   renderBudgetMeter();
   // Defer until after layout has settled to get accurate marker positions
   requestAnimationFrame(updateProgressLine);
