@@ -6,58 +6,80 @@
 <title>SOLO</title>
 <style>
   :root {
-    /* Light theme */
-    --bg: #fafbfc;
-    --rail-bg: #f3f4f7;
-    --surface: #ffffff;
-    --surface-2: #f6f7fa;
-    --border: #e3e6ed;
-    --border-strong: #d1d6e0;
-    --text: #14171f;
-    --text-dim: #62697a;
-    --text-mute: #8b93a4;
-    --accent: #5b5bd6;
-    --accent-hover: #4848c0;
-    --accent-soft: #eef0fd;
-    --accent-ring: rgba(91, 91, 214, .22);
-    --danger: #d53f3f;
-    --danger-soft: #fde9e8;
-    --success: #1e9460;
-    --warning: #c87a1a;
+    /* NovaSpark design tokens with NTT DATA blue retained as primary accent */
+    --bg: #F8FAFC;             /* NovaSpark Nova Light */
+    --rail-bg: #6485c1;        /* NTT DATA brand blue (kept) */
+    --surface: #FFFFFF;
+    --surface-2: #F3F4F6;      /* NovaSpark Gray 100 */
+    --border: #E5E7EB;
+    --border-strong: #D1D5DB;  /* NovaSpark Gray 300 */
+    --text: #111827;           /* NovaSpark Gray 900 */
+    --text-dim: #4B5563;       /* NovaSpark Gray 600 */
+    --text-mute: #9CA3AF;      /* NovaSpark Gray 400 */
+    /* Primary accent: NTT DATA blue (deeper variant for stronger contrast) */
+    --accent: #4D6FB0;
+    --accent-hover: #3A5A9A;
+    --accent-soft: #EFF2F9;
+    --accent-ring: rgba(77, 111, 176, .22);
+    --danger: #EF4444;         /* Spark Red */
+    --danger-soft: #FEE2E2;
+    --success: #22C55E;        /* Spark Green */
+    --warning: #F97316;        /* Spark Orange */
 
-    --radius: 12px;
-    --radius-sm: 8px;
-    --radius-xs: 6px;
-    --shadow-sm: 0 1px 2px rgba(20, 24, 40, .05);
-    --shadow-md: 0 2px 8px rgba(20, 24, 40, .07), 0 1px 2px rgba(20, 24, 40, .04);
-    --shadow-lg: 0 8px 32px rgba(20, 24, 40, .12), 0 2px 8px rgba(20, 24, 40, .06);
+    /* Radius scale from NovaSpark (sm:4, md:8, lg:12, xl:16, full:9999) */
+    --radius-xs: 4px;
+    --radius-sm: 8px;          /* default for inputs/buttons */
+    --radius: 12px;            /* cards/modals (md/lg merged) */
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-full: 9999px;
 
-    --sans: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    /* Shadow scale from NovaSpark */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, .05);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, .07);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, .10);
+    --shadow-xl: 0 20px 25px rgba(0, 0, 0, .15);
+
+    /* Spacing tokens (informational, mostly used inline) */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-12: 48px;
+    --space-16: 64px;
+
+    /* Typography: Inter (NovaSpark) with system fallbacks; JetBrains Mono for code */
+    --sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
     --rail-w: 280px;
-    --topbar-h: 56px;
+    --topbar-h: 64px;          /* NovaSpark top navbar height */
   }
   [data-theme="dark"] {
-    --bg: #0c0e13;
-    --rail-bg: #14171d;
-    --surface: #181b22;
-    --surface-2: #1f232b;
-    --border: #292e38;
-    --border-strong: #3a4150;
-    --text: #ecedf2;
-    --text-dim: #9ba3b3;
-    --text-mute: #6b7282;
-    --accent: #818cf8;
-    --accent-hover: #a5b4fc;
-    --accent-soft: #1d2138;
-    --accent-ring: rgba(129, 140, 248, .28);
-    --danger: #ff7a6b;
-    --danger-soft: #381f1c;
-    --success: #62dba0;
-    --shadow-sm: 0 1px 2px rgba(0,0,0,.4);
-    --shadow-md: 0 2px 8px rgba(0,0,0,.5);
-    --shadow-lg: 0 12px 36px rgba(0,0,0,.6);
+    /* NovaSpark dark token mapping */
+    --bg: #0F172A;             /* Nova Dark */
+    --rail-bg: #4D6FB0;        /* Keep NTT blue, slightly deeper in dark */
+    --surface: #1E293B;
+    --surface-2: #334155;
+    --border: #334155;
+    --border-strong: #475569;
+    --text: #F1F5F9;
+    --text-dim: #94A3B8;
+    --text-mute: #64748B;
+    --accent: #6485C1;         /* lighter NTT blue for dark mode */
+    --accent-hover: #7398D9;
+    --accent-soft: #1E293B;
+    --accent-ring: rgba(100, 133, 193, .30);
+    --danger: #F87171;
+    --danger-soft: #3F1A1A;
+    --success: #34D399;
+    --warning: #FB923C;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, .4);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, .5);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, .55);
+    --shadow-xl: 0 20px 25px rgba(0, 0, 0, .65);
   }
 
   * { box-sizing: border-box; }
@@ -157,7 +179,7 @@
   .brand-mark {
     width: 26px; height: 26px;
     border-radius: 7px;
-    background: linear-gradient(135deg, var(--accent), #7d75ee);
+    background: linear-gradient(135deg, var(--accent), #6485C1);
     color: white;
     display: grid; place-items: center;
     font-weight: 800; font-size: 13px;
@@ -203,7 +225,7 @@
     display: block;
     width: 100%;
     height: 0;
-    background: linear-gradient(180deg, var(--accent), #7d75ee);
+    background: linear-gradient(180deg, var(--accent), #6485C1);
     transition: height .55s cubic-bezier(.4, 0, .2, 1);
   }
   .stages-segment.filled > span { height: 100%; }
@@ -260,6 +282,175 @@
     font-size: 11px; color: var(--text-mute);
     line-height: 1.3; margin-top: 2px;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  /* Rail navigation items (Library + Insights sections) */
+  .rail-nav {
+    display: flex; flex-direction: column;
+    padding: 0 4px;
+    gap: 2px;
+  }
+  .rail-nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    text-align: left;
+    width: 100%;
+    color: #fff;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 500;
+    transition: background .12s;
+  }
+  .rail-nav-item:hover { background: rgba(255,255,255,.12); }
+  .rail-nav-item.active {
+    background: #fff;
+    color: var(--text);
+    box-shadow: 0 2px 6px rgba(0,0,0,.08);
+  }
+  .rail-nav-icon { font-size: 16px; flex-shrink: 0; line-height: 1; }
+  .rail-nav-label { flex: 1; }
+  .rail-nav-badge {
+    background: rgba(255,255,255,.20);
+    color: #fff;
+    font-size: 11px;
+    padding: 1px 8px;
+    border-radius: 10px;
+    font-weight: 700;
+    line-height: 1.5;
+  }
+  .rail-nav-badge[hidden] { display: none; }
+  .rail-nav-item.active .rail-nav-badge {
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+
+  /* Drawer overlay (slides in from left rail edge) */
+  .drawer-overlay {
+    position: fixed; inset: 0;
+    z-index: 400;
+    background: rgba(15, 23, 42, .45);
+    display: none;
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+  }
+  .drawer-overlay.open { display: block; }
+  .drawer-panel {
+    position: fixed;
+    top: 0; bottom: 0;
+    left: 0;
+    width: 480px; max-width: calc(100vw - var(--rail-w));
+    background: var(--surface);
+    z-index: 401;
+    /* Fully off-screen by default; slides in to sit just right of the rail when .open */
+    transform: translateX(-100%);
+    transition: transform .25s ease;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-xl);
+  }
+  .drawer-panel.open { transform: translateX(var(--rail-w)); }
+  .drawer-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .drawer-title {
+    font-weight: 600; font-size: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .drawer-close {
+    background: transparent; border: none;
+    width: 32px; height: 32px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    color: var(--text-dim);
+    font-size: 18px;
+    display: grid; place-items: center;
+  }
+  .drawer-close:hover { background: var(--surface-2); color: var(--text); }
+  .drawer-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 18px 20px;
+  }
+  @media (max-width: 820px) {
+    .drawer-panel { width: 100%; max-width: 100%; }
+    .drawer-panel.open { transform: translateX(0); }
+  }
+
+  /* Report view: tabs */
+  .report-tabs {
+    display: inline-flex;
+    background: var(--surface-2);
+    border-radius: var(--radius-sm);
+    padding: 3px;
+    margin-bottom: 22px;
+    gap: 2px;
+  }
+  .report-tab {
+    background: transparent;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--text-dim);
+    transition: background .12s, color .12s;
+  }
+  .report-tab:hover { color: var(--text); }
+  .report-tab.active {
+    background: var(--surface);
+    color: var(--accent);
+    box-shadow: var(--shadow-sm);
+  }
+  .report-content[hidden] { display: none; }
+
+  /* Report — current-prompt section: pre-formatted blocks */
+  .report-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    margin-bottom: 14px;
+  }
+  .report-block-title {
+    font-size: 11px; font-weight: 700; color: var(--text-mute);
+    text-transform: uppercase; letter-spacing: .07em;
+    margin-bottom: 10px;
+  }
+  .report-block-pre {
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    margin: 0;
+  }
+  .report-clarify-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 16px;
+    padding: 6px 0;
+    border-bottom: 1px dashed var(--border);
+    font-size: 13px;
+  }
+  .report-clarify-row:last-child { border-bottom: none; }
+  .report-clarify-q { color: var(--text-dim); }
+  .report-clarify-a { color: var(--text); font-weight: 600; font-family: var(--mono); font-size: 13px; }
+  .report-empty {
+    text-align: center;
+    color: var(--text-mute);
+    padding: 40px 20px;
+    font-size: 14px;
   }
 
   /* History list in rail */
@@ -362,8 +553,11 @@
     .stage-pane[data-stage="1"] .stage-side .ctx-card { margin-bottom: 12px; }
   }
 
-  /* Hide the home summary on the dashboard view (dashboard has its own KPI grid) */
-  .workspace-inner:has(.dashboard-pane.active) .home-summary { display: none; }
+  /* Hide the home summary on insight views (they have their own headers/stats) */
+  .workspace-inner:has(.dashboard-pane.active) .home-summary,
+  .workspace-inner:has(.report-pane.active) .home-summary { display: none; }
+  /* Widen workspace for Report view too (its blocks benefit from horizontal room) */
+  .workspace-inner:has(.report-pane.active) { max-width: 1180px; }
 
   /* ---------- Single-screen workspace sections ---------- */
   .ws-section { margin-bottom: 36px; }
@@ -475,11 +669,12 @@
     background: var(--btn-bg);
     color: var(--btn-fg);
     border: 1px solid var(--btn-border);
-    height: 38px;
-    padding: 0 18px;
+    /* NovaSpark MD button: 40px height, 10/16 padding, 15px font */
+    height: 40px;
+    padding: 0 16px;
     border-radius: var(--radius-sm);
     font-weight: 600;
-    font-size: 14.5px;
+    font-size: 15px;
     cursor: pointer;
     display: inline-flex; align-items: center; gap: 8px;
     transition: filter .12s, box-shadow .12s, transform .05s, background .12s;
@@ -945,8 +1140,10 @@
     --c-naive-5: #ad5760;
   }
 
-  .dashboard-pane { display: none; }
-  .dashboard-pane.active { display: block; }
+  .dashboard-pane,
+  .report-pane { display: none; }
+  .dashboard-pane.active,
+  .report-pane.active { display: block; }
 
   .kpi-grid {
     display: grid;
@@ -1701,7 +1898,7 @@
   .user-avatar {
     width: 36px; height: 36px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--accent), #7d75ee);
+    background: linear-gradient(135deg, var(--accent), #6485C1);
     color: white;
     border: 2px solid transparent;
     cursor: pointer;
@@ -2321,7 +2518,6 @@
       <span class="ntt-mark md"><img class="ntt-logo-img" src="ntt-data-logo.png" alt="NTT DATA" /></span>
     </div>
     <div class="top-actions">
-      <button class="icon-btn" id="dashboardBtn" title="Dashboard">📊</button>
       <button class="icon-btn" id="themeBtn" title="Toggle theme">◐</button>
       <button class="icon-btn" id="settingsBtn" title="Settings">⚙</button>
       <div class="user-menu">
@@ -2364,6 +2560,36 @@
             <div class="step-sub" id="stage3Sub">Edit, copy, run</div>
           </div>
         </div>
+      </nav>
+    </div>
+
+    <div class="rail-section">
+      <div class="rail-section-title">Library</div>
+      <nav class="rail-nav">
+        <button class="rail-nav-item" data-drawer="templates">
+          <span class="rail-nav-icon">📚</span>
+          <span class="rail-nav-label">Templates</span>
+          <span class="rail-nav-badge" id="railTemplatesBadge">0</span>
+        </button>
+        <button class="rail-nav-item" data-drawer="reference">
+          <span class="rail-nav-icon">📎</span>
+          <span class="rail-nav-label">Reference</span>
+          <span class="rail-nav-badge" id="railReferenceBadge" hidden>0</span>
+        </button>
+      </nav>
+    </div>
+
+    <div class="rail-section">
+      <div class="rail-section-title">Insights</div>
+      <nav class="rail-nav">
+        <button class="rail-nav-item" id="railDashboardBtn" data-view="dashboard">
+          <span class="rail-nav-icon">📊</span>
+          <span class="rail-nav-label">Dashboard</span>
+        </button>
+        <button class="rail-nav-item" id="railReportBtn" data-view="report">
+          <span class="rail-nav-icon">📄</span>
+          <span class="rail-nav-label">Report</span>
+        </button>
       </nav>
     </div>
 
@@ -2468,54 +2694,6 @@
           <b>No API key for this provider yet.</b> Add it in <a id="openSettingsLink">Settings ⚙</a> — your key lives only in this browser's localStorage and goes straight to the provider. SOLO supports Claude, OpenAI, and Gemini, each with its own key.
         </div>
 
-        <!-- Templates + Reference: top toolbar row -->
-        <div class="helper-row">
-          <div class="templates-card collapsed" id="templatesCard">
-            <div class="ctx-header" id="templatesHeader">
-              <div class="ctx-title">
-                📚 Templates
-                <span class="ctx-badge" id="templatesBadge">0 built-in</span>
-              </div>
-              <span class="ctx-toggle"></span>
-            </div>
-            <div class="templates-body">
-              <div class="template-pill-row" id="templatePills"></div>
-              <div class="templates-grid" id="templatesGrid"></div>
-              <div class="templates-empty" id="templatesEmpty" hidden>No templates in this domain.</div>
-            </div>
-          </div>
-
-          <div class="ctx-card collapsed" id="ctxCard">
-            <div class="ctx-header" id="ctxHeader">
-              <div class="ctx-title">
-                📎 Reference context
-                <span class="ctx-badge" id="ctxBadge" hidden>0 files</span>
-              </div>
-              <span class="ctx-toggle"></span>
-            </div>
-            <div class="ctx-body">
-              <input type="file" id="ctxFileInput" hidden multiple
-                     accept=".txt,.md,.markdown,.json,.csv,.tsv,.yaml,.yml,.log,.xml,.html,.js,.ts,.py,.sql,.sh,text/*" />
-              <div class="ctx-drop" id="ctxDrop">
-                <b>Click to upload</b> or drop files here<br/>
-                <span class="ctx-formats">.txt, .md, .json, .csv, .yaml, code</span>
-              </div>
-              <div class="ctx-files" id="ctxFiles"></div>
-              <div class="ctx-controls">
-                <label class="ctx-switch">
-                  <input type="checkbox" id="ctxEnable" checked />
-                  <span class="ctx-switch-track"></span>
-                  <span>Use for clarifications</span>
-                </label>
-                <span class="ctx-total" id="ctxTotal">0 KB · 0 tokens</span>
-              </div>
-              <div class="ctx-note">
-                Files are sent in full as additional context to the analyze step. Keep total size small to avoid runaway token costs.
-              </div>
-            </div>
-          </div>
-        </div>
-
         <div class="compose-domain">
           <span class="compose-domain-label">Domain</span>
           <div id="domainSelectMount" style="flex: 1; max-width: 280px;"></div>
@@ -2601,6 +2779,23 @@
         </div>
       </section>
 
+
+      <!-- Report pane -->
+      <section class="report-pane" data-view="report">
+        <div class="workspace-header">
+          <div class="workspace-eyebrow">Insights</div>
+          <h1 class="workspace-title">Report</h1>
+          <div class="workspace-subtitle">Single-prompt detail or monthly rollup. Print, screenshot, or share with your team.</div>
+        </div>
+
+        <div class="report-tabs">
+          <button class="report-tab active" data-tab="current">This prompt</button>
+          <button class="report-tab" data-tab="monthly">This month</button>
+        </div>
+
+        <div class="report-content" id="reportCurrent" data-tab="current"></div>
+        <div class="report-content" id="reportMonthly" data-tab="monthly" hidden></div>
+      </section>
 
       <!-- Dashboard pane -->
       <section class="dashboard-pane" data-view="dashboard">
@@ -2702,6 +2897,45 @@
   </main>
 </div>
 
+<!-- Drawer (single container; content swaps per nav click) -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<aside class="drawer-panel" id="drawerPanel">
+  <div class="drawer-header">
+    <div class="drawer-title" id="drawerTitle">Drawer</div>
+    <button class="drawer-close" id="drawerClose" title="Close">✕</button>
+  </div>
+  <div class="drawer-body">
+    <!-- Templates drawer content -->
+    <div class="drawer-content" id="drawerTemplates" hidden>
+      <div class="template-pill-row" id="templatePills"></div>
+      <div class="templates-grid" id="templatesGrid"></div>
+      <div class="templates-empty" id="templatesEmpty" hidden>No templates in this domain.</div>
+    </div>
+
+    <!-- Reference drawer content -->
+    <div class="drawer-content" id="drawerReference" hidden>
+      <input type="file" id="ctxFileInput" hidden multiple
+             accept=".txt,.md,.markdown,.json,.csv,.tsv,.yaml,.yml,.log,.xml,.html,.js,.ts,.py,.sql,.sh,text/*" />
+      <div class="ctx-drop" id="ctxDrop">
+        <b>Click to upload</b> or drop files here<br/>
+        <span class="ctx-formats">.txt, .md, .json, .csv, .yaml, code</span>
+      </div>
+      <div class="ctx-files" id="ctxFiles"></div>
+      <div class="ctx-controls">
+        <label class="ctx-switch">
+          <input type="checkbox" id="ctxEnable" checked />
+          <span class="ctx-switch-track"></span>
+          <span>Use for clarifications</span>
+        </label>
+        <span class="ctx-total" id="ctxTotal">0 KB · 0 tokens</span>
+      </div>
+      <div class="ctx-note">
+        Files are sent in full as additional context to the analyze step. Keep total size small to avoid runaway token costs.
+      </div>
+    </div>
+  </div>
+</aside>
+
 <!-- Settings modal -->
 <div class="modal-backdrop" id="settingsModal">
   <div class="modal">
@@ -2794,7 +3028,7 @@
   const $ = (id) => document.getElementById(id);
   const els = {
     rail: $('rail'), railToggle: $('railToggle'),
-    themeBtn: $('themeBtn'), settingsBtn: $('settingsBtn'), dashboardBtn: $('dashboardBtn'),
+    themeBtn: $('themeBtn'), settingsBtn: $('settingsBtn'),
     openDashboardFromCard: $('openDashboardFromCard'),
     kpiTotalSaved: $('kpiTotalSaved'), kpiTotalSavedSub: $('kpiTotalSavedSub'),
     kpiAvgPct: $('kpiAvgPct'), kpiPrompts: $('kpiPrompts'),
@@ -2816,15 +3050,18 @@
     domainMount: $('domainSelectMount'),
     analyzeProviderMount: $('analyzeProviderMount'),
     analyzeModelMount: $('analyzeModelMount'),
-    templatesCard: $('templatesCard'), templatesHeader: $('templatesHeader'),
-    templatesBadge: $('templatesBadge'), templatePills: $('templatePills'),
+    templatePills: $('templatePills'),
     templatesGrid: $('templatesGrid'), templatesEmpty: $('templatesEmpty'),
+    railTemplatesBadge: $('railTemplatesBadge'),
+    railReferenceBadge: $('railReferenceBadge'),
     saveTemplateBtn: $('saveTemplateBtn'), saveTemplatePanel: $('saveTemplatePanel'),
     saveTemplateName: $('saveTemplateName'), saveTemplateDesc: $('saveTemplateDesc'),
     saveTemplateCancel: $('saveTemplateCancel'), saveTemplateConfirm: $('saveTemplateConfirm'),
-    ctxCard: $('ctxCard'), ctxHeader: $('ctxHeader'), ctxBadge: $('ctxBadge'),
     ctxFileInput: $('ctxFileInput'), ctxDrop: $('ctxDrop'),
     ctxFiles: $('ctxFiles'), ctxEnable: $('ctxEnable'), ctxTotal: $('ctxTotal'),
+    drawerOverlay: $('drawerOverlay'), drawerPanel: $('drawerPanel'),
+    drawerClose: $('drawerClose'), drawerTitle: $('drawerTitle'),
+    railDashboardBtn: $('railDashboardBtn'), railReportBtn: $('railReportBtn'),
     rawPrompt: $('rawPrompt'),
     analyzeBtn: $('analyzeBtn'),
     stage1Status: $('stage1Status'),
@@ -3335,8 +3572,11 @@
   // - stage >= 3: optimized section visible
   function applyStageVisibility() {
     const n = state.stage;
-    // Compose section always present
+    // Compose section visible only when no insight view is active
     els.composeSection.hidden = false;
+    // Hide insight views
+    document.querySelector('.dashboard-pane').classList.remove('active');
+    document.querySelector('.report-pane').classList.remove('active');
     // Clarify column: show questions if we have any
     if (state.questions && state.questions.length && n >= 2) {
       els.clarifyEmpty.hidden = true;
@@ -3345,26 +3585,33 @@
       els.clarifyEmpty.hidden = false;
       els.clarifyActive.hidden = true;
     }
-    // Left column view: swap between raw and optimized.
-    // Show optimized once we have a built prompt, unless user explicitly toggled "Edit raw".
+    // Left column view: swap between raw and optimized
     const showOptimized = (n >= 3) && state.optimized && !state.showRawView;
     els.rawView.hidden = showOptimized;
     els.optimizedView.hidden = !showOptimized;
-    // Token efficiency card visibility is owned by renderSavings()
-    // Hide dashboard
-    document.querySelector('.dashboard-pane').classList.remove('active');
-    els.dashboardBtn.classList.remove('active');
+    // Update rail nav: deactivate insight items
+    document.querySelectorAll('.rail-nav-item[data-view]').forEach(i => i.classList.remove('active'));
   }
-  function showDashboard() {
+  function openView(name) {
+    // Hide compose and other panes
     els.composeSection.hidden = true;
-    document.querySelector('.dashboard-pane').classList.add('active');
-    els.dashboardBtn.classList.add('active');
-    renderDashboard();
+    document.querySelector('.dashboard-pane').classList.remove('active');
+    document.querySelector('.report-pane').classList.remove('active');
+    // Show the requested pane
+    if (name === 'dashboard') {
+      document.querySelector('.dashboard-pane').classList.add('active');
+      renderDashboard();
+    } else if (name === 'report') {
+      document.querySelector('.report-pane').classList.add('active');
+      renderReport();
+    }
+    // Update rail nav active state
+    document.querySelectorAll('.rail-nav-item[data-view]').forEach(i => {
+      i.classList.toggle('active', i.dataset.view === name);
+    });
     document.querySelector('.workspace').scrollTop = 0;
   }
-  function exitDashboard() {
-    document.querySelector('.dashboard-pane').classList.remove('active');
-    els.dashboardBtn.classList.remove('active');
+  function exitView() {
     applyStageVisibility();
   }
 
@@ -4322,39 +4569,52 @@ ${state.raw}
   // sample() picks 3 random items per render so the analogies stay fresh.
   const IMPACT_EQ_POOLS = {
     water: [ // base = liters
-      { icon: '🚿',  label: 'Shower hours',          perUnit: 390 },
-      { icon: '🏊',  label: 'Olympic pools',         perUnit: 2_500_000 },
-      { icon: '🛁',  label: 'Bathtub fills',         perUnit: 150 },
+      // Tiny units — useful at per-prompt / low-thousand-tokens scale
+      { icon: '💧',  label: 'Water drops',           perUnit: 0.00005 },   // 1 drop ≈ 0.05 mL
+      { icon: '🤏',  label: 'Pinches of water',      perUnit: 0.0003 },    // ~0.3 mL
+      { icon: '🥄',  label: 'Teaspoons',             perUnit: 0.005 },     // 5 mL
+      // Medium / large — useful at higher totals
       { icon: '🥛',  label: 'Drinking glasses',      perUnit: 0.25 },
-      { icon: '☕',  label: 'Cups of coffee made',   perUnit: 140 },
+      { icon: '💧',  label: '500 mL bottles',        perUnit: 0.5 },
       { icon: '🍅',  label: 'Tomatoes grown',        perUnit: 50 },
       { icon: '🧺',  label: 'Laundry loads',         perUnit: 50 },
-      { icon: '💧',  label: '500 mL bottles',        perUnit: 0.5 },
       { icon: '🥬',  label: 'Lettuce heads',         perUnit: 130 },
-      { icon: '🚰',  label: 'Person-days basic use', perUnit: 50 }
+      { icon: '☕',  label: 'Cups of coffee made',   perUnit: 140 },
+      { icon: '🛁',  label: 'Bathtub fills',         perUnit: 150 },
+      { icon: '🚿',  label: 'Shower hours',          perUnit: 390 },
+      { icon: '🏊',  label: 'Olympic pools',         perUnit: 2_500_000 }
     ],
     co2: [ // base = kg
-      { icon: '🌳',  label: 'Tree-years absorbed',   perUnit: 21 },
+      // Tiny units
+      { icon: '🫁',  label: 'Human breaths',         perUnit: 0.001 },     // ~1 g per breath
+      { icon: '✉️',  label: 'Emails sent',           perUnit: 0.004 },     // ~4 g per email
+      { icon: '📺',  label: 'TV-watching hours',     perUnit: 0.1 },
       { icon: '🚗',  label: 'Car miles avoided',     perUnit: 0.404 },
-      { icon: '✈️',  label: 'Flight minutes',        perUnit: 90 / 60 },
       { icon: '🌱',  label: 'Tree seedlings (1 yr)', perUnit: 0.5 },
+      { icon: '✈️',  label: 'Flight minutes',        perUnit: 90 / 60 },
+      { icon: '🚊',  label: 'Train miles (Amtrak)',  perUnit: 0.18 },
+      // Medium / large
       { icon: '🍔',  label: 'Beef burgers',          perUnit: 3.0 },
       { icon: '👕',  label: 'T-shirts produced',     perUnit: 5.0 },
-      { icon: '📱',  label: 'Smartphones made',      perUnit: 70 },
-      { icon: '📺',  label: 'TV-watching hours',     perUnit: 0.1 },
-      { icon: '🚊',  label: 'Train miles (Amtrak)',  perUnit: 0.18 }
+      { icon: '🌳',  label: 'Tree-years absorbed',   perUnit: 21 },
+      { icon: '📱',  label: 'Smartphones made',      perUnit: 70 }
     ],
     power: [ // base = kWh
-      { icon: '📱',  label: 'Phones charged',        perUnit: 0.012 },
+      // Tiny units — meaningful at per-prompt scale
+      { icon: '📱',  label: 'Phone-seconds (on)',    perUnit: 0.00000139 },// 5 W phone
+      { icon: '☕',  label: 'Kettle-seconds',        perUnit: 0.000417 },  // 1.5 kW, 1 sec
+      { icon: '💡',  label: 'LED-bulb minutes',      perUnit: 0.000167 },  // 10 W for 1 min
       { icon: '💡',  label: 'LED-bulb hours',        perUnit: 0.010 },
-      { icon: '🏠',  label: 'UK home-hours',         perUnit: 0.333 },
-      { icon: '🏡',  label: 'US home-hours',         perUnit: 1.25 },
-      { icon: '☕',  label: 'Kettles boiled',        perUnit: 0.1 },
+      { icon: '📱',  label: 'Phones charged',        perUnit: 0.012 },
       { icon: '💻',  label: 'Laptop-hours',          perUnit: 0.05 },
-      { icon: '❄️',  label: 'Fridge-days',          perUnit: 1.0 },
-      { icon: '🧺',  label: 'Washer cycles',         perUnit: 0.5 },
+      // Medium / large
+      { icon: '☕',  label: 'Kettles boiled',        perUnit: 0.1 },
+      { icon: '🚙',  label: 'EV miles driven',       perUnit: 0.3 },
+      { icon: '🏠',  label: 'UK home-hours',         perUnit: 0.333 },
       { icon: '🍞',  label: 'Bread loaves baked',    perUnit: 0.5 },
-      { icon: '🚙',  label: 'EV miles driven',       perUnit: 0.3 }
+      { icon: '🧺',  label: 'Washer cycles',         perUnit: 0.5 },
+      { icon: '❄️',  label: 'Fridge-days',           perUnit: 1.0 },
+      { icon: '🏡',  label: 'US home-hours',         perUnit: 1.25 }
     ]
   };
 
@@ -4376,16 +4636,28 @@ ${state.raw}
   }
   function eqValues(impactBase, poolKey, n) {
     const base = { water: impactBase.waterL, co2: impactBase.co2Kg, power: impactBase.kWh }[poolKey];
-    return sample(IMPACT_EQ_POOLS[poolKey], n).map(p => ({
-      ...p,
-      value: base / p.perUnit
-    }));
+    // Compute value for every option in the pool
+    const all = IMPACT_EQ_POOLS[poolKey].map(p => ({ ...p, value: base / p.perUnit }));
+    // Prefer entries that produce a human-friendly count (between 0.5 and 99,999)
+    const meaningful = all.filter(p => p.value >= 0.5 && p.value < 100_000);
+    if (meaningful.length >= n) {
+      return sample(meaningful, n);
+    }
+    // Not enough meaningful options — fill the rest with whatever's closest to 1
+    const rest = all
+      .filter(p => !meaningful.includes(p))
+      .sort((a, b) => {
+        const da = Math.abs(Math.log10(Math.max(a.value, 1e-12)));
+        const db = Math.abs(Math.log10(Math.max(b.value, 1e-12)));
+        return da - db;
+      });
+    return [...sample(meaningful, meaningful.length), ...rest.slice(0, n - meaningful.length)];
   }
 
   function formatImpact(n) {
     if (n == null || !isFinite(n) || n === 0) return '0';
     const abs = Math.abs(n);
-    if (abs < 0.001) return n.toExponential(1).replace('e', 'e');
+    if (abs < 0.001) return '<0.001';
     if (abs < 0.01)  return n.toFixed(3);
     if (abs < 1)     return n.toFixed(2);
     if (abs < 10)    return n.toFixed(2);
@@ -4515,6 +4787,118 @@ ${state.raw}
     renderAllocation();
   }
 
+  // ---------- Report view ----------
+  function renderReport() {
+    renderReportCurrent();
+    renderReportMonthly();
+  }
+  function renderReportCurrent() {
+    const wrap = document.getElementById('reportCurrent');
+    if (!state.raw && !state.optimized) {
+      wrap.innerHTML = '<div class="report-empty">No active prompt to report. Write and build a prompt first, then return here.</div>';
+      return;
+    }
+    let html = '';
+    if (state.raw) {
+      html += `<div class="report-block">
+        <div class="report-block-title">Raw prompt · Domain: ${escapeHtml(state.domain)}</div>
+        <pre class="report-block-pre">${escapeHtml(state.raw)}</pre>
+      </div>`;
+    }
+    if (state.questions && state.questions.length) {
+      const rows = state.questions.map(q => {
+        const a = state.answers[q.id];
+        const ans = (a == null || !String(a).trim()) ? '—' : String(a);
+        return `<div class="report-clarify-row">
+          <span class="report-clarify-q">${escapeHtml(q.question)}</span>
+          <span class="report-clarify-a">${escapeHtml(ans)}</span>
+        </div>`;
+      }).join('');
+      html += `<div class="report-block">
+        <div class="report-block-title">Clarifications (${state.questions.length})</div>
+        ${rows}
+      </div>`;
+    }
+    if (state.optimized) {
+      html += `<div class="report-block">
+        <div class="report-block-title">Optimized prompt</div>
+        <pre class="report-block-pre">${escapeHtml(state.optimized)}</pre>
+      </div>`;
+    }
+    if (state.runOutput) {
+      html += `<div class="report-block">
+        <div class="report-block-title">Run output</div>
+        <pre class="report-block-pre">${escapeHtml(state.runOutput)}</pre>
+      </div>`;
+    }
+    const s = computeSavings();
+    if (s.pfTotal > 0) {
+      html += `<div class="report-block">
+        <div class="report-block-title">Savings · this prompt</div>
+        <pre class="report-block-pre">${formatK(s.saved)} tokens saved  ·  ${formatUSD(s.savedDollars)}  ·  ${s.pct}% less than a ${s.N}-turn naive baseline
+
+SOLO:  ${formatK(s.pfTotal)} tokens  (${formatUSD(s.pfDollars.total)})
+Naive: ${formatK(s.naiveTotal)} tokens  (${formatUSD(s.naiveDollars)})</pre>
+      </div>`;
+    }
+    wrap.innerHTML = html;
+  }
+  function renderReportMonthly() {
+    const wrap = document.getElementById('reportMonthly');
+    const history = loadHistory();
+    const thisMonth = currentMonthKey();
+    const monthEntries = history.filter(e => currentMonthKey(new Date(e.t)) === thisMonth);
+    if (monthEntries.length === 0) {
+      wrap.innerHTML = '<div class="report-empty">No prompts this month yet. Build a few and come back.</div>';
+      return;
+    }
+    let totalSaved = 0, totalDollars = 0, totalPct = 0;
+    const domainCounts = {};
+    monthEntries.forEach(e => {
+      const s = computeSavingsForEntry(e);
+      totalSaved += Math.max(0, s.saved);
+      totalDollars += Math.max(0, s.savedDollars);
+      totalPct += s.pct;
+      domainCounts[e.domain] = (domainCounts[e.domain] || 0) + 1;
+    });
+    const avgPct = Math.round(totalPct / monthEntries.length);
+    const topDomains = Object.entries(domainCounts).sort((a, b) => b[1] - a[1]).slice(0, 6);
+    const impact = computeImpact(totalSaved);
+    const monthSpend = getMonthSpend();
+    const budget = getBudget();
+    const monthName = new Date().toLocaleString('en-US', { month: 'long', year: 'numeric' });
+
+    let html = `<div class="report-block">
+      <div class="report-block-title">${escapeHtml(monthName)}  ·  ${monthEntries.length} prompt${monthEntries.length === 1 ? '' : 's'}</div>
+      <pre class="report-block-pre">${formatK(totalSaved)} tokens saved  ·  ${formatUSD(totalDollars)} cost saved
+${avgPct}% average reduction vs naive iteration
+Total provider spend recorded: ${formatUSD(monthSpend)}${budget ? `  (of ${formatUSD(budget)} budget)` : ''}</pre>
+    </div>`;
+
+    html += `<div class="report-block">
+      <div class="report-block-title">Environmental impact (this month)</div>
+      <pre class="report-block-pre">💧 ${formatImpact(impact.waterL)} L water saved  (≈ ${formatImpact(impact.waterL / 390)} shower-hours)
+🌍 ${formatImpact(impact.co2Kg)} kg CO₂ avoided  (≈ ${formatImpact(impact.co2Kg / 21)} tree-years)
+⚡ ${formatImpact(impact.kWh)} kWh power saved  (≈ ${formatImpact(impact.kWh / 0.012)} phone charges)</pre>
+    </div>`;
+
+    if (topDomains.length) {
+      html += `<div class="report-block">
+        <div class="report-block-title">Top domains</div>
+        <pre class="report-block-pre">${topDomains.map(([d, n]) => `${d.padEnd(16)} ${n} prompt${n === 1 ? '' : 's'}`).join('\n')}</pre>
+      </div>`;
+    }
+    wrap.innerHTML = html;
+  }
+  // Tab switching inside the Report view
+  document.querySelectorAll('.report-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.tab;
+      document.querySelectorAll('.report-tab').forEach(t => t.classList.toggle('active', t === tab));
+      document.querySelectorAll('.report-content').forEach(c => c.hidden = c.dataset.tab !== target);
+    });
+  });
+
   // ---------- Home summary banner (top of Stage 1) ----------
   function renderHomeSummary() {
     if (!els.homeSummary) return;
@@ -4606,12 +4990,50 @@ ${state.raw}
     updateStage3Sub();
   });
 
-  // Dashboard toggle
-  els.dashboardBtn.addEventListener('click', () => {
-    const isOpen = document.querySelector('.dashboard-pane').classList.contains('active');
-    if (isOpen) exitDashboard(); else showDashboard();
+  // Insight views (Dashboard / Report) — opened from rail nav items
+  document.querySelectorAll('.rail-nav-item[data-view]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const v = btn.dataset.view;
+      const isActive = btn.classList.contains('active');
+      if (isActive) exitView();
+      else openView(v);
+    });
   });
-  els.openDashboardFromCard.addEventListener('click', showDashboard);
+  // Ticker shortcut: 📊 opens dashboard
+  els.openDashboardFromCard.addEventListener('click', () => openView('dashboard'));
+
+  // Drawer wiring (Templates / Reference from rail)
+  function openDrawer(name) {
+    document.querySelectorAll('.drawer-content').forEach(c => c.hidden = true);
+    if (name === 'templates') {
+      document.getElementById('drawerTemplates').hidden = false;
+      els.drawerTitle.textContent = '📚 Templates';
+      renderTemplatePills();
+      renderTemplatesGrid();
+    } else if (name === 'reference') {
+      document.getElementById('drawerReference').hidden = false;
+      els.drawerTitle.textContent = '📎 Reference context';
+      renderCtxList();
+    }
+    els.drawerOverlay.classList.add('open');
+    els.drawerPanel.classList.add('open');
+    document.querySelectorAll('.rail-nav-item[data-drawer]').forEach(item => {
+      item.classList.toggle('active', item.dataset.drawer === name);
+    });
+  }
+  function closeDrawer() {
+    els.drawerOverlay.classList.remove('open');
+    els.drawerPanel.classList.remove('open');
+    document.querySelectorAll('.rail-nav-item[data-drawer]').forEach(i => i.classList.remove('active'));
+  }
+  document.querySelectorAll('.rail-nav-item[data-drawer]').forEach(btn => {
+    btn.addEventListener('click', () => openDrawer(btn.dataset.drawer));
+  });
+  els.drawerClose.addEventListener('click', closeDrawer);
+  els.drawerOverlay.addEventListener('click', closeDrawer);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && els.drawerPanel.classList.contains('open')) closeDrawer();
+  });
 
   // Mobile rail toggle
   els.railToggle.addEventListener('click', () => {
@@ -4759,9 +5181,7 @@ ${state.raw}
   function updateTemplatesBadge() {
     const userCount = loadUserTemplates().length;
     const builtIn = TEMPLATES.length;
-    els.templatesBadge.textContent = userCount
-      ? `${builtIn} built-in · ${userCount} yours`
-      : `${builtIn} built-in`;
+    els.railTemplatesBadge.textContent = builtIn + userCount;
   }
 
   function applyTemplate(t) {
@@ -4770,7 +5190,7 @@ ${state.raw}
     els.rawPrompt.value = t.rawPrompt;
     state.raw = t.rawPrompt;
     updateStage1Sub();
-    els.templatesCard.classList.add('collapsed');
+    closeDrawer();
     els.rawPrompt.focus();
     toast(`Loaded: ${t.name}`);
   }
@@ -4808,10 +5228,7 @@ ${state.raw}
     toast(`Saved template "${name}"`);
   }
 
-  // Wire templates UI
-  els.templatesHeader.addEventListener('click', () => {
-    els.templatesCard.classList.toggle('collapsed');
-  });
+  // Wire templates save button (templates UI itself lives in the drawer now)
   els.saveTemplateBtn.addEventListener('click', openSaveTemplate);
   els.saveTemplateCancel.addEventListener('click', closeSaveTemplate);
   els.saveTemplateConfirm.addEventListener('click', confirmSaveTemplate);
@@ -4888,12 +5305,10 @@ ${state.raw}
     els.ctxTotal.classList.toggle('warn', totalTokens > CTX_TOKEN_WARN);
 
     if (arr.length > 0) {
-      els.ctxBadge.hidden = false;
-      els.ctxBadge.textContent = `${arr.length} file${arr.length === 1 ? '' : 's'}`;
-      // Auto-expand when files exist
-      els.ctxCard.classList.remove('collapsed');
+      els.railReferenceBadge.hidden = false;
+      els.railReferenceBadge.textContent = arr.length;
     } else {
-      els.ctxBadge.hidden = true;
+      els.railReferenceBadge.hidden = true;
     }
   }
 
@@ -4933,10 +5348,7 @@ ${state.raw}
     return `\n\nREFERENCE CONTEXT (provided by the user as background — use it to understand their domain, vocabulary, and constraints when shaping clarifications):\n${sections}\n`;
   }
 
-  // Wire UI
-  els.ctxHeader.addEventListener('click', () => {
-    els.ctxCard.classList.toggle('collapsed');
-  });
+  // Wire reference UI (the UI itself lives in the drawer now; no collapse toggle here)
   els.ctxDrop.addEventListener('click', () => els.ctxFileInput.click());
   els.ctxFileInput.addEventListener('change', (e) => {
     if (e.target.files?.length) addCtxFiles(e.target.files);
