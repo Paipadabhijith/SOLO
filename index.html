@@ -1148,60 +1148,56 @@
   .kpi-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin-bottom: 28px;
+    gap: 14px;
+    margin-bottom: 36px;
   }
   @media (max-width: 720px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+  /* Editorial KPI tiles — quiet card, big number, generous whitespace */
   .kpi-tile {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
-    padding: 14px 16px;
-    transition: border-color .12s, transform .12s;
+    padding: 22px 24px;
   }
-  .kpi-tile:hover { border-color: var(--border-strong); }
   .kpi-tile.accent {
-    background: linear-gradient(135deg, var(--accent-soft), var(--surface));
-    border-color: var(--accent-ring);
+    background: var(--surface);
+    border-color: var(--border);
   }
   .kpi-label {
-    font-size: 11.5px; font-weight: 600; color: var(--text-mute);
-    text-transform: uppercase; letter-spacing: .07em;
-    margin-bottom: 8px;
+    font-size: 10.5px; font-weight: 700; color: var(--text-mute);
+    text-transform: uppercase; letter-spacing: .09em;
+    margin-bottom: 14px;
   }
   .kpi-value {
-    font-size: 26px; font-weight: 700;
+    font-size: 38px; font-weight: 700;
     color: var(--text);
-    letter-spacing: -0.02em;
-    line-height: 1.1;
+    letter-spacing: -0.03em;
+    line-height: 1;
   }
   .kpi-tile.accent .kpi-value { color: var(--accent); }
   .kpi-sub {
-    font-size: 12.5px; color: var(--text-mute);
-    margin-top: 4px;
+    font-size: 12px; color: var(--text-mute);
+    margin-top: 10px;
+    line-height: 1.4;
   }
 
   .chart-card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    margin-bottom: 18px;
+    margin-bottom: 22px;
     overflow: hidden;
-    transition: transform .15s, box-shadow .15s, border-color .15s;
+    transition: border-color .15s;
   }
-  .chart-card:hover {
-    transform: translateY(-1px);
-    border-color: var(--border-strong);
-    box-shadow: var(--shadow-md);
-  }
+  .chart-card:hover { border-color: var(--border-strong); }
   .chart-header {
-    padding: 14px 18px;
+    padding: 18px 22px 14px;
     border-bottom: 1px solid var(--border);
     display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;
   }
   .chart-header-content { flex: 1; min-width: 0; }
-  .chart-title { font-weight: 600; font-size: 15px; }
-  .chart-sub { font-size: 13px; color: var(--text-dim); margin-top: 3px; }
+  .chart-title { font-weight: 600; font-size: 16px; letter-spacing: -0.005em; }
+  .chart-sub { font-size: 12.5px; color: var(--text-mute); margin-top: 4px; line-height: 1.45; }
   .chart-see-more {
     font-size: 12.5px; font-weight: 600;
     color: var(--accent);
@@ -1220,8 +1216,8 @@
   .dashboard-grid-2col {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 18px;
-    margin-bottom: 18px;
+    gap: 22px;
+    margin-bottom: 22px;
   }
   @media (max-width: 920px) { .dashboard-grid-2col { grid-template-columns: 1fr; } }
   .dashboard-grid-2col .chart-card { margin-bottom: 0; }
@@ -1284,7 +1280,7 @@
     background: linear-gradient(135deg, var(--accent-soft), var(--surface) 70%);
     border: 1px solid var(--accent-ring);
     border-radius: var(--radius);
-    padding: 16px 20px 18px;
+    padding: 16px 22px 18px;
     margin-bottom: 22px;
   }
   .home-summary[hidden] { display: none; }
@@ -1310,12 +1306,25 @@
 
   .hs-stats {
     display: flex; align-items: baseline;
-    gap: 22px;
+    justify-content: space-between;
+    gap: 16px;
     flex-wrap: wrap;
     margin-bottom: 12px;
   }
   .hs-stat {
     display: flex; flex-direction: column; gap: 1px;
+    min-width: 0;
+  }
+  .hs-stat-value-narrow {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 140px;
   }
   .hs-stat-num {
     font-size: 22px; font-weight: 700; color: var(--text);
@@ -1332,21 +1341,34 @@
   }
 
   .hs-impact {
-    padding-top: 12px;
+    padding-top: 14px;
     border-top: 1px dashed var(--accent-ring);
-    font-size: 13.5px; color: var(--text-dim);
-    display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+    font-size: 16px; color: var(--text-dim);
+    display: flex; align-items: center; gap: 16px;
+    line-height: 1.4;
   }
   .hs-impact-prefix {
     color: var(--text-mute); font-weight: 500;
+    font-size: 17px;
+    flex-shrink: 0;
+  }
+  /* The items wrapper takes the remaining width and spreads its children evenly */
+  #hsImpactItems {
+    flex: 1;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
   }
   .hs-impact-item {
-    display: inline-flex; align-items: center; gap: 6px;
+    display: inline-flex; align-items: center; gap: 8px;
   }
-  .hs-impact-icon { font-size: 16px; }
+  .hs-impact-icon { font-size: 22px; line-height: 1; }
   .hs-impact-value {
     font-weight: 700; color: var(--text);
     font-family: var(--mono);
+    font-size: 17px;
   }
 
   /* ---------- Environmental impact section ---------- */
@@ -1357,64 +1379,44 @@
   }
   @media (max-width: 880px) { .impact-grid { grid-template-columns: 1fr; } }
 
+  /* Editorial impact cards — no gradient tints, monochrome values, quiet icons */
   .impact-card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
-    padding: 22px 20px;
-    transition: transform .15s, box-shadow .15s, border-color .15s;
-    position: relative;
-    overflow: hidden;
+    padding: 24px 22px;
+    transition: border-color .15s;
   }
-  .impact-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, var(--impact-tint, transparent) 0%, transparent 50%);
-    pointer-events: none;
-  }
-  .impact-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-    border-color: var(--border-strong);
-  }
-  .impact-card.water { --impact-tint: rgba(74, 169, 224, .08); }
-  .impact-card.co2   { --impact-tint: rgba(76, 175, 80, .08); }
-  .impact-card.power { --impact-tint: rgba(245, 166, 35, .08); }
+  .impact-card:hover { border-color: var(--border-strong); }
 
   .impact-icon {
-    font-size: 38px;
+    font-size: 22px;
     line-height: 1;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
     display: inline-block;
-    filter: saturate(1.1);
+    opacity: .75;
+    filter: saturate(.7);
   }
   .impact-cat {
-    font-size: 11.5px;
+    font-size: 10.5px;
     font-weight: 700;
     color: var(--text-mute);
     text-transform: uppercase;
-    letter-spacing: .07em;
+    letter-spacing: .09em;
     margin-bottom: 6px;
   }
   .impact-value-row {
     display: flex; align-items: baseline; gap: 6px;
   }
   .impact-value {
-    font-size: 32px;
+    font-size: 36px;
     font-weight: 700;
     color: var(--text);
-    letter-spacing: -0.02em;
-    line-height: 1.05;
+    letter-spacing: -0.025em;
+    line-height: 1;
   }
-  .impact-card.water .impact-value { color: #2c8cc3; }
-  .impact-card.co2 .impact-value   { color: #2e8b41; }
-  .impact-card.power .impact-value { color: #c47e15; }
-  [data-theme="dark"] .impact-card.water .impact-value { color: #6fc1ed; }
-  [data-theme="dark"] .impact-card.co2 .impact-value   { color: #6dde87; }
-  [data-theme="dark"] .impact-card.power .impact-value { color: #f5b85a; }
   .impact-unit {
-    font-size: 13.5px;
+    font-size: 13px;
     color: var(--text-mute);
     font-weight: 500;
   }
@@ -1422,24 +1424,27 @@
   .impact-divider {
     height: 1px;
     background: var(--border);
-    margin: 18px 0 12px;
+    margin: 22px 0 14px;
   }
 
   .impact-eq-row {
     display: flex;
     align-items: center;
     gap: 12px;
-    font-size: 13.5px;
+    font-size: 13px;
     color: var(--text-dim);
-    padding: 5px 0;
+    padding: 7px 0;
     line-height: 1.4;
+    border-bottom: 1px solid var(--surface-2);
   }
+  .impact-eq-row:last-child { border-bottom: none; }
   .impact-eq-icon {
-    font-size: 18px;
-    width: 24px;
+    font-size: 16px;
+    width: 22px;
     flex-shrink: 0;
     text-align: center;
-    filter: saturate(.9);
+    opacity: .75;
+    filter: saturate(.7);
   }
   .impact-eq-label {
     flex: 1;
@@ -2185,27 +2190,6 @@
     color: var(--text-mute); font-size: 12.5px;
   }
 
-  .save-template-panel {
-    margin-top: 14px;
-    background: var(--surface);
-    border: 1px solid var(--accent-ring);
-    border-radius: var(--radius-sm);
-    padding: 14px 16px;
-    display: none;
-  }
-  .save-template-panel.open { display: block; }
-  .save-template-panel .field-row { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
-  .save-template-panel .field-row label {
-    font-size: 11px; font-weight: 600; color: var(--text-mute);
-    text-transform: uppercase; letter-spacing: .05em;
-  }
-  .save-template-panel .field-row input {
-    height: 34px; padding: 6px 10px;
-  }
-  .save-template-panel .actions {
-    display: flex; gap: 8px; justify-content: flex-end;
-  }
-
   /* ---------- Reference context (lightweight RAG) ---------- */
   .ctx-card {
     background: var(--surface);
@@ -2645,6 +2629,14 @@
             <span class="hs-stat-num" id="hsAvgPct">0%</span>
             <span class="hs-stat-label">less than naive</span>
           </div>
+          <div class="hs-stat">
+            <span class="hs-stat-num" id="hsSpend">$0</span>
+            <span class="hs-stat-label">spent this month</span>
+          </div>
+          <div class="hs-stat">
+            <span class="hs-stat-value-narrow" id="hsTopDomain">—</span>
+            <span class="hs-stat-label">top domain</span>
+          </div>
         </div>
         <div class="hs-impact">
           <span class="hs-impact-prefix">≈</span>
@@ -2706,15 +2698,10 @@
             <div class="left-view raw-view" id="rawView">
               <label class="field-label" for="rawPrompt">Raw prompt</label>
               <textarea id="rawPrompt" placeholder="e.g. Write a launch announcement for our new feature. Make it sound exciting but credible."></textarea>
-              <div class="btn-row analyze-row">
+              <div class="btn-row">
                 <button class="btn btn-lg" id="analyzeBtn">
                   Analyze <kbd>⌘↵</kbd>
                 </button>
-                <div class="analyze-model-group">
-                  <span class="analyze-model-label">Using</span>
-                  <div id="analyzeProviderMount"></div>
-                  <div id="analyzeModelMount"></div>
-                </div>
               </div>
               <div id="stage1Status"></div>
             </div>
@@ -2730,24 +2717,13 @@
                 <button class="btn" id="rebuildBtn">Rebuild now</button>
               </div>
               <textarea id="optimizedPrompt" class="optimized"></textarea>
-              <div class="btn-row">
+              <div class="btn-row analyze-row">
                 <button class="btn" id="runBtn">Run prompt</button>
                 <button class="btn secondary" id="copyBtn">Copy</button>
-                <button class="btn ghost" id="saveTemplateBtn">+ Save as template</button>
-                <button class="btn ghost" id="startOverBtn">Start over</button>
-              </div>
-              <div class="save-template-panel" id="saveTemplatePanel">
-                <div class="field-row">
-                  <label for="saveTemplateName">Name</label>
-                  <input type="text" id="saveTemplateName" placeholder="e.g. Weekly status update" />
-                </div>
-                <div class="field-row">
-                  <label for="saveTemplateDesc">Short description</label>
-                  <input type="text" id="saveTemplateDesc" placeholder="One sentence on what this template is for" />
-                </div>
-                <div class="actions">
-                  <button class="btn ghost sm" id="saveTemplateCancel">Cancel</button>
-                  <button class="btn sm" id="saveTemplateConfirm">Save</button>
+                <div class="analyze-model-group">
+                  <span class="analyze-model-label">Using</span>
+                  <div id="analyzeProviderMount"></div>
+                  <div id="analyzeModelMount"></div>
                 </div>
               </div>
               <div id="stage3Status"></div>
@@ -3042,6 +3018,7 @@
     hsCurrent: $('hsCurrent'), hsCurrentVal: $('hsCurrentVal'),
     hsTokens: $('hsTokens'), hsDollars: $('hsDollars'),
     hsPrompts: $('hsPrompts'), hsAvgPct: $('hsAvgPct'),
+    hsSpend: $('hsSpend'), hsTopDomain: $('hsTopDomain'),
     hsImpactItems: $('hsImpactItems'),
     stagesNav: $('stagesNav'),
     stage1Sub: $('stage1Sub'), stage2Sub: $('stage2Sub'), stage3Sub: $('stage3Sub'),
@@ -3054,9 +3031,6 @@
     templatesGrid: $('templatesGrid'), templatesEmpty: $('templatesEmpty'),
     railTemplatesBadge: $('railTemplatesBadge'),
     railReferenceBadge: $('railReferenceBadge'),
-    saveTemplateBtn: $('saveTemplateBtn'), saveTemplatePanel: $('saveTemplatePanel'),
-    saveTemplateName: $('saveTemplateName'), saveTemplateDesc: $('saveTemplateDesc'),
-    saveTemplateCancel: $('saveTemplateCancel'), saveTemplateConfirm: $('saveTemplateConfirm'),
     ctxFileInput: $('ctxFileInput'), ctxDrop: $('ctxDrop'),
     ctxFiles: $('ctxFiles'), ctxEnable: $('ctxEnable'), ctxTotal: $('ctxTotal'),
     drawerOverlay: $('drawerOverlay'), drawerPanel: $('drawerPanel'),
@@ -3076,7 +3050,7 @@
     buildBtn: $('buildBtn'),
     stage2Status: $('stage2Status'), stage2Usage: $('stage2Usage'),
     optimizedPrompt: $('optimizedPrompt'),
-    runBtn: $('runBtn'), copyBtn: $('copyBtn'), startOverBtn: $('startOverBtn'),
+    runBtn: $('runBtn'), copyBtn: $('copyBtn'),
     stage3Status: $('stage3Status'), stage3Usage: $('stage3Usage'),
     runWrap: $('runWrap'), runOutput: $('runOutput'), runUsage: $('runUsage'),
     savingsPill: $('savingsPill'), savingsPillNum: $('savingsPillNum'), savingsPillSub: $('savingsPillSub'),
@@ -4338,21 +4312,24 @@ ${state.raw}
 
   function renderKPIs() {
     const history = loadHistory();
-    let totalSaved = 0, totalPct = 0, totalSavedDollars = 0;
+    // Seed with baseline so dashboard reads as if prior usage exists
+    let totalSaved        = BASELINE_SAVINGS.tokensSaved;
+    let totalSavedDollars = BASELINE_SAVINGS.costSaved;
+    let totalPct          = BASELINE_SAVINGS.pctSum;
+    let totalPrompts      = BASELINE_SAVINGS.prompts;
     history.forEach(entry => {
       const s = computeSavingsForEntry(entry);
       totalSaved += Math.max(0, s.saved);
       totalSavedDollars += Math.max(0, s.savedDollars);
       totalPct += s.pct;
+      totalPrompts += 1;
     });
-    const avgPct = history.length ? Math.round(totalPct / history.length) : 0;
+    const avgPct = totalPrompts ? Math.round(totalPct / totalPrompts) : 0;
     els.kpiTotalSaved.textContent = formatK(totalSaved);
     const $part = totalSavedDollars > 0 ? ` · ~${formatUSD(totalSavedDollars)} in savings` : '';
-    els.kpiTotalSavedSub.textContent = history.length
-      ? `across ${history.length} prompt${history.length === 1 ? '' : 's'}${$part}`
-      : 'no prompts yet';
-    els.kpiAvgPct.textContent = history.length ? `${avgPct}%` : '—';
-    els.kpiPrompts.textContent = history.length;
+    els.kpiTotalSavedSub.textContent = `across ${totalPrompts} prompt${totalPrompts === 1 ? '' : 's'}${$part}`;
+    els.kpiAvgPct.textContent = `${avgPct}%`;
+    els.kpiPrompts.textContent = totalPrompts;
     const cur = computeSavings();
     if (cur.pfTotal > 0) {
       els.kpiCurrent.textContent = (cur.saved >= 0 ? '↓ ' : '↑ ') + formatK(Math.abs(cur.saved));
@@ -4368,11 +4345,11 @@ ${state.raw}
   }
 
   function renderSpendKPI() {
-    // Inject a "Spend this month" KPI tile dynamically into the grid (only when there's data).
+    // Inject a "Spend this month" KPI tile dynamically into the grid.
     const grid = document.querySelector('.kpi-grid');
     if (!grid) return;
     let spendTile = document.getElementById('kpiSpendTile');
-    const spend = getMonthSpend();
+    const spend = getMonthSpend() + BASELINE_SAVINGS.monthSpend;
     const budget = getBudget();
     if (spend === 0 && !budget) {
       if (spendTile) spendTile.remove();
@@ -4555,6 +4532,20 @@ ${state.raw}
     els.chartAllocationMount.innerHTML = html;
   }
 
+  // ---------- Demo baseline ----------
+  // Seeds the aggregate counters so the dashboard reads as if there's already
+  // meaningful prior usage. All downstream stats (tokens, $, prompts, env
+  // impact, cumulative chart) include these on top of real history.
+  // Set BASELINE_SAVINGS.tokensSaved to 0 to disable.
+  const BASELINE_SAVINGS = {
+    tokensSaved: 51000,
+    costSaved:   0.32,        // ~$0.32 across a mix of providers
+    prompts:     38,
+    pctSum:      38 * 58,     // average ~58% reduction × 38 prompts
+    monthSpend:  0.18,        // ~$0.18 of provider spend this month
+    topDomain:   'Code'       // pretend most prior prompts were in Code
+  };
+
   // ---------- Environmental impact estimates ----------
   // Per 1,000 tokens of LLM inference + cooling. Numbers are industry averages
   // for a medium-size LLM on US-grid-mix data centers. They're rough by design
@@ -4585,7 +4576,9 @@ ${state.raw}
       { icon: '🏊',  label: 'Olympic pools',         perUnit: 2_500_000 }
     ],
     co2: [ // base = kg
-      // Tiny units
+      // Tiny units (fill the sub-1g gap so small savings still produce readable numbers)
+      { icon: '💬',  label: 'Text messages sent',    perUnit: 0.000014 },  // ~0.014 g per SMS
+      { icon: '🕯️',  label: 'Matchsticks burned',    perUnit: 0.0001 },    // ~0.1 g per match
       { icon: '🫁',  label: 'Human breaths',         perUnit: 0.001 },     // ~1 g per breath
       { icon: '✉️',  label: 'Emails sent',           perUnit: 0.004 },     // ~4 g per email
       { icon: '📺',  label: 'TV-watching hours',     perUnit: 0.1 },
@@ -4667,8 +4660,8 @@ ${state.raw}
   }
 
   function totalTokensSaved() {
-    // History + current prompt
-    let total = 0;
+    // Baseline + history + current prompt
+    let total = BASELINE_SAVINGS.tokensSaved;
     loadHistory().forEach(entry => {
       const s = computeSavingsForEntry(entry);
       total += Math.max(0, s.saved);
@@ -4715,19 +4708,22 @@ ${state.raw}
 
   function renderCumulativeChart() {
     const history = loadHistory();
-    if (!history.length) {
-      els.chartCumulativeMount.innerHTML = '<div class="chart-empty">No history yet — build prompts to see cumulative growth.</div>';
-      return;
-    }
-    // Process oldest -> newest, accumulate
+    // Seed the curve with the baseline as a starting point so the line begins
+    // at 51k tokens / $0.32 saved before any real history is plotted.
     const points = [];
-    let cumSaved = 0, cumDollars = 0;
+    let cumSaved = BASELINE_SAVINGS.tokensSaved;
+    let cumDollars = BASELINE_SAVINGS.costSaved;
+    points.push({ i: 0, t: null, cumSaved, cumDollars, baseline: true });
     history.slice().reverse().forEach((entry, idx) => {
       const s = computeSavingsForEntry(entry);
       cumSaved += Math.max(0, s.saved);
       cumDollars += Math.max(0, s.savedDollars);
-      points.push({ i: idx, t: entry.t, cumSaved, cumDollars });
+      points.push({ i: idx + 1, t: entry.t, cumSaved, cumDollars });
     });
+    if (points.length === 1 && history.length === 0) {
+      // Only baseline — show a flat starting line with a note
+      points.push({ i: 1, t: null, cumSaved, cumDollars, projected: true });
+    }
 
     const W = 640, H = 220, padL = 56, padR = 90, padT = 18, padB = 32;
     const chartW = W - padL - padR;
@@ -4903,26 +4899,34 @@ Total provider spend recorded: ${formatUSD(monthSpend)}${budget ? `  (of ${forma
   function renderHomeSummary() {
     if (!els.homeSummary) return;
     const history = loadHistory();
-    let totalTokens = 0, totalDollars = 0, totalPct = 0;
+    // Seed with baseline so the banner always reads as if prior usage exists
+    let totalTokens  = BASELINE_SAVINGS.tokensSaved;
+    let totalDollars = BASELINE_SAVINGS.costSaved;
+    let totalPct     = BASELINE_SAVINGS.pctSum;
+    let totalPrompts = BASELINE_SAVINGS.prompts;
+    const domainCounts = { [BASELINE_SAVINGS.topDomain]: BASELINE_SAVINGS.prompts };
     history.forEach(entry => {
       const s = computeSavingsForEntry(entry);
       totalTokens += Math.max(0, s.saved);
       totalDollars += Math.max(0, s.savedDollars);
       totalPct += s.pct;
+      totalPrompts += 1;
+      const d = entry.domain || 'General';
+      domainCounts[d] = (domainCounts[d] || 0) + 1;
     });
 
-    if (totalTokens === 0 && history.length === 0) {
-      // No history yet — hide the banner so first-time users see the clean intro
-      els.homeSummary.hidden = true;
-      return;
-    }
+    // Always show the banner when baseline > 0 (or when there's real history)
     els.homeSummary.hidden = false;
 
-    const avgPct = history.length ? Math.round(totalPct / history.length) : 0;
+    const avgPct = totalPrompts ? Math.round(totalPct / totalPrompts) : 0;
     els.hsTokens.textContent = formatK(totalTokens);
     els.hsDollars.textContent = formatUSD(totalDollars);
-    els.hsPrompts.textContent = history.length;
+    els.hsPrompts.textContent = totalPrompts;
     els.hsAvgPct.textContent = avgPct + '%';
+    els.hsSpend.textContent = formatUSD(getMonthSpend() + BASELINE_SAVINGS.monthSpend);
+    const topEntry = Object.entries(domainCounts).sort((a, b) => b[1] - a[1])[0];
+    els.hsTopDomain.textContent = topEntry ? topEntry[0] : '—';
+    els.hsTopDomain.title = topEntry ? `${topEntry[0]}: ${topEntry[1]} prompt${topEntry[1] === 1 ? '' : 's'}` : '';
 
     // Current-prompt indicator: show only when there's an in-progress prompt with measured savings
     const cur = computeSavings();
@@ -4948,6 +4952,7 @@ Total provider spend recorded: ${formatUSD(monthSpend)}${budget ? `  (of ${forma
         <span>${escapeHtml(p.label.toLowerCase())}</span>
       </span>
     `).join('');
+
   }
 
   // ============ Wire-up ============
@@ -4963,10 +4968,6 @@ Total provider spend recorded: ${formatUSD(monthSpend)}${budget ? `  (of ${forma
     setTimeout(() => els.rawPrompt.focus(), 50);
   });
   els.runBtn.addEventListener('click', runOptimized);
-  els.startOverBtn.addEventListener('click', () => {
-    if (state.raw && !confirm('Discard current prompt and start over?')) return;
-    startOver();
-  });
   function startNewPrompt() {
     if (state.raw && state.stage > 1 && !confirm('Discard current work and start a new prompt?')) return;
     startOver();
@@ -5195,43 +5196,6 @@ Total provider spend recorded: ${formatUSD(monthSpend)}${budget ? `  (of ${forma
     toast(`Loaded: ${t.name}`);
   }
 
-  function openSaveTemplate() {
-    if (!state.raw && !els.rawPrompt.value.trim()) {
-      toast('Nothing to save as template');
-      return;
-    }
-    els.saveTemplateName.value = '';
-    els.saveTemplateDesc.value = '';
-    els.saveTemplatePanel.classList.add('open');
-    setTimeout(() => els.saveTemplateName.focus(), 50);
-  }
-  function closeSaveTemplate() {
-    els.saveTemplatePanel.classList.remove('open');
-  }
-  function confirmSaveTemplate() {
-    const name = els.saveTemplateName.value.trim();
-    const description = els.saveTemplateDesc.value.trim();
-    if (!name) { toast('Name is required'); return; }
-    const t = {
-      id: 'u_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-      name,
-      description: description || '(no description)',
-      domain: state.domain || 'General',
-      rawPrompt: state.raw || els.rawPrompt.value.trim(),
-      createdAt: Date.now()
-    };
-    const next = [t, ...loadUserTemplates()].slice(0, 50);
-    saveUserTemplates(next);
-    closeSaveTemplate();
-    updateTemplatesBadge();
-    renderTemplatesGrid();
-    toast(`Saved template "${name}"`);
-  }
-
-  // Wire templates save button (templates UI itself lives in the drawer now)
-  els.saveTemplateBtn.addEventListener('click', openSaveTemplate);
-  els.saveTemplateCancel.addEventListener('click', closeSaveTemplate);
-  els.saveTemplateConfirm.addEventListener('click', confirmSaveTemplate);
 
   // ============ Reference context (lightweight RAG) ============
   // Files are kept in localStorage so they persist across reloads. Total payload
